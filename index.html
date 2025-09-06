@@ -1,7 +1,7 @@
 <!--
   ngespacios-standalone.html
   Propósito: Landing estática en una sola página, lista para subir a GitHub Pages sin build.
-  Incluye: Tailwind CDN, Google Fonts (Montserrat), Lucide Icons, JS mínimo de UX (scroll suave y mensaje de envío).
+  Incluye: Tailwind CDN, Google Fonts (Montserrat), Lucide Icons, JS mínimo de UX (scroll suave, menú móvil y mensaje de envío).
 -->
 
 <!doctype html>
@@ -94,11 +94,32 @@
         </nav>
 
         <button
+          id="btn-mobile"
           class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300"
           aria-label="Abrir menú"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          type="button"
         >
           <i data-lucide="menu" class="h-4 w-4"></i>
         </button>
+      </div>
+
+      <!-- Menú móvil -->
+      <div id="mobile-menu" class="md:hidden hidden border-t border-neutral-200 bg-[color:var(--brand-bg)]/95 backdrop-blur-md">
+        <div class="mx-auto container-max px-4 py-3">
+          <div class="grid gap-2 text-sm">
+            <a href="#propiedades" class="py-2 hover:text-[color:var(--brand-primary)]">Propiedades</a>
+            <a href="#tasacion" class="py-2 hover:text-[color:var(--brand-primary)]">Tasación</a>
+            <a href="#contacto" class="py-2 hover:text-[color:var(--brand-primary)]">Contacto</a>
+            <a
+              href="#propiedades"
+              class="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors"
+            >
+              Ver propiedades
+            </a>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -473,7 +494,7 @@
 
       <!-- Contacto -->
       <section id="contacto" class="mx-auto container-max px-4 pt-20 pb-24">
-        <div class="w-full rounded-xl border border-neutral-200 bg-white p-6">
+        <div class="w-full rounded-xl border border-neutral-200 bg-white p-6 break-words">
           <div>
             <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Contacto</p>
             <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Hablemos</h2>
@@ -484,7 +505,7 @@
               Email
               <a
                 href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1"
+                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline"
               >
                 nataliagonzalezmartillerapublica@ngespacios.com.ar
               </a>
@@ -495,7 +516,7 @@
                 href="https://wa.me/5492944635083"
                 target="_blank"
                 rel="noreferrer"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1"
+                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline"
               >
                 +54 9 294 463 5083
               </a>
@@ -526,7 +547,7 @@
       WhatsApp
     </a>
 
-    <!-- JS: Lucide icons, año dinámico, scroll suave, envío de formulario -->
+    <!-- JS: Lucide icons, año dinámico, scroll suave, envío de formulario, menú móvil -->
     <script>
       document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -546,13 +567,36 @@
         });
       });
 
+      // Menú móvil (abrir/cerrar + cerrar al elegir link + Esc)
+      const btnMobile = document.getElementById('btn-mobile');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const toggleMenu = (open) => {
+        const willOpen = typeof open === 'boolean' ? open : mobileMenu.classList.contains('hidden');
+        mobileMenu.classList.toggle('hidden', !willOpen);
+        btnMobile?.setAttribute('aria-expanded', String(willOpen));
+        // Cambiar icono
+        if (window.lucide) {
+          btnMobile.innerHTML = willOpen ? '<i data-lucide="x" class="h-4 w-4"></i>' : '<i data-lucide="menu" class="h-4 w-4"></i>';
+          window.lucide.createIcons();
+        }
+      };
+      btnMobile?.addEventListener('click', () => toggleMenu());
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') toggleMenu(false);
+      });
+      mobileMenu?.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => toggleMenu(false));
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) toggleMenu(false);
+      });
+
       // Simulación de envío del formulario (muestra mensaje de ok)
       const form = document.getElementById('contact-form');
       const ok = document.getElementById('form-ok');
       form?.addEventListener('submit', (e) => {
         e.preventDefault();
         ok?.classList.remove('hidden');
-        // Si tenés un backend, podés reemplazar esto por fetch(...)
         setTimeout(() => {
           form.reset();
         }, 200);
