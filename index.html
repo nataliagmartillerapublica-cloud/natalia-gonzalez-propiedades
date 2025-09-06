@@ -1,7 +1,7 @@
 <!--
   ngespacios-standalone.html
   Propósito: Landing estática en una sola página, lista para subir a GitHub Pages sin build.
-  Incluye: Tailwind CDN, Google Fonts (Montserrat), Lucide Icons, JS mínimo de UX (scroll suave, menú móvil y mensaje de envío).
+  Incluye: Tailwind CDN, Google Fonts (Montserrat), Lucide Icons, galería con carrusel, WhatsApp con mensaje precargado y ficha compacta.
 -->
 
 <!doctype html>
@@ -62,6 +62,9 @@
       .container-max {
         max-width: 72rem; /* ~6xl */
       }
+      /* Utilidad para ocultar la barra de scroll dentro del carrusel en algunos navegadores */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
   </head>
 
@@ -204,8 +207,24 @@
 
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Card 1 -->
-          <article class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition">
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="1"
+            data-title="Casa con vista al lago"
+            data-operation="Venta"
+            data-type="Casa"
+            data-location="Playa Bonita, Bariloche"
+            data-price="USD 380.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ab96235c-2f9a-4233-adb8-a4991075af4e.jpg|https://sider.ai/autoimage/lake house|https://sider.ai/autoimage/patagonia house"
+          >
             <div class="relative h-48 w-full overflow-hidden">
+              <button
+                type="button"
+                class="absolute inset-0 z-10"
+                aria-label="Abrir galería"
+                data-action="open-gallery"
+                title="Abrir galería"
+              ></button>
               <img
                 src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ab96235c-2f9a-4233-adb8-a4991075af4e.jpg"
                 class="object-cover h-full w-full"
@@ -251,16 +270,32 @@
                     href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Casa%20con%20vista%20al%20lago%22%20%28Venta%20-%20Casa%29%20en%20Playa%20Bonita%2C%20Bariloche.%20Precio%3A%20USD%20380.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
                     target="_blank" rel="noreferrer"
                     class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
-                  >Consultar</a>
-                  <button type="button" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
+                  >WhatsApp</a>
+                  <button type="button" data-action="open-gallery-ficha" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
                 </div>
               </div>
             </div>
           </article>
 
           <!-- Card 2 -->
-          <article class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition">
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="2"
+            data-title="Departamento céntrico 2 amb."
+            data-operation="Venta"
+            data-type="Departamento"
+            data-location="Centro, Bariloche"
+            data-price="USD 125.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/79c8bc3a-b592-49a0-a8ec-faba3688f0ac.jpg|https://sider.ai/autoimage/apartment interior|https://sider.ai/autoimage/city apartment"
+          >
             <div class="relative h-48 w-full overflow-hidden">
+              <button
+                type="button"
+                class="absolute inset-0 z-10"
+                aria-label="Abrir galería"
+                data-action="open-gallery"
+                title="Abrir galería"
+              ></button>
               <img
                 src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/79c8bc3a-b592-49a0-a8ec-faba3688f0ac.jpg"
                 class="object-cover h-full w-full"
@@ -298,16 +333,32 @@
                     href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Departamento%20c%C3%A9ntrico%202%20amb.%22%20%28Venta%20-%20Departamento%29%20en%20Centro%2C%20Bariloche.%20Precio%3A%20USD%20125.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
                     target="_blank" rel="noreferrer"
                     class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
-                  >Consultar</a>
-                  <button type="button" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
+                  >WhatsApp</a>
+                  <button type="button" data-action="open-gallery-ficha" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
                 </div>
               </div>
             </div>
           </article>
 
           <!-- Card 3 -->
-          <article class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition">
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="3"
+            data-title="Local sobre avenida principal"
+            data-operation="Alquiler"
+            data-type="Local"
+            data-location="Av. Bustillo Km 2, Bariloche"
+            data-price="USD 950/mes"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9e1f0894-9b5c-4faf-ac0c-f89d21816514.jpg|https://sider.ai/autoimage/retail interior|https://sider.ai/autoimage/storefront"
+          >
             <div class="relative h-48 w-full overflow-hidden">
+              <button
+                type="button"
+                class="absolute inset-0 z-10"
+                aria-label="Abrir galería"
+                data-action="open-gallery"
+                title="Abrir galería"
+              ></button>
               <img
                 src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9e1f0894-9b5c-4faf-ac0c-f89d21816514.jpg"
                 class="object-cover h-full w-full"
@@ -341,16 +392,32 @@
                     href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Local%20sobre%20avenida%20principal%22%20%28Alquiler%20-%20Local%29%20en%20Av.%20Bustillo%20Km%202%2C%20Bariloche.%20Precio%3A%20USD%20950%2Fmes.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
                     target="_blank" rel="noreferrer"
                     class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
-                  >Consultar</a>
-                  <button type="button" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
+                  >WhatsApp</a>
+                  <button type="button" data-action="open-gallery-ficha" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
                 </div>
               </div>
             </div>
           </article>
 
           <!-- Card 4 -->
-          <article class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition">
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="4"
+            data-title="Lote con bosque nativo"
+            data-operation="Venta"
+            data-type="Lote"
+            data-location="Arelauquen, Bariloche"
+            data-price="USD 85.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/3e3adf52-c027-43a9-97d4-97fb2a62841d.jpg|https://sider.ai/autoimage/forest land|https://sider.ai/autoimage/mountain lot"
+          >
             <div class="relative h-48 w-full overflow-hidden">
+              <button
+                type="button"
+                class="absolute inset-0 z-10"
+                aria-label="Abrir galería"
+                data-action="open-gallery"
+                title="Abrir galería"
+              ></button>
               <img
                 src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/3e3adf52-c027-43a9-97d4-97fb2a62841d.jpg"
                 class="object-cover h-full w-full"
@@ -380,8 +447,8 @@
                     href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Lote%20con%20bosque%20nativo%22%20%28Venta%20-%20Lote%29%20en%20Arelauquen%2C%20Bariloche.%20Precio%3A%20USD%2085.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
                     target="_blank" rel="noreferrer"
                     class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
-                  >Consultar</a>
-                  <button type="button" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
+                  >WhatsApp</a>
+                  <button type="button" data-action="open-gallery-ficha" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
                 </div>
               </div>
             </div>
@@ -479,7 +546,7 @@
               Email
               <a
                 href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline"
+                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base"
               >
                 nataliagonzalezmartillerapublica@ngespacios.com.ar
               </a>
@@ -521,14 +588,105 @@
       WhatsApp
     </a>
 
-    <!-- JS: Lucide icons, año dinámico, scroll suave, envío de formulario, menú móvil -->
+    <!-- Modal Galería con Carrusel + Ficha -->
+    <div
+      id="gallery-modal"
+      class="fixed inset-0 z-50 hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="gallery-title"
+    >
+      <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+
+      <div class="relative h-full w-full flex items-center justify-center px-4">
+        <!-- Controles superiores -->
+        <div class="absolute top-3 right-3 flex items-center gap-2 z-50">
+          <a
+            id="gallery-wa"
+            href="#"
+            target="_blank"
+            rel="noreferrer"
+            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-green-600 text-white hover:bg-green-700 transition"
+            title="WhatsApp"
+            aria-label="Abrir WhatsApp"
+          >
+            <i data-lucide="message-circle" class="h-4 w-4"></i>
+          </a>
+          <button
+            id="gallery-ficha-btn"
+            type="button"
+            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition"
+            title="Ficha"
+            aria-label="Ver ficha"
+          >
+            <i data-lucide="file-text" class="h-4 w-4"></i>
+          </button>
+          <button
+            id="gallery-close"
+            type="button"
+            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition"
+            aria-label="Cerrar"
+            title="Cerrar"
+          >
+            <i data-lucide="x" class="h-4 w-4"></i>
+          </button>
+        </div>
+
+        <!-- Flechas -->
+        <button
+          id="gallery-prev"
+          type="button"
+          class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40"
+          aria-label="Anterior"
+          title="Anterior"
+        >
+          <i data-lucide="chevron-left" class="h-4 w-4"></i>
+        </button>
+        <button
+          id="gallery-next"
+          type="button"
+          class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40"
+          aria-label="Siguiente"
+          title="Siguiente"
+        >
+          <i data-lucide="chevron-right" class="h-4 w-4"></i>
+        </button>
+
+        <!-- Imagen -->
+        <figure class="relative w-full max-w-5xl aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9]">
+          <img id="gallery-img" src="" alt="" class="object-contain w-full h-full select-none" />
+          <!-- Indicadores -->
+          <figcaption id="gallery-counter" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 px-2 py-1 rounded-md"></figcaption>
+        </figure>
+
+        <!-- Ficha compacta -->
+        <div
+          id="gallery-info"
+          class="hidden absolute left-1/2 -translate-x-1/2 bottom-4 w-[95%] max-w-2xl rounded-lg border border-neutral-200 bg-white/95 backdrop-blur p-3 md:p-4 shadow-lg z-40"
+        >
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 id="gallery-title" class="text-sm md:text-base font-medium tracking-tight"></h3>
+              <p id="gallery-sub" class="text-xs text-neutral-600 mt-0.5"></p>
+              <div class="mt-2 inline-flex items-center gap-2">
+                <span id="gallery-badge-op" class="text-[10px] rounded-md bg-neutral-100 px-2 py-1"></span>
+                <span id="gallery-badge-type" class="text-[10px] rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1"></span>
+              </div>
+            </div>
+            <div class="text-[color:var(--brand-primary)] text-sm md:text-base font-semibold shrink-0" id="gallery-price"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS: Lucide icons, año, scroll suave, form, menú móvil, galería -->
     <script>
+      // Año
       document.getElementById('year').textContent = new Date().getFullYear();
 
       // Lucide render
-      window.addEventListener('DOMContentLoaded', () => {
-        if (window.lucide) window.lucide.createIcons();
-      });
+      const renderIcons = () => { if (window.lucide) window.lucide.createIcons(); };
+      window.addEventListener('DOMContentLoaded', renderIcons);
 
       // Scroll suave para anclas internas
       document.querySelectorAll('a[href^="#"]').forEach((a) => {
@@ -541,7 +699,7 @@
         });
       });
 
-      // Menú móvil (abrir/cerrar + cerrar al elegir link + Esc)
+      // Menú móvil
       const btnMobile = document.getElementById('btn-mobile');
       const mobileMenu = document.getElementById('mobile-menu');
       const toggleMenu = (open) => {
@@ -555,15 +713,9 @@
         }
       };
       btnMobile?.addEventListener('click', () => toggleMenu());
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') toggleMenu(false);
-      });
-      mobileMenu?.querySelectorAll('a').forEach((link) => {
-        link.addEventListener('click', () => toggleMenu(false));
-      });
-      window.addEventListener('resize', () => {
-        if (window.innerWidth >= 768) toggleMenu(false);
-      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMenu(false); });
+      mobileMenu?.querySelectorAll('a').forEach((link) => { link.addEventListener('click', () => toggleMenu(false)); });
+      window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMenu(false); });
 
       // Simulación de envío del formulario (muestra mensaje de ok)
       const form = document.getElementById('contact-form');
@@ -571,9 +723,161 @@
       form?.addEventListener('submit', (e) => {
         e.preventDefault();
         ok?.classList.remove('hidden');
-        setTimeout(() => {
-          form.reset();
-        }, 200);
+        setTimeout(() => { form.reset(); }, 200);
+      });
+
+      // --------------------------
+      // Galería con carrusel
+      // --------------------------
+      const WA_PHONE = '5492944635083';
+
+      /** Arma el link a WhatsApp con mensaje precargado */
+      function buildWaLink({ title, operation, type, location, price }) {
+        const msg = `Hola Natalia, me interesa la propiedad "${title}" (${operation} - ${type}) en ${location}. Precio: ${price}. ¿Podemos coordinar una visita? Gracias.`;
+        return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(msg)}`;
+      }
+
+      /** Estado simple en memoria de la galería */
+      const galleryState = {
+        images: [],
+        index: 0,
+        meta: { title: '', operation: '', type: '', location: '', price: '' },
+        infoOpen: false,
+      };
+
+      // Elementos
+      const modal = document.getElementById('gallery-modal');
+      const imgEl = document.getElementById('gallery-img');
+      const counterEl = document.getElementById('gallery-counter');
+      const closeBtn = document.getElementById('gallery-close');
+      const prevBtn = document.getElementById('gallery-prev');
+      const nextBtn = document.getElementById('gallery-next');
+      const fichaBtn = document.getElementById('gallery-ficha-btn');
+      const infoPanel = document.getElementById('gallery-info');
+      const waBtn = document.getElementById('gallery-wa');
+
+      const titleEl = document.getElementById('gallery-title');
+      const subEl = document.getElementById('gallery-sub');
+      const priceEl = document.getElementById('gallery-price');
+      const badgeOp = document.getElementById('gallery-badge-op');
+      const badgeType = document.getElementById('gallery-badge-type');
+
+      /** Actualiza la UI con la imagen actual */
+      function updateGalleryUI() {
+        if (!galleryState.images.length) return;
+        imgEl.src = galleryState.images[galleryState.index];
+        imgEl.alt = galleryState.meta.title || 'Imagen de propiedad';
+        counterEl.textContent = (galleryState.index + 1) + ' / ' + galleryState.images.length;
+
+        // Datos de ficha
+        titleEl.textContent = galleryState.meta.title;
+        subEl.textContent = galleryState.meta.location;
+        priceEl.textContent = galleryState.meta.price;
+        badgeOp.textContent = galleryState.meta.operation;
+        badgeType.textContent = galleryState.meta.type;
+
+        // Link de WhatsApp
+        waBtn.href = buildWaLink(galleryState.meta);
+
+        // Render de iconos luego de actualizar botones
+        renderIcons();
+      }
+
+      /** Abre el modal de galería */
+      function openGallery({ images, meta, startIndex = 0, openFicha = false }) {
+        galleryState.images = images;
+        galleryState.index = Math.max(0, Math.min(startIndex, images.length - 1));
+        galleryState.meta = meta;
+        galleryState.infoOpen = !!openFicha;
+
+        // Mostrar/ocultar ficha compacta
+        infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
+
+        // Mostrar modal
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        updateGalleryUI();
+      }
+
+      /** Cierra el modal */
+      function closeGallery() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      /** Navegación */
+      function prevImage() {
+        if (!galleryState.images.length) return;
+        galleryState.index = (galleryState.index - 1 + galleryState.images.length) % galleryState.images.length;
+        updateGalleryUI();
+      }
+      function nextImage() {
+        if (!galleryState.images.length) return;
+        galleryState.index = (galleryState.index + 1) % galleryState.images.length;
+        updateGalleryUI();
+      }
+
+      /** Toggle ficha */
+      function toggleFicha() {
+        galleryState.infoOpen = !galleryState.infoOpen;
+        infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
+      }
+
+      // Eventos globales del modal
+      closeBtn.addEventListener('click', closeGallery);
+      prevBtn.addEventListener('click', prevImage);
+      nextBtn.addEventListener('click', nextImage);
+      fichaBtn.addEventListener('click', toggleFicha);
+
+      // Cerrar al clickear fuera (overlay)
+      modal.addEventListener('click', (e) => {
+        const isBackdrop = e.target === modal || e.target === modal.firstElementChild;
+        if (isBackdrop) closeGallery();
+      });
+
+      // Teclado
+      document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeGallery();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'ArrowRight') nextImage();
+      });
+
+      // Abrir desde tarjetas
+      function parseImages(str) {
+        return (str || '')
+          .split('|')
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+
+      function getCardMeta(card) {
+        return {
+          title: card.getAttribute('data-title') || '',
+          operation: card.getAttribute('data-operation') || '',
+          type: card.getAttribute('data-type') || '',
+          location: card.getAttribute('data-location') || '',
+          price: card.getAttribute('data-price') || '',
+        };
+      }
+
+      document.querySelectorAll('article[data-images]').forEach((card) => {
+        const openButtons = card.querySelectorAll('[data-action="open-gallery"]');
+        openButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const images = parseImages(card.getAttribute('data-images'));
+            const meta = getCardMeta(card);
+            openGallery({ images, meta, startIndex: 0, openFicha: false });
+          });
+        });
+
+        const openFichaBtn = card.querySelector('[data-action="open-gallery-ficha"]');
+        openFichaBtn?.addEventListener('click', () => {
+          const images = parseImages(card.getAttribute('data-images'));
+          const meta = getCardMeta(card);
+          openGallery({ images, meta, startIndex: 0, openFicha: true });
+        });
       });
     </script>
   </body>
