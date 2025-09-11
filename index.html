@@ -1,22 +1,36 @@
+<!--
+  @file index.html
+  @description Landing estática de NGespacios, lista para hosting sin build.
+               - Header con logo inline (NG + ESPACIOS a la derecha).
+               - Hero, buscador simple, propiedades destacadas con galería modal.
+               - Sección de contacto.
+               - Botón WhatsApp flotante.
+               - Drop-in “Admin” para cargar listado desde Google Sheets (CSV público).
+               Accesible, con foco visible y buen contraste.
+-->
+
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>NGespacios — Inmobiliaria en Bariloche</title>
     <meta
       name="description"
       content="NGespacios — Tu próximo hogar en Bariloche. Venta, alquiler, tasaciones y acompañamiento personalizado."
     />
 
-    <!-- Open Graph básico -->
+    <!-- Open Graph -->
     <meta property="og:title" content="NGespacios — Inmobiliaria en Bariloche" />
-    <meta property="og:description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
+    <meta
+      property="og:description"
+      content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche."
+    />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/a1e13e5a-7034-4d9c-8295-9a73d6f21947.jpg" />
+    <meta
+      property="og:image"
+      content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/a1651e75-1a63-43d3-bc1c-81d70f433889.jpg"
+    />
 
     <!-- Fuente -->
     <link
@@ -37,65 +51,60 @@
         --brand-primary: #572d30;
         --brand-text: #363332;
       }
-      html, body { height: 100%; }
+      html,
       body {
-        font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+        height: 100%;
+      }
+      body {
+        font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+          Arial, 'Noto Sans', sans-serif;
         color: var(--brand-text);
         background: var(--brand-bg);
         font-weight: 300;
         letter-spacing: 0.01em;
       }
-      a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+      a:focus-visible,
+      button:focus-visible,
+      select:focus-visible,
+      input:focus-visible,
+      textarea:focus-visible {
         outline: 2px solid var(--brand-primary);
         outline-offset: 2px;
         border-radius: 6px;
       }
-      /* Contenedor ancho máximo similar al proyecto */
-      .container-max { max-width: 72rem; }
-      /* Utilidad para ocultar la barra de scroll dentro del carrusel en algunos navegadores */
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      /* Estilos mínimos del panel Admin */
-      #ng-admin-panel { position: sticky; top: 68px; z-index: 40; }
-      #ng-admin-panel .ng-card {
-        background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
-        box-shadow: 0 1px 2px rgba(16,24,40,0.04); padding: 14px;
+      .container-max {
+        max-width: 72rem; /* ~6xl */
       }
-      #ng-admin-panel .ng-btn {
-        display: inline-flex; align-items: center; gap: 8px; border-radius: 10px;
-        padding: 8px 12px; font-size: 14px; border: 1px solid #d1d5db; background: #fff; color: #374151;
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
       }
-      #ng-admin-panel .ng-btn:hover { background: #f9fafb; }
-      #ng-admin-panel .ng-btn-primary { border-color: #0ea5e9; background: #0284c7; color: #fff; }
-      #ng-admin-panel .ng-btn-primary:hover { background: #0369a1; }
-      #ng-admin-panel .ng-input {
-        width: 100%; border: 1px solid #d1d5db; border-radius: 10px; padding: 10px 12px; font-size: 14px; outline: none;
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
       }
-      #ng-admin-panel .ng-input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.2); }
-      #ng-admin-panel .ng-msg { font-size: 13px; }
-      #ng-admin-panel .ng-msg.hint { color: #6b7280; }
-      #ng-admin-panel .ng-msg.err { color: #b91c1c; }
-      .visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px,1px,1px,1px); white-space: nowrap; }
     </style>
   </head>
 
   <body class="min-h-screen bg-[color:var(--brand-bg)] text-[color:var(--brand-text)]">
     <!-- Header -->
-    <header class="sticky top-0 z-30 w-full border-b border-neutral-200 bg-[color:var(--brand-bg)]/90 backdrop-blur-md">
+    <header
+      class="sticky top-0 z-30 w-full border-b border-neutral-200 bg-[color:var(--brand-bg)]/90 backdrop-blur-md"
+    >
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between">
-        <a href="#" class="flex items-end gap-2" aria-label="NGespacios - Inicio">
-          <!-- Logo apilado: cuadrado más chico + texto ESPACIOS -->
-          <div class="flex flex-col leading-none">
-            <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
-              <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
-            </div>
-            <span class="mt-0.5 text-[10px] tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">
-              ESPACIOS
-            </span>
+        <!-- Logo inline: NG cuadrado + ESPACIOS a la derecha -->
+        <a href="#top" class="flex items-center gap-2" aria-label="NGespacios - Inicio">
+          <div
+            class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm"
+            aria-hidden="true"
+          >
+            <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
           </div>
+          <span class="text-[10px] md:text-[11px] tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase"
+            >ESPACIOS</span
+          >
         </a>
 
-        <nav class="hidden md:flex items-center gap-6 text-sm">
+        <nav class="hidden md:flex items-center gap-3 sm:gap-5 text-sm">
           <a href="#propiedades" class="hover:text-[color:var(--brand-primary)]">Propiedades</a>
           <a href="#tasacion" class="hover:text-[color:var(--brand-primary)]">Tasación</a>
           <a href="#contacto" class="hover:text-[color:var(--brand-primary)]">Contacto</a>
@@ -105,6 +114,15 @@
           >
             Ver propiedades
           </a>
+          <button
+            id="btn-admin-toggle"
+            type="button"
+            class="rounded-lg border border-neutral-300 px-3 py-2 hover:bg-neutral-100"
+            aria-pressed="false"
+            title="Panel Admin (cargar CSV)"
+          >
+            Admin
+          </button>
         </nav>
 
         <button
@@ -120,7 +138,10 @@
       </div>
 
       <!-- Menú móvil -->
-      <div id="mobile-menu" class="md:hidden hidden border-t border-neutral-200 bg-[color:var(--brand-bg)]/95 backdrop-blur-md">
+      <div
+        id="mobile-menu"
+        class="md:hidden hidden border-t border-neutral-200 bg-[color:var(--brand-bg)]/95 backdrop-blur-md"
+      >
         <div class="mx-auto container-max px-4 py-3">
           <div class="grid gap-2 text-sm">
             <a href="#propiedades" class="py-2 hover:text-[color:var(--brand-primary)]">Propiedades</a>
@@ -132,30 +153,28 @@
             >
               Ver propiedades
             </a>
+
+            <!-- Admin en móvil -->
+            <button
+              id="btn-admin-toggle-mobile"
+              type="button"
+              class="mt-2 inline-flex w-full items-center justify-center rounded-lg border border-neutral-300 px-4 py-2 hover:bg-neutral-100"
+              aria-pressed="false"
+              title="Panel Admin (cargar CSV)"
+            >
+              Admin
+            </button>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Panel Admin (inicialmente oculto) -->
-    <section id="ng-admin-panel" class="mx-auto container-max px-4 py-3 hidden" role="region" aria-label="Panel de administración">
-      <div class="ng-card">
-        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
-          <label for="ng-csv-url" class="ng-msg hint">Fuente (CSV público)</label>
-          <input id="ng-csv-url" type="url" placeholder="https://docs.google.com/spreadsheets/.../export?format=csv" class="ng-input" style="flex:1 1 320px;" />
-          <button id="ng-btn-test" class="ng-btn" title="Probar carga">⟳ Probar</button>
-          <button id="ng-btn-save" class="ng-btn ng-btn-primary" title="Guardar en este navegador">✔ Guardar</button>
-        </div>
-        <p id="ng-admin-msg" class="ng-msg hint mt-2">Pegá la URL pública de Google Sheets en CSV. Nada se muestra abajo.</p>
-      </div>
-    </section>
-
-    <main>
+    <main id="top">
       <!-- Hero -->
       <section class="relative isolate">
         <div class="absolute inset-0 -z-10">
           <img
-            src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/3dfc1722-9613-461d-8363-563a771d5f3d.jpg"
+            src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c0105bbf-bf3c-42e0-bc2b-88d39c05c4aa.jpg"
             alt="Lago en Bariloche"
             class="object-cover w-full h-full"
           />
@@ -168,12 +187,8 @@
             Natalia González • Martillera y Corredora Pública • MAT. Nº377- RP-21 Fº456 TºII
           </p>
 
-          <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">
-            Tu próximo hogar en Bariloche
-          </h1>
-          <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">
-            Acompañamiento de punta a punta.
-          </p>
+          <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">Tu próximo hogar en Bariloche</h1>
+          <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">Acompañamiento de punta a punta.</p>
 
           <div class="mt-6 flex flex-wrap gap-3">
             <a
@@ -222,20 +237,301 @@
         </form>
       </div>
 
-      <!-- Propiedades -->
+      <!-- Propiedades destacadas -->
       <section id="propiedades" class="mx-auto container-max px-4 pt-16">
         <div>
           <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Selección</p>
-          <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Propiedades</h2>
+          <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Propiedades destacadas</h2>
         </div>
 
-        <!-- Grilla: se completa con CSV -->
-        <div id="grid-propiedades" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1 -->
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="1"
+            data-title="Casa con vista al lago"
+            data-operation="Venta"
+            data-type="Casa"
+            data-location="Playa Bonita, Bariloche"
+            data-price="USD 380.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ab96235c-2f9a-4233-adb8-a4991075af4e.jpg|https://sider.ai/autoimage/lake house|https://sider.ai/autoimage/patagonia house"
+          >
+            <div class="relative h-48 w-full overflow-hidden">
+              <button
+                type="button"
+                class="absolute inset-0 z-10"
+                aria-label="Abrir galería"
+                data-action="open-gallery"
+                title="Abrir galería"
+              ></button>
+              <img
+                src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ab96235c-2f9a-4233-adb8-a4991075af4e.jpg"
+                class="object-cover h-full w-full"
+                alt="Casa con vista al lago"
+              />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">Venta</span>
+                <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium"
+                  >Casa</span
+                >
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium tracking-tight line-clamp-1">Casa con vista al lago</h3>
+              <div class="mt-1 flex items-center gap-1 text-sm text-neutral-600">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span class="line-clamp-1">Playa Bonita, Bariloche</span>
+              </div>
+              <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700">
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="bed" class="h-4 w-4 text-neutral-600"></i>
+                  <span>3 hab</span>
+                </li>
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="bath" class="h-4 w-4 text-neutral-600"></i>
+                  <span>2 baños</span>
+                </li>
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="car" class="h-4 w-4 text-neutral-600"></i>
+                  <span>2 coch</span>
+                </li>
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="square" class="h-4 w-4 text-neutral-600"></i>
+                  <span>165 m² cub.</span>
+                </li>
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="ruler" class="h-4 w-4 text-neutral-600"></i>
+                  <span>600 m² lote</span>
+                </li>
+              </ul>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-lg font-semibold text-[color:var(--brand-primary)]">USD 380.000</span>
+                <div class="flex gap-2">
+                  <a
+                    href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Casa%20con%20vista%20al%20lago%22%20%28Venta%20-%20Casa%29%20en%20Playa%20Bonita%2C%20Bariloche.%20Precio%3A%20USD%20380.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
+                    target="_blank"
+                    rel="noreferrer"
+                    class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
+                    >WhatsApp</a
+                  >
+                  <button
+                    type="button"
+                    data-action="open-gallery-ficha"
+                    class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition"
+                  >
+                    Ficha
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
 
-        <!-- Placeholder vacío -->
-        <div id="grid-empty" class="mt-6 rounded-xl border border-dashed border-neutral-300 p-8 text-center bg-white hidden">
-          <p class="text-neutral-700 font-medium mb-1">Sin propiedades por ahora</p>
-          <p class="text-neutral-500 text-sm">Cuando cargues tu CSV con “Admin → Guardar”, aparecerán acá.</p>
+          <!-- Card 2 -->
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="2"
+            data-title="Departamento céntrico 2 amb."
+            data-operation="Venta"
+            data-type="Departamento"
+            data-location="Centro, Bariloche"
+            data-price="USD 125.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/79c8bc3a-b592-49a0-a8ec-faba3688f0ac.jpg|https://sider.ai/autoimage/apartment interior|https://sider.ai/autoimage/city apartment"
+          >
+            <div class="relative h-48 w-full overflow-hidden">
+              <button
+                type="button"
+                class="absolute inset-0 z-10"
+                aria-label="Abrir galería"
+                data-action="open-gallery"
+                title="Abrir galería"
+              ></button>
+              <img
+                src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/79c8bc3a-b592-49a0-a8ec-faba3688f0ac.jpg"
+                class="object-cover h-full w-full"
+                alt="Departamento céntrico 2 amb."
+              />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">Venta</span>
+                <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium"
+                  >Departamento</span
+                >
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium tracking-tight line-clamp-1">Departamento céntrico 2 amb.</h3>
+              <div class="mt-1 flex items-center gap-1 text-sm text-neutral-600">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span class="line-clamp-1">Centro, Bariloche</span>
+              </div>
+              <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700">
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="bed" class="h-4 w-4 text-neutral-600"></i>
+                  <span>1 hab</span>
+                </li>
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="bath" class="h-4 w-4 text-neutral-600"></i>
+                  <span>1 baño</span>
+                </li>
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="square" class="h-4 w-4 text-neutral-600"></i>
+                  <span>48 m² cub.</span>
+                </li>
+              </ul>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-lg font-semibold text-[color:var(--brand-primary)]">USD 125.000</span>
+                <div class="flex gap-2">
+                  <a
+                    href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Departamento%20c%C3%A9ntrico%202%20amb.%22%20%28Venta%20-%20Departamento%29%20en%20Centro%2C%20Bariloche.%20Precio%3A%20USD%20125.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
+                    target="_blank"
+                    rel="noreferrer"
+                    class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
+                    >WhatsApp</a
+                  >
+                  <button
+                    type="button"
+                    data-action="open-gallery-ficha"
+                    class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition"
+                  >
+                    Ficha
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="3"
+            data-title="Local sobre avenida principal"
+            data-operation="Alquiler"
+            data-type="Local"
+            data-location="Av. Bustillo Km 2, Bariloche"
+            data-price="USD 950/mes"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9e1f0894-9b5c-4faf-ac0c-f89d21816514.jpg|https://sider.ai/autoimage/retail interior|https://sider.ai/autoimage/storefront"
+          >
+            <div class="relative h-48 w-full overflow-hidden">
+              <button
+                type="button"
+                class="absolute inset-0 z-10"
+                aria-label="Abrir galería"
+                data-action="open-gallery"
+                title="Abrir galería"
+              ></button>
+              <img
+                src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9e1f0894-9b5c-4faf-ac0c-f89d21816514.jpg"
+                class="object-cover h-full w-full"
+                alt="Local sobre avenida principal"
+              />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">Alquiler</span>
+                <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium"
+                  >Local</span
+                >
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium tracking-tight line-clamp-1">Local sobre avenida principal</h3>
+              <div class="mt-1 flex items-center gap-1 text-sm text-neutral-600">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span class="line-clamp-1">Av. Bustillo Km 2, Bariloche</span>
+              </div>
+              <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700">
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="bath" class="h-4 w-4 text-neutral-600"></i>
+                  <span>1 baño</span>
+                </li>
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="square" class="h-4 w-4 text-neutral-600"></i>
+                  <span>75 m² cub.</span>
+                </li>
+              </ul>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-lg font-semibold text-[color:var(--brand-primary)]">USD 950/mes</span>
+                <div class="flex gap-2">
+                  <a
+                    href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Local%20sobre%20avenida%20principal%22%20%28Alquiler%20-%20Local%29%20en%20Av.%20Bustillo%20Km%202%2C%20Bariloche.%20Precio%3A%20USD%20950%2Fmes.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
+                    target="_blank"
+                    rel="noreferrer"
+                    class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
+                    >WhatsApp</a
+                  >
+                  <button
+                    type="button"
+                    data-action="open-gallery-ficha"
+                    class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition"
+                  >
+                    Ficha
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="4"
+            data-title="Lote con bosque nativo"
+            data-operation="Venta"
+            data-type="Lote"
+            data-location="Arelauquen, Bariloche"
+            data-price="USD 85.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/3e3adf52-c027-43a9-97d4-97fb2a62841d.jpg|https://sider.ai/autoimage/forest land|https://sider.ai/autoimage/mountain lot"
+          >
+            <div class="relative h-48 w-full overflow-hidden">
+              <button
+                type="button"
+                class="absolute inset-0 z-10"
+                aria-label="Abrir galería"
+                data-action="open-gallery"
+                title="Abrir galería"
+              ></button>
+              <img
+                src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/3e3adf52-c027-43a9-97d4-97fb2a62841d.jpg"
+                class="object-cover h-full w-full"
+                alt="Lote con bosque nativo"
+              />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">Venta</span>
+                <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium"
+                  >Lote</span
+                >
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium tracking-tight line-clamp-1">Lote con bosque nativo</h3>
+              <div class="mt-1 flex items-center gap-1 text-sm text-neutral-600">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span class="line-clamp-1">Arelauquen, Bariloche</span>
+              </div>
+              <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700">
+                <li class="inline-flex items-center gap-1">
+                  <i data-lucide="ruler" class="h-4 w-4 text-neutral-600"></i>
+                  <span>1200 m² lote</span>
+                </li>
+              </ul>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-lg font-semibold text-[color:var(--brand-primary)]">USD 85.000</span>
+                <div class="flex gap-2">
+                  <a
+                    href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Lote%20con%20bosque%20nativo%22%20%28Venta%20-%20Lote%29%20en%20Arelauquen%2C%20Bariloche.%20Precio%3A%20USD%2085.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
+                    target="_blank"
+                    rel="noreferrer"
+                    class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
+                    >WhatsApp</a
+                  >
+                  <button
+                    type="button"
+                    data-action="open-gallery-ficha"
+                    class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition"
+                  >
+                    Ficha
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -245,26 +541,40 @@
           <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Tu propiedad</p>
           <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Escribime</h2>
         </div>
-        <p class="mt-2 text-neutral-700">
-          Completá tus datos y el motivo de tu consulta; me contactaré muy pronto.
-        </p>
+        <p class="mt-2 text-neutral-700">Completá tus datos y el motivo de tu consulta; me contactaré muy pronto.</p>
 
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <form id="contact-form" class="rounded-xl border border-neutral-200 p-4 md:p-6 bg-white">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="flex flex-col">
                 <label for="nombre" class="text-xs text-neutral-600 mb-1">Nombre</label>
-                <input id="nombre" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Tu nombre" />
+                <input
+                  id="nombre"
+                  required
+                  class="h-10 rounded-lg border border-neutral-300 px-3 bg-white"
+                  placeholder="Tu nombre"
+                />
               </div>
 
               <div class="flex flex-col">
                 <label for="email" class="text-xs text-neutral-600 mb-1">Email</label>
-                <input id="email" type="email" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="tucorreo@mail.com" />
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  class="h-10 rounded-lg border border-neutral-300 px-3 bg-white"
+                  placeholder="tucorreo@mail.com"
+                />
               </div>
 
               <div class="flex flex-col">
                 <label for="telefono" class="text-xs text-neutral-600 mb-1">Teléfono</label>
-                <input id="telefono" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="+54 9 ..." />
+                <input
+                  id="telefono"
+                  required
+                  class="h-10 rounded-lg border border-neutral-300 px-3 bg-white"
+                  placeholder="+54 9 ..."
+                />
               </div>
 
               <div class="flex flex-col">
@@ -289,17 +599,30 @@
 
               <div class="flex flex-col md:col-span-2">
                 <label for="direccion" class="text-xs text-neutral-600 mb-1">Dirección</label>
-                <input id="direccion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Calle, número, barrio" />
+                <input
+                  id="direccion"
+                  required
+                  class="h-10 rounded-lg border border-neutral-300 px-3 bg-white"
+                  placeholder="Calle, número, barrio"
+                />
               </div>
 
               <div class="flex flex-col md:col-span-2">
                 <label for="mensaje" class="text-xs text-neutral-600 mb-1">Mensaje</label>
-                <textarea id="mensaje" rows="4" class="rounded-lg border border-neutral-300 px-3 py-2 bg-white" placeholder="Detalles relevantes o el tema por el que querés consultar"></textarea>
+                <textarea
+                  id="mensaje"
+                  rows="4"
+                  class="rounded-lg border border-neutral-300 px-3 py-2 bg-white"
+                  placeholder="Detalles relevantes o el tema por el que querés consultar"
+                ></textarea>
               </div>
             </div>
 
             <div class="mt-4 flex items-center justify-between gap-3">
-              <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[color:var(--brand-primary)] text-white h-10 px-4 hover:opacity-90 transition">
+              <button
+                type="submit"
+                class="inline-flex items-center justify-center rounded-lg bg-[color:var(--brand-primary)] text-white h-10 px-4 hover:opacity-90 transition"
+              >
                 Enviar
               </button>
               <span id="form-ok" class="text-sm text-green-700 hidden">¡Gracias! Me contactaré a la brevedad.</span>
@@ -308,7 +631,7 @@
 
           <div class="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50">
             <img
-              src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/60bfcd2f-2017-4432-8ac5-8ca5102c7167.jpg"
+              src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/dc59ba33-5b0a-4da7-8c5b-9c498f191064.jpg"
               alt="Bariloche"
               class="object-cover h-full w-full"
             />
@@ -354,7 +677,9 @@
     <!-- Footer -->
     <footer class="border-t border-neutral-200 mt-8">
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between text-sm">
-        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium">NGespacios — Natalia González</span></p>
+        <p class="text-neutral-700">
+          © <span id="year"></span> <span class="font-medium">NGespacios — Natalia González</span>
+        </p>
         <p class="text-neutral-700">Hecho con ♥ en Bariloche</p>
       </div>
     </footer>
@@ -372,13 +697,7 @@
     </a>
 
     <!-- Modal Galería con Carrusel + Ficha -->
-    <div
-      id="gallery-modal"
-      class="fixed inset-0 z-50 hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="gallery-title"
-    >
+    <div id="gallery-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="gallery-title">
       <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
 
       <div class="relative h-full w-full flex items-center justify-center px-4">
@@ -438,8 +757,10 @@
         <!-- Imagen -->
         <figure class="relative w-full max-w-5xl aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9]">
           <img id="gallery-img" src="" alt="" class="object-contain w-full h-full select-none" />
-          <!-- Indicadores -->
-          <figcaption id="gallery-counter" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 px-2 py-1 rounded-md"></figcaption>
+          <figcaption
+            id="gallery-counter"
+            class="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 px-2 py-1 rounded-md"
+          ></figcaption>
         </figure>
 
         <!-- Ficha compacta -->
@@ -462,13 +783,15 @@
       </div>
     </div>
 
-    <!-- JS: íconos, scroll, menú, form, galería, Admin+CSV -->
+    <!-- JS: Lucide icons, año, scroll suave, form, menú móvil, galería -->
     <script>
       // Año
       document.getElementById('year').textContent = new Date().getFullYear();
 
-      // Render de íconos Lucide
-      const renderIcons = () => { if (window.lucide) window.lucide.createIcons(); };
+      // Lucide render
+      const renderIcons = () => {
+        if (window.lucide) window.lucide.createIcons();
+      };
       window.addEventListener('DOMContentLoaded', renderIcons);
 
       // Scroll suave para anclas internas
@@ -491,14 +814,22 @@
         btnMobile?.setAttribute('aria-expanded', String(willOpen));
         // Cambiar icono
         if (window.lucide) {
-          btnMobile.innerHTML = willOpen ? '<i data-lucide="x" class="h-4 w-4"></i>' : '<i data-lucide="menu" class="h-4 w-4"></i>';
+          btnMobile.innerHTML = willOpen
+            ? '<i data-lucide="x" class="h-4 w-4"></i>'
+            : '<i data-lucide="menu" class="h-4 w-4"></i>';
           window.lucide.createIcons();
         }
       };
       btnMobile?.addEventListener('click', () => toggleMenu());
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMenu(false); });
-      mobileMenu?.querySelectorAll('a').forEach((link) => { link.addEventListener('click', () => toggleMenu(false)); });
-      window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMenu(false); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') toggleMenu(false);
+      });
+      mobileMenu?.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => toggleMenu(false));
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) toggleMenu(false);
+      });
 
       // Simulación de envío del formulario (muestra mensaje de ok)
       const form = document.getElementById('contact-form');
@@ -506,22 +837,31 @@
       form?.addEventListener('submit', (e) => {
         e.preventDefault();
         ok?.classList.remove('hidden');
-        setTimeout(() => { form.reset(); }, 200);
+        setTimeout(() => {
+          form.reset();
+        }, 200);
       });
 
       // --------------------------
-      // Galería con carrusel (teclado y CTA)
+      // Galería con carrusel
       // --------------------------
       const WA_PHONE = '5492944635083';
 
-      /** Genera link a WhatsApp con mensaje precargado */
-      function buildWaLink(meta) {
-        const msg = `Hola Natalia, me interesa la propiedad "${meta.title}" (${meta.operation} - ${meta.type}) en ${meta.location}. Precio: ${meta.price}. ¿Podemos coordinar una visita? Gracias.`;
+      /** Arma el link a WhatsApp con mensaje precargado */
+      function buildWaLink({ title, operation, type, location, price }) {
+        const msg = `Hola Natalia, me interesa la propiedad "${title}" (${operation} - ${type}) en ${location}. Precio: ${price}. ¿Podemos coordinar una visita? Gracias.`;
         return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(msg)}`;
       }
 
-      const galleryState = { images: [], index: 0, meta: { title: '', operation: '', type: '', location: '', price: '' }, infoOpen: false };
+      /** Estado simple en memoria de la galería */
+      const galleryState = {
+        images: [],
+        index: 0,
+        meta: { title: '', operation: '', type: '', location: '', price: '' },
+        infoOpen: false
+      };
 
+      // Elementos
       const modal = document.getElementById('gallery-modal');
       const imgEl = document.getElementById('gallery-img');
       const counterEl = document.getElementById('gallery-counter');
@@ -538,42 +878,79 @@
       const badgeOp = document.getElementById('gallery-badge-op');
       const badgeType = document.getElementById('gallery-badge-type');
 
+      /** Actualiza la UI con la imagen actual */
       function updateGalleryUI() {
         if (!galleryState.images.length) return;
         imgEl.src = galleryState.images[galleryState.index];
         imgEl.alt = galleryState.meta.title || 'Imagen de propiedad';
-        counterEl.textContent = (galleryState.index + 1) + ' / ' + galleryState.images.length;
+        counterEl.textContent = galleryState.index + 1 + ' / ' + galleryState.images.length;
+
+        // Datos de ficha
         titleEl.textContent = galleryState.meta.title;
         subEl.textContent = galleryState.meta.location;
         priceEl.textContent = galleryState.meta.price;
         badgeOp.textContent = galleryState.meta.operation;
         badgeType.textContent = galleryState.meta.type;
+
+        // Link de WhatsApp
         waBtn.href = buildWaLink(galleryState.meta);
+
+        // Render de iconos luego de actualizar botones
         renderIcons();
       }
+
+      /** Abre el modal de galería */
       function openGallery({ images, meta, startIndex = 0, openFicha = false }) {
         galleryState.images = images;
         galleryState.index = Math.max(0, Math.min(startIndex, images.length - 1));
         galleryState.meta = meta;
         galleryState.infoOpen = !!openFicha;
+
         infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
+
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+
         updateGalleryUI();
       }
-      function closeGallery() { modal.classList.add('hidden'); document.body.style.overflow = ''; }
-      function prevImage() { if (!galleryState.images.length) return; galleryState.index = (galleryState.index - 1 + galleryState.images.length) % galleryState.images.length; updateGalleryUI(); }
-      function nextImage() { if (!galleryState.images.length) return; galleryState.index = (galleryState.index + 1) % galleryState.images.length; updateGalleryUI(); }
-      function toggleFicha() { galleryState.infoOpen = !galleryState.infoOpen; infoPanel.classList.toggle('hidden', !galleryState.infoOpen); }
 
+      /** Cierra el modal */
+      function closeGallery() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      /** Navegación */
+      function prevImage() {
+        if (!galleryState.images.length) return;
+        galleryState.index = (galleryState.index - 1 + galleryState.images.length) % galleryState.images.length;
+        updateGalleryUI();
+      }
+      function nextImage() {
+        if (!galleryState.images.length) return;
+        galleryState.index = (galleryState.index + 1) % galleryState.images.length;
+        updateGalleryUI();
+      }
+
+      /** Toggle ficha */
+      function toggleFicha() {
+        galleryState.infoOpen = !galleryState.infoOpen;
+        infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
+      }
+
+      // Eventos globales del modal
       closeBtn.addEventListener('click', closeGallery);
       prevBtn.addEventListener('click', prevImage);
       nextBtn.addEventListener('click', nextImage);
       fichaBtn.addEventListener('click', toggleFicha);
+
+      // Cerrar al clickear fuera (overlay)
       modal.addEventListener('click', (e) => {
         const isBackdrop = e.target === modal || e.target === modal.firstElementChild;
         if (isBackdrop) closeGallery();
       });
+
+      // Teclado
       document.addEventListener('keydown', (e) => {
         if (modal.classList.contains('hidden')) return;
         if (e.key === 'Escape') closeGallery();
@@ -581,313 +958,678 @@
         if (e.key === 'ArrowRight') nextImage();
       });
 
-      // --------------------------
-      // Admin + CSV a la grilla principal
-      // --------------------------
-      const LS_KEY_URL = 'ngespacios:csvUrl';
-      const LS_KEY_AUTH = 'ngespacios:adminAuth';
-      const ADMIN_PASSWORD = 'Valda2412';
-      const AUTH_HOURS = 12;
-
-      const adminPanel = document.getElementById('ng-admin-panel');
-      const csvInput = document.getElementById('ng-csv-url');
-      const adminMsg = document.getElementById('ng-admin-msg');
-      const btnTest = document.getElementById('ng-btn-test');
-      const btnSave = document.getElementById('ng-btn-save');
-      const grid = document.getElementById('grid-propiedades');
-      const gridEmpty = document.getElementById('grid-empty');
-
-      /** Guarda token de autenticación con vencimiento */
-      function setAuth() {
-        const until = Date.now() + AUTH_HOURS * 60 * 60 * 1000;
-        localStorage.setItem(LS_KEY_AUTH, JSON.stringify({ until }));
-      }
-      /** Devuelve si hay autenticación válida */
-      function hasAuth() {
-        try {
-          const raw = localStorage.getItem(LS_KEY_AUTH);
-          if (!raw) return false;
-          const { until } = JSON.parse(raw);
-          return Date.now() < Number(until);
-        } catch { return false; }
-      }
-      /** Pide clave si hace falta y luego ejecuta cb */
-      function requireAuth(cb) {
-        if (hasAuth()) return cb();
-        const pass = prompt('Clave de admin');
-        if (pass === ADMIN_PASSWORD) { setAuth(); cb(); }
-        else { alert('Clave incorrecta'); }
-      }
-
-      /** Normaliza URL de Google Sheets a CSV */
-      function normalizeSheetUrlToCsv(url) {
-        try {
-          const u = new URL(url);
-          if (u.hostname.includes('docs.google.com')) {
-            if (u.pathname.endsWith('/pub')) { u.searchParams.set('output', 'csv'); return u.toString(); }
-            if (u.pathname.includes('/export')) { u.searchParams.set('format', 'csv'); return u.toString(); }
-          }
-          return url;
-        } catch { return url; }
-      }
-      /** Parser CSV con comillas */
-      function parseCSV(text) {
-        const rows = [];
-        let i = 0, field = '', row = [], inQuotes = false;
-        const pushField = () => { row.push(field.replace(/""/g, '"')); field = ''; };
-        const pushRow = () => { rows.push(row); row = []; };
-        while (i < text.length) {
-          const c = text[i];
-          if (inQuotes) {
-            if (c === '"') {
-              if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
-              else { inQuotes = false; i++; continue; }
-            } else { field += c; i++; continue; }
-          } else {
-            if (c === '"') { inQuotes = true; i++; continue; }
-            if (c === ',') { pushField(); i++; continue; }
-            if (c === '\n') { pushField(); pushRow(); i++; continue; }
-            if (c === '\r') { i++; continue; }
-            field += c; i++;
-          }
-        }
-        pushField();
-        if (row.length > 1 || (row.length === 1 && row[0] !== '')) pushRow();
-        if (!rows.length) return [];
-        const headers = rows[0].map((h) => (h || '').trim().replace(/^\uFEFF/, ''));
-        const data = [];
-        for (let r = 1; r < rows.length; r++) {
-          const values = rows[r];
-          if (!values || !values.some((v) => (v || '').trim() !== '')) continue;
-          const obj = {};
-          headers.forEach((h, idx) => { obj[h] = (values[idx] || '').trim(); });
-          data.push(obj);
-        }
-        return data;
-      }
-      /** Descarga CSV sin cache */
-      async function fetchCsv(url) {
-        const res = await fetch(url, { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.text();
-      }
-      /** Devuelve array de imágenes del campo "images" separado por | */
+      // Abrir desde tarjetas
       function parseImages(str) {
-        return (str || '').split('|').map((s) => s.trim()).filter(Boolean);
+        return (str || '')
+          .split('|')
+          .map((s) => s.trim())
+          .filter(Boolean);
       }
-      /** Construye una tarjeta DOM y agrega listeners de galería/ficha */
-      function createCard(p) {
-        const images = parseImages(p.images);
-        const src = images[0] || 'https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9c2d819e-9803-48cf-bd3e-07c6023fe3c8.jpg';
-        const meta = {
-          title: p.title || 'Sin título',
-          operation: p.operation || '',
-          type: p.type || '',
-          location: p.location || '',
-          price: formatPrice(p),
+
+      function getCardMeta(card) {
+        return {
+          title: card.getAttribute('data-title') || '',
+          operation: card.getAttribute('data-operation') || '',
+          type: card.getAttribute('data-type') || '',
+          location: card.getAttribute('data-location') || '',
+          price: card.getAttribute('data-price') || ''
         };
-
-        const article = document.createElement('article');
-        article.className = 'group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition';
-
-        // Imagen/badges
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'relative h-48 w-full overflow-hidden';
-        const img = document.createElement('img');
-        img.src = src; img.alt = meta.title; img.className = 'object-cover h-full w-full';
-        imgWrap.appendChild(img);
-        const badges = document.createElement('div');
-        badges.className = 'absolute top-3 left-3 flex gap-2';
-        badges.innerHTML = `
-          <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">${meta.operation}</span>
-          <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium">${meta.type}</span>
-        `;
-        imgWrap.appendChild(badges);
-
-        const overlayBtn = document.createElement('button');
-        overlayBtn.type = 'button';
-        overlayBtn.className = 'absolute inset-0 z-10';
-        overlayBtn.setAttribute('aria-label', 'Abrir galería');
-        overlayBtn.addEventListener('click', () => {
-          openGallery({ images: images.length ? images : [src], meta, startIndex: 0, openFicha: false });
-        });
-        imgWrap.appendChild(overlayBtn);
-        article.appendChild(imgWrap);
-
-        // Body
-        const body = document.createElement('div');
-        body.className = 'p-4';
-
-        const title = document.createElement('h3');
-        title.className = 'font-medium tracking-tight line-clamp-1';
-        title.textContent = meta.title;
-        body.appendChild(title);
-
-        const sub = document.createElement('div');
-        sub.className = 'mt-1 flex items-center gap-1 text-sm text-neutral-600';
-        sub.innerHTML = `<i data-lucide="map-pin" class="h-4 w-4"></i><span class="line-clamp-1">${meta.location}</span>`;
-        body.appendChild(sub);
-
-        const specs = document.createElement('ul');
-        specs.className = 'mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700';
-        const parts = [];
-        if (p.bedrooms) parts.push(`<li class="inline-flex items-center gap-1"><i data-lucide="bed" class="h-4 w-4 text-neutral-600"></i><span>${p.bedrooms} hab</span></li>`);
-        if (p.bathrooms) parts.push(`<li class="inline-flex items-center gap-1"><i data-lucide="bath" class="h-4 w-4 text-neutral-600"></i><span>${p.bathrooms} baños</span></li>`);
-        if (p.garages) parts.push(`<li class="inline-flex items-center gap-1"><i data-lucide="car" class="h-4 w-4 text-neutral-600"></i><span>${p.garages} coch</span></li>`);
-        if (p.area_m2) parts.push(`<li class="inline-flex items-center gap-1"><i data-lucide="square" class="h-4 w-4 text-neutral-600"></i><span>${p.area_m2} m² cub.</span></li>`);
-        if (p.lot_m2) parts.push(`<li class="inline-flex items-center gap-1"><i data-lucide="ruler" class="h-4 w-4 text-neutral-600"></i><span>${p.lot_m2} m² lote</span></li>`);
-        specs.innerHTML = parts.join('');
-        body.appendChild(specs);
-
-        const footer = document.createElement('div');
-        footer.className = 'mt-3 flex items-center justify-between';
-        const price = document.createElement('span');
-        price.className = 'text-lg font-semibold text-[color:var(--brand-primary)]';
-        price.textContent = meta.price;
-        footer.appendChild(price);
-
-        const actions = document.createElement('div');
-        actions.className = 'flex gap-2';
-        const aWa = document.createElement('a');
-        aWa.href = buildWaLink(meta); aWa.target = '_blank'; aWa.rel = 'noreferrer';
-        aWa.className = 'text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition';
-        aWa.textContent = 'WhatsApp';
-        actions.appendChild(aWa);
-
-        const btnFicha = document.createElement('button');
-        btnFicha.type = 'button';
-        btnFicha.className = 'text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition';
-        btnFicha.textContent = 'Ficha';
-        btnFicha.addEventListener('click', () => {
-          openGallery({ images: images.length ? images : [src], meta, startIndex: 0, openFicha: true });
-        });
-        actions.appendChild(btnFicha);
-        footer.appendChild(actions);
-
-        body.appendChild(footer);
-        article.appendChild(body);
-
-        // Render icons en esta tarjeta
-        renderIcons();
-        return article;
-      }
-      /** Formatea el precio a mostrar con prioridad en price_label */
-      function formatPrice(p) {
-        const label = p.price_label || '';
-        if (label) return label;
-        const amount = p.price_amount || '';
-        const curr = (p.price_currency || '').toUpperCase();
-        const period = p.price_period || '';
-        let text = '';
-        if (curr && amount) text = `${curr} ${amount}`;
-        else if (amount) text = amount;
-        if (period) text += ` ${period}`;
-        return text || 'Consultar';
-      }
-      /** Pinta en la grilla principal */
-      function renderToMainGrid(list) {
-        grid.innerHTML = '';
-        if (!list || !list.length) {
-          gridEmpty.classList.remove('hidden');
-          return;
-        }
-        gridEmpty.classList.add('hidden');
-        list.forEach((p) => grid.appendChild(createCard(p)));
-        renderIcons();
-      }
-      /** Carga y pinta desde URL */
-      async function loadFrom(url) {
-        try {
-          adminMsg.classList.remove('err'); adminMsg.classList.add('hint');
-          adminMsg.textContent = 'Cargando datos...';
-          const normalized = normalizeSheetUrlToCsv(url);
-          const text = await fetchCsv(normalized);
-          const rows = parseCSV(text);
-          const data = rows.filter((r) => (r.id || '').trim() && (r.title || '').trim());
-          renderToMainGrid(data);
-          adminMsg.textContent = 'Datos cargados en la sección Propiedades.';
-        } catch (e) {
-          console.error(e);
-          renderToMainGrid([]);
-          adminMsg.classList.remove('hint'); adminMsg.classList.add('err');
-          adminMsg.textContent = 'No se pudo cargar el CSV. Revisá el enlace o permisos.';
-        }
       }
 
-      // Botón Admin junto al CTA "Ver propiedades" o flotante si no lo encuentra
-      function findLinkByText(text) {
-        const t = text.toLowerCase().trim();
-        const as = Array.from(document.querySelectorAll('a'));
-        for (const a of as) { if ((a.textContent || '').toLowerCase().includes(t)) return a; }
-        return null;
-      }
-      function insertAdminButton() {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.textContent = 'Admin';
-        btn.className = 'inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm hover:bg-gray-50 ml-2';
-        btn.setAttribute('aria-pressed', 'false');
-
-        btn.addEventListener('click', () => {
-          requireAuth(() => {
-            const isHidden = adminPanel.classList.contains('hidden');
-            adminPanel.classList.toggle('hidden', !isHidden);
-            btn.setAttribute('aria-pressed', String(isHidden));
-            if (isHidden) csvInput?.focus();
+      document.querySelectorAll('article[data-images]').forEach((card) => {
+        const openButtons = card.querySelectorAll('[data-action="open-gallery"]');
+        openButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const images = parseImages(card.getAttribute('data-images'));
+            const meta = getCardMeta(card);
+            openGallery({ images, meta, startIndex: 0, openFicha: false });
           });
         });
 
-        const cta = findLinkByText('ver propiedades');
-        if (cta && cta.parentElement) {
-          cta.insertAdjacentElement('afterend', btn);
-        } else {
-          // Fallback flotante
-          const wrap = document.createElement('div');
-          wrap.style.position = 'fixed';
-          wrap.style.right = '16px';
-          wrap.style.bottom = '80px';
-          wrap.style.zIndex = '50';
-          wrap.appendChild(btn);
-          document.body.appendChild(wrap);
+        const openFichaBtn = card.querySelector('[data-action="open-gallery-ficha"]');
+        openFichaBtn?.addEventListener('click', () => {
+          const images = parseImages(card.getAttribute('data-images'));
+          const meta = getCardMeta(card);
+          openGallery({ images, meta, startIndex: 0, openFicha: true });
+        });
+      });
+
+      // --------------------------
+      // Admin toggle (para abrir/cerrar el panel drop-in)
+      // --------------------------
+      const btnAdminDesktop = document.getElementById('btn-admin-toggle');
+      const btnAdminMobile = document.getElementById('btn-admin-toggle-mobile');
+      const dropinRoot = () => document.getElementById('ngespacios-admin-dropin');
+      const adminPanel = () => document.getElementById('ng-admin-panel');
+
+      function ensureAdminOpen(forceOpen) {
+        const root = dropinRoot();
+        const panel = adminPanel();
+        if (!root || !panel) return;
+        const willOpen = forceOpen ?? panel.classList.contains('ng-hidden');
+        panel.classList.toggle('ng-hidden', !willOpen);
+        btnAdminDesktop?.setAttribute('aria-pressed', String(willOpen));
+        btnAdminMobile?.setAttribute('aria-pressed', String(willOpen));
+        if (willOpen) {
+          const input = document.getElementById('ng-csv-url');
+          input?.focus();
         }
       }
 
-      // Eventos panel
-      btnTest.addEventListener('click', () => {
-        requireAuth(() => {
-          const v = (csvInput.value || '').trim();
-          if (!v) { adminMsg.textContent = 'Pegá una URL de Google Sheets (CSV).'; return; }
-          loadFrom(v);
-        });
-      });
-      btnSave.addEventListener('click', () => {
-        requireAuth(() => {
-          const v = (csvInput.value || '').trim();
-          if (!v) { adminMsg.textContent = 'Pegá una URL de Google Sheets (CSV).'; return; }
-          localStorage.setItem(LS_KEY_URL, v);
-          adminMsg.classList.remove('err'); adminMsg.classList.add('hint');
-          adminMsg.textContent = 'Guardado en este navegador. Actualizando…';
-          loadFrom(v);
-        });
-      });
+      btnAdminDesktop?.addEventListener('click', () => ensureAdminOpen());
+      btnAdminMobile?.addEventListener('click', () => ensureAdminOpen());
+    </script>
 
-      // Init
-      (function init() {
-        insertAdminButton();
-        const saved = localStorage.getItem(LS_KEY_URL);
-        if (saved) { csvInput.value = saved; loadFrom(saved); } else {
-          gridEmpty.classList.remove('hidden');
+    <!--
+      @file static/gh-admin-dropin.html
+      @description Drop-in para sitios estáticos (GitHub Pages).
+                   - Inserta un botón "Admin" junto a "Ver propiedades" si faltara.
+                   - Panel para configurar la URL de Google Sheets (CSV público).
+                   - Descarga y renderiza tarjetas de propiedades a partir del CSV.
+                   - Guarda la URL en localStorage y respeta el query ?admin=1.
+      Instrucciones de uso:
+        1) Verificá que en tu menú exista un enlace con el texto "Ver propiedades".
+        2) Pegá tu URL de Google Sheets publicada como CSV y tocá “Probar” y “Guardar”.
+    -->
+    <div
+      id="ngespacios-admin-dropin"
+      data-csv-default="https://docs.google.com/spreadsheets/d/e/2PACX-1vRE45mae2W4RPiAVFq7Jl8E0WeD7XXoPxXDT6oGKXFPxAACcGVC30Bq-FUcbM90iIn5H-5ddOr9hl1K/pub?output=csv"
+      data-cta-text="ver propiedades"
+    >
+      <!-- Estilos mínimos del drop-in -->
+      <style>
+        #ngespacios-admin-dropin * {
+          box-sizing: border-box;
         }
-        // Soporte ?admin=1 -> pide clave y abre panel
-        try {
-          const u = new URL(window.location.href);
-          if (u.searchParams.get('admin') === '1') {
-            requireAuth(() => {
-              adminPanel.classList.remove('hidden');
-              csvInput?.focus();
-            });
+        #ngespacios-admin-dropin .ng-hidden {
+          display: none !important;
+        }
+        .ng-card {
+          background: #fff;
+          border: 1px solid #e5e7eb;
+          border-radius: 12px;
+          box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+          padding: 16px;
+        }
+        .ng-muted {
+          color: #6b7280;
+        }
+        .ng-strong {
+          color: #111827;
+        }
+        .ng-accent {
+          color: #0c4a6e;
+        }
+        .ng-badge {
+          display: inline-block;
+          border: 1px solid #e5e7eb;
+          color: #374151;
+          border-radius: 999px;
+          padding: 2px 8px;
+          font-size: 12px;
+          line-height: 18px;
+          background: #f9fafb;
+        }
+        .ng-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          border-radius: 10px;
+          padding: 8px 12px;
+          font-size: 14px;
+          border: 1px solid #d1d5db;
+          background: #fff;
+          color: #374151;
+          cursor: pointer;
+        }
+        .ng-btn:hover {
+          background: #f9fafb;
+        }
+        .ng-btn-primary {
+          border-color: #0ea5e9;
+          background: #0284c7;
+          color: #fff;
+        }
+        .ng-btn-primary:hover {
+          background: #0369a1;
+        }
+        .ng-btn-ghost {
+          background: #fff;
+          color: #0c4a6e;
+          border-color: #cbd5e1;
+        }
+        .ng-btn-ghost[aria-pressed='true'] {
+          background: #e0f2fe;
+          color: #075985;
+          border-color: #0ea5e9;
+        }
+        .ng-input {
+          width: 100%;
+          border: 1px solid #d1d5db;
+          border-radius: 10px;
+          padding: 10px 12px;
+          font-size: 14px;
+          outline: none;
+        }
+        .ng-input:focus {
+          border-color: #0ea5e9;
+          box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+        .ng-grid {
+          display: grid;
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+          gap: 16px;
+        }
+        @media (min-width: 640px) {
+          .ng-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
-        } catch {}
+        }
+        @media (min-width: 1024px) {
+          .ng-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+        }
+        .ng-card-image {
+          width: 100%;
+          aspect-ratio: 4 / 3;
+          border-radius: 10px;
+          overflow: hidden;
+          background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+          border: 1px solid #e5e7eb;
+        }
+        .ng-card-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+        .ng-card-title {
+          font-weight: 700;
+          font-size: 16px;
+          color: #111827;
+          margin: 8px 0 2px 0;
+        }
+        .ng-card-sub {
+          font-size: 13px;
+          color: #6b7280;
+          margin-bottom: 8px;
+        }
+        .ng-price {
+          font-weight: 600;
+          color: #0c4a6e;
+          margin-bottom: 8px;
+        }
+        .ng-section {
+          max-width: 1120px;
+          margin: 0 auto;
+          padding: 16px;
+        }
+        .ng-section h2 {
+          font-size: 24px;
+          font-weight: 800;
+          margin: 4px 0 2px;
+          color: #111827;
+        }
+        .ng-flex-between {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          gap: 12px;
+          margin-bottom: 8px;
+        }
+        .ng-fab {
+          position: fixed;
+          right: 16px;
+          bottom: 16px;
+          z-index: 50;
+        }
+        .ng-alert {
+          margin-top: 8px;
+          font-size: 13px;
+        }
+        .ng-error {
+          color: #b91c1c;
+        }
+        .ng-hint {
+          color: #6b7280;
+        }
+      </style>
+
+      <!-- Panel Admin (oculto por defecto) -->
+      <section id="ng-admin-panel" class="ng-card ng-section ng-hidden" role="region" aria-label="Panel de administración">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+          <div class="ng-strong" style="display:flex; align-items:center; gap:8px; font-size:14px;">
+            <span aria-hidden="true">🔗</span> Fuente de datos (CSV público)
+          </div>
+          <input
+            id="ng-csv-url"
+            type="url"
+            placeholder="https://docs.google.com/spreadsheets/.../export?format=csv"
+            class="ng-input"
+            style="flex:1 1 320px;"
+            aria-label="URL de Google Sheets en formato CSV"
+          />
+          <button id="ng-btn-test" class="ng-btn" title="Probar carga">⟳ Probar</button>
+          <button id="ng-btn-save" class="ng-btn ng-btn-primary" title="Guardar en este navegador">✔ Guardar</button>
+        </div>
+        <p id="ng-admin-msg" class="ng-alert ng-hint">
+          Publicá tu hoja como CSV en Google Sheets o compartila como “Cualquiera con el enlace: lector”.
+        </p>
+      </section>
+
+      <!-- Sección Propiedades (listado dinámico) -->
+      <section id="propiedades-listado" class="ng-section" aria-label="Propiedades">
+        <div class="ng-flex-between">
+          <div>
+            <h2>Propiedades</h2>
+            <p class="ng-muted" style="font-size:13px;">Listado leído desde tu hoja publicada.</p>
+          </div>
+          <span id="ng-results" class="ng-muted" style="font-size:13px;"></span>
+        </div>
+        <div id="ng-grid" class="ng-grid"></div>
+        <div id="ng-empty" class="ng-card ng-hidden" style="text-align:center;">
+          <p class="ng-strong" style="margin-bottom:4px;">No hay propiedades para mostrar</p>
+          <p class="ng-muted" style="font-size:13px;">Verificá el enlace de CSV o agregá filas en tu hoja. Luego tocá “Probar”.</p>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        /**
+         * @constant LS_KEY
+         * @description Clave para guardar/leer la URL CSV en el navegador.
+         */
+        const LS_KEY = 'ngespacios:csvUrl';
+
+        // Elementos base
+        const root = document.getElementById('ngespacios-admin-dropin');
+        if (!root) return;
+        const CTA_TEXT = (root.dataset.ctaText || 'ver propiedades').toLowerCase().trim();
+        const defaultCsv = root.dataset.csvDefault || '';
+
+        const elPanel = document.getElementById('ng-admin-panel');
+        const elInput = document.getElementById('ng-csv-url');
+        const elMsg = document.getElementById('ng-admin-msg');
+        const elGrid = document.getElementById('ng-grid');
+        const elEmpty = document.getElementById('ng-empty');
+        const elResults = document.getElementById('ng-results');
+
+        /**
+         * @function normalizeSheetUrlToCsv
+         * @description Normaliza URLs de Google Sheets a CSV.
+         */
+        function normalizeSheetUrlToCsv(url) {
+          try {
+            const u = new URL(url);
+            if (u.hostname.includes('docs.google.com')) {
+              if (u.pathname.endsWith('/pub')) {
+                u.searchParams.set('output', 'csv');
+                return u.toString();
+              }
+              if (u.pathname.includes('/export')) {
+                u.searchParams.set('format', 'csv');
+                return u.toString();
+              }
+            }
+            return url;
+          } catch {
+            return url;
+          }
+        }
+
+        /**
+         * @function parseCSV
+         * @description Parser CSV con soporte de valores entre comillas dobles y comas dentro de campos.
+         * @param {string} text
+         * @returns {Array<Object>}
+         */
+        function parseCSV(text) {
+          const rows = [];
+          let i = 0,
+            field = '',
+            row = [],
+            inQuotes = false;
+
+          function pushField() {
+            row.push(field.replace(/""/g, '"'));
+            field = '';
+          }
+          function pushRow() {
+            rows.push(row);
+            row = [];
+          }
+
+          while (i < text.length) {
+            const c = text[i];
+            if (inQuotes) {
+              if (c === '"') {
+                if (text[i + 1] === '"') {
+                  field += '"';
+                  i += 2;
+                  continue;
+                } else {
+                  inQuotes = false;
+                  i++;
+                  continue;
+                }
+              } else {
+                field += c;
+                i++;
+                continue;
+              }
+            } else {
+              if (c === '"') {
+                inQuotes = true;
+                i++;
+                continue;
+              }
+              if (c === ',') {
+                pushField();
+                i++;
+                continue;
+              }
+              if (c === '\n') {
+                pushField();
+                pushRow();
+                i++;
+                continue;
+              }
+              if (c === '\r') {
+                i++;
+                continue;
+              }
+              field += c;
+              i++;
+            }
+          }
+          pushField();
+          if (row.length > 1 || (row.length === 1 && row[0] !== '')) pushRow();
+
+          if (rows.length === 0) return [];
+
+          const headers = rows[0].map((h) => (h || '').trim());
+          const data = [];
+          for (let r = 1; r < rows.length; r++) {
+            const values = rows[r];
+            const obj = {};
+            headers.forEach((h, idx) => {
+              obj[h] = (values[idx] || '').trim();
+            });
+            data.push(obj);
+          }
+          return data;
+        }
+
+        /**
+         * @function fetchCsv
+         * @description Descarga texto CSV con no-store para evitar caché.
+         */
+        async function fetchCsv(url) {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        }
+
+        /**
+         * @function firstImage
+         * @description Devuelve la primera imagen válida desde el campo "images" (separadas por "|").
+         */
+        function firstImage(p) {
+          const raw = p.images || '';
+          const parts = raw
+            .split('|')
+            .map((s) => s.trim())
+            .filter(Boolean);
+          return parts[0] || '';
+        }
+
+        /**
+         * @function formatPrice
+         * @description Construye un texto de precio a partir de price_label o (amount+currency+period).
+         */
+        function formatPrice(p) {
+          const label = p.price_label || '';
+          if (label) return label;
+          const amount = p.price_amount || '';
+          const curr = p.price_currency || '';
+          const period = p.price_period || '';
+          let text = '';
+          if (curr && amount) text = `${curr} ${amount}`;
+          else if (amount) text = amount;
+          if (period) text += ` ${period}`;
+          return text;
+        }
+
+        /**
+         * @function createCard
+         * @description Construye la tarjeta DOM para una propiedad.
+         */
+        function createCard(p) {
+          const card = document.createElement('article');
+          card.className = 'ng-card';
+          card.setAttribute('aria-label', p.title || 'Propiedad');
+
+          // Imagen
+          const imgWrap = document.createElement('div');
+          imgWrap.className = 'ng-card-image';
+          const imgUrl = firstImage(p);
+          if (imgUrl) {
+            const img = document.createElement('img');
+            img.src = imgUrl;
+            img.alt = p.title || 'Foto de propiedad';
+            imgWrap.appendChild(img);
+          }
+          card.appendChild(imgWrap);
+
+          // Título
+          const title = document.createElement('div');
+          title.className = 'ng-card-title';
+          title.textContent = p.title || 'Sin título';
+          card.appendChild(title);
+
+          // Subtítulo
+          const sub = document.createElement('div');
+          sub.className = 'ng-card-sub';
+          const op = p.operation ? p.operation : '';
+          const type = p.type ? p.type : '';
+          const loc = p.location ? ` • ${p.location}` : '';
+          sub.textContent = [op, type].filter(Boolean).join(' ') + loc;
+          card.appendChild(sub);
+
+          // Precio
+          const priceText = formatPrice(p);
+          if (priceText) {
+            const price = document.createElement('div');
+            price.className = 'ng-price';
+            price.textContent = priceText;
+            card.appendChild(price);
+          }
+
+          // Badges
+          const badges = document.createElement('div');
+          badges.style.display = 'flex';
+          badges.style.flexWrap = 'wrap';
+          badges.style.gap = '8px';
+
+          [
+            p.bedrooms ? `${p.bedrooms} hab.` : '',
+            p.bathrooms ? `${p.bathrooms} baños` : '',
+            p.garages ? `${p.garages} coch.` : '',
+            p.area_m2 ? `${p.area_m2} m²` : '',
+            p.lot_m2 ? `${p.lot_m2} m² lote` : '',
+            p.status ? `${p.status}` : ''
+          ]
+            .filter(Boolean)
+            .forEach((t) => {
+              const b = document.createElement('span');
+              b.className = 'ng-badge';
+              b.textContent = t;
+              badges.appendChild(b);
+            });
+
+          if (badges.childNodes.length) card.appendChild(badges);
+
+          return card;
+        }
+
+        /**
+         * @function renderList
+         * @description Pinta la lista de propiedades y el estado de resultados.
+         */
+        function renderList(list) {
+          elGrid.innerHTML = '';
+          if (!list || list.length === 0) {
+            elResults.textContent = '';
+            elEmpty.classList.remove('ng-hidden');
+            return;
+          }
+          elEmpty.classList.add('ng-hidden');
+          for (const p of list) {
+            elGrid.appendChild(createCard(p));
+          }
+          elResults.textContent = list.length + ' resultados';
+        }
+
+        /**
+         * @function findVerPropiedadesLink
+         * @description Busca un enlace cuyo texto incluya "ver propiedades" (ignora mayúsculas/minúsculas).
+         */
+        function findVerPropiedadesLink() {
+          const links = Array.from(document.querySelectorAll('a'));
+          for (const a of links) {
+            const txt = (a.textContent || '').toLowerCase().trim();
+            if (txt.includes(CTA_TEXT)) return a;
+          }
+          return null;
+        }
+
+        /**
+         * @function ensureAdminButton
+         * @description Inserta el botón "Admin" junto al CTA si no existe uno en header. Si no encuentra el CTA, lo muestra flotante.
+         */
+        function ensureAdminButton() {
+          // Si ya tenemos el botón del header, no insertamos otro
+          const existing = document.getElementById('btn-admin-toggle');
+          if (existing) {
+            // Soporte ?admin=1
+            try {
+              const u = new URL(window.location.href);
+              if (u.searchParams.get('admin') === '1') {
+                const panel = document.getElementById('ng-admin-panel');
+                panel?.classList.remove('ng-hidden');
+                existing.setAttribute('aria-pressed', 'true');
+                document.getElementById('ng-csv-url')?.focus();
+              }
+            } catch {}
+            return;
+          }
+
+          const btn = document.createElement('button');
+          btn.id = 'ng-admin-toggle';
+          btn.className = 'ng-btn ng-btn-ghost';
+          btn.type = 'button';
+          btn.setAttribute('aria-pressed', 'false');
+          btn.textContent = 'Admin';
+          btn.addEventListener('click', () => {
+            const isOpen = !elPanel.classList.contains('ng-hidden');
+            if (isOpen) {
+              elPanel.classList.add('ng-hidden');
+              btn.setAttribute('aria-pressed', 'false');
+            } else {
+              elPanel.classList.remove('ng-hidden');
+              btn.setAttribute('aria-pressed', 'true');
+              elInput?.focus();
+            }
+          });
+
+          const cta = findVerPropiedadesLink();
+          if (cta && cta.parentElement) {
+            cta.insertAdjacentElement('afterend', btn);
+          } else {
+            // Fallback flotante
+            const wrap = document.createElement('div');
+            wrap.className = 'ng-fab';
+            wrap.appendChild(btn);
+            document.body.appendChild(wrap);
+          }
+
+          // Soporte ?admin=1
+          try {
+            const u = new URL(window.location.href);
+            if (u.searchParams.get('admin') === '1') {
+              elPanel.classList.remove('ng-hidden');
+              btn.setAttribute('aria-pressed', 'true');
+              elInput?.focus();
+            }
+          } catch {}
+        }
+
+        /**
+         * @function loadFrom
+         * @description Descarga CSV, parsea y renderiza.
+         */
+        async function loadFrom(url) {
+          try {
+            elMsg.classList.remove('ng-error');
+            elMsg.classList.add('ng-hint');
+            elMsg.textContent = 'Cargando datos...';
+            const normalized = normalizeSheetUrlToCsv(url);
+            const text = await fetchCsv(normalized);
+            const rows = parseCSV(text);
+            const data = rows.filter((r) => (r.id || '').trim() && (r.title || '').trim());
+            renderList(data);
+            elMsg.textContent = 'Datos cargados.';
+          } catch (e) {
+            console.error(e);
+            renderList([]);
+            elMsg.classList.remove('ng-hint');
+            elMsg.classList.add('ng-error');
+            elMsg.textContent = 'No se pudo cargar el CSV. Revisá el enlace o permisos.';
+          }
+        }
+
+        /**
+         * @function init
+         * @description Inicializa: botón admin, eventos y carga inicial.
+         */
+        function init() {
+          ensureAdminButton();
+
+          const saved = localStorage.getItem(LS_KEY);
+          const url = saved || defaultCsv;
+          if (elInput) elInput.value = url || '';
+
+          if (url) loadFrom(url);
+
+          const btnTest = document.getElementById('ng-btn-test');
+          const btnSave = document.getElementById('ng-btn-save');
+
+          btnTest?.addEventListener('click', () => {
+            const v = (elInput?.value || '').trim();
+            if (!v) {
+              elMsg.textContent = 'Pegá una URL de Google Sheets (CSV).';
+              return;
+            }
+            loadFrom(v);
+          });
+
+          btnSave?.addEventListener('click', () => {
+            const v = (elInput?.value || '').trim();
+            if (!v) {
+              elMsg.textContent = 'Pegá una URL de Google Sheets (CSV).';
+              return;
+            }
+            localStorage.setItem(LS_KEY, v);
+            elMsg.classList.remove('ng-error');
+            elMsg.classList.add('ng-hint');
+            elMsg.textContent = 'Guardado en este navegador.';
+            loadFrom(v);
+          });
+        }
+
+        init();
       })();
     </script>
   </body>
