@@ -880,5 +880,583 @@
         });
       });
     </script>
+!--
+  @file static/gh-admin-dropin.html
+  @description Drop-in para sitios estáticos (GitHub Pages).
+               - Inserta un botón "Admin" junto a "Ver propiedades" en la barra superior.
+               - Panel para configurar la URL de Google Sheets (CSV público).
+               - Descarga y renderiza tarjetas de propiedades a partir del CSV.
+               - Guarda la URL en localStorage y respeta el query ?admin=1.
+  Instrucciones de uso:
+    1) Copiar TODO este bloque y pegarlo en tu index.html justo antes de </body>.
+    2) Verificá que en tu menú exista un enlace con el texto "Ver propiedades" (cualquier mayúscula/minúscula). El script insertará el botón al lado.
+    3) Si tu CTA tiene otro texto, cambiá el valor de data-cta-text más abajo.
+-->
+
+<!-- Raíz del drop-in: puedes moverlo donde quieras del <body> -->
+<div
+  id="ngespacios-admin-dropin"
+  data-csv-default="https://docs.google.com/spreadsheets/d/e/2PACX-1vRE45mae2W4RPiAVFq7Jl8E0WeD7XXoPxXDT6oGKXFPxAACcGVC30Bq-FUcbM90iIn5H-5ddOr9hl1K/pub?output=csv"
+  data-cta-text="ver propiedades"
+>
+  <!-- Estilos mínimos, con buen contraste y sin depender de frameworks -->
+  <style>
+    /* Reset pequeño para este bloque */
+    #ngespacios-admin-dropin * { box-sizing: border-box; }
+    #ngespacios-admin-dropin .ng-hidden { display: none !important; }
+
+    /* Tarjetas y panel */
+    #ngespacios-admin-dropin .ng-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+      padding: 16px;
+    }
+    #ngespacios-admin-dropin .ng-muted { color: #6b7280; }
+    #ngespacios-admin-dropin .ng-strong { color: #111827; }
+    #ngespacios-admin-dropin .ng-accent { color: #0c4a6e; } /* azul profundo */
+    #ngespacios-admin-dropin .ng-badge {
+      display: inline-block;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      line-height: 18px;
+      background: #f9fafb;
+    }
+
+    /* Botones */
+    #ngespacios-admin-dropin .ng-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #374151;
+      cursor: pointer;
+    }
+    #ngespacios-admin-dropin .ng-btn:hover { background: #f9fafb; }
+    #ngespacios-admin-dropin .ng-btn-primary {
+      border-color: #0ea5e9;
+      background: #0284c7;
+      color: #fff;
+    }
+    #ngespacios-admin-dropin .ng-btn-primary:hover { background: #0369a1; }
+    #ngespacios-admin-dropin .ng-btn-ghost {
+      background: #fff;
+      color: #0c4a6e;
+      border-color: #cbd5e1;
+    }
+    #ngespacios-admin-dropin .ng-btn-ghost[aria-pressed="true"] {
+      background: #e0f2fe;
+      color: #075985;
+      border-color: #0ea5e9;
+    }
+
+    /* Inputs */
+    #ngespacios-admin-dropin .ng-input {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+    }
+    #ngespacios-admin-dropin .ng-input:focus {
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 3px rgba(14,165,233,0.2);
+    }
+
+    /* Grilla de propiedades */
+    #ngespacios-admin-dropin .ng-grid {
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      gap: 16px;
+    }
+    @media (min-width: 640px) {
+      #ngespacios-admin-dropin .ng-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (min-width: 1024px) {
+      #ngespacios-admin-dropin .ng-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    /* Tarjeta */
+    #ngespacios-admin-dropin .ng-card-image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 10px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+      border: 1px solid #e5e7eb;
+    }
+    #ngespacios-admin-dropin .ng-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    #ngespacios-admin-dropin .ng-card-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: #111827;
+      margin: 8px 0 2px 0;
+    }
+    #ngespacios-admin-dropin .ng-card-sub {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+    #ngespacios-admin-dropin .ng-price {
+      font-weight: 600;
+      color: #0c4a6e;
+      margin-bottom: 8px;
+    }
+
+    /* Sección */
+    #ngespacios-admin-dropin .ng-section {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    #ngespacios-admin-dropin .ng-section h2 {
+      font-size: 24px;
+      font-weight: 800;
+      margin: 4px 0 2px;
+      color: #111827;
+    }
+    #ngespacios-admin-dropin .ng-flex-between {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    /* Admin flotante como fallback */
+    #ngespacios-admin-dropin .ng-fab {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 50;
+    }
+
+    /* Avisos */
+    #ngespacios-admin-dropin .ng-alert {
+      margin-top: 8px;
+      font-size: 13px;
+    }
+    #ngespacios-admin-dropin .ng-error { color: #b91c1c; }
+    #ngespacios-admin-dropin .ng-hint { color: #6b7280; }
+  </style>
+
+  <!-- Panel Admin (oculto por defecto) -->
+  <section id="ng-admin-panel" class="ng-card ng-section ng-hidden" role="region" aria-label="Panel de administración">
+    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+      <div class="ng-strong" style="display:flex; align-items:center; gap:8px; font-size:14px;">
+        <span aria-hidden="true">🔗</span> Fuente de datos (CSV público)
+      </div>
+      <input
+        id="ng-csv-url"
+        type="url"
+        placeholder="https://docs.google.com/spreadsheets/.../export?format=csv"
+        class="ng-input"
+        style="flex:1 1 320px;"
+        aria-label="URL de Google Sheets en formato CSV"
+      />
+      <button id="ng-btn-test" class="ng-btn" title="Probar carga">⟳ Probar</button>
+      <button id="ng-btn-save" class="ng-btn ng-btn-primary" title="Guardar en este navegador">✔ Guardar</button>
+    </div>
+    <p id="ng-admin-msg" class="ng-alert ng-hint">Publicá tu hoja como CSV en Google Sheets o compartila como “Cualquiera con el enlace: lector”.</p>
+  </section>
+
+  <!-- Sección Propiedades (listado) -->
+  <section id="propiedades" class="ng-section" aria-label="Propiedades">
+    <div class="ng-flex-between">
+      <div>
+        <h2>Propiedades</h2>
+        <p class="ng-muted" style="font-size:13px;">Listado leído desde tu hoja publicada.</p>
+      </div>
+      <span id="ng-results" class="ng-muted" style="font-size:13px;"></span>
+    </div>
+    <div id="ng-grid" class="ng-grid"></div>
+    <div id="ng-empty" class="ng-card ng-hidden" style="text-align:center;">
+      <p class="ng-strong" style="margin-bottom:4px;">No hay propiedades para mostrar</p>
+      <p class="ng-muted" style="font-size:13px;">Verificá el enlace de CSV o agregá filas en tu hoja. Luego tocá “Probar”.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+  ;(() => {
+    /**
+     * @constant LS_KEY
+     * @description Clave para guardar/leer la URL CSV en el navegador.
+     */
+    const LS_KEY = 'ngespacios:csvUrl'
+
+    // Elementos base
+    const root = document.getElementById('ngespacios-admin-dropin')
+    if (!root) return
+    const CTA_TEXT = (root.dataset.ctaText || 'ver propiedades').toLowerCase().trim()
+    const defaultCsv = root.dataset.csvDefault || ''
+
+    const elPanel = document.getElementById('ng-admin-panel')
+    const elInput = document.getElementById('ng-csv-url')
+    const elMsg = document.getElementById('ng-admin-msg')
+    const elGrid = document.getElementById('ng-grid')
+    const elEmpty = document.getElementById('ng-empty')
+    const elResults = document.getElementById('ng-results')
+
+    /**
+     * @function normalizeSheetUrlToCsv
+     * @description Normaliza URLs de Google Sheets a CSV.
+     *  - .../pub?output=ods|pdf|html -> output=csv
+     *  - .../export?format=... -> format=csv
+     */
+    function normalizeSheetUrlToCsv(url) {
+      try {
+        const u = new URL(url)
+        if (u.hostname.includes('docs.google.com')) {
+          if (u.pathname.endsWith('/pub')) {
+            u.searchParams.set('output', 'csv')
+            return u.toString()
+          }
+          if (u.pathname.includes('/export')) {
+            u.searchParams.set('format', 'csv')
+            return u.toString()
+          }
+        }
+        return url
+      } catch {
+        return url
+      }
+    }
+
+    /**
+     * @function parseCSV
+     * @description Parser CSV simple con soporte de valores entre comillas dobles.
+     * @param {string} text - Contenido CSV.
+     * @returns {Array<Object>} Registros como objetos plano {columna: valor}.
+     */
+    function parseCSV(text) {
+      const rows = []
+      let i = 0, field = '', row = [], inQuotes = false
+
+      function pushField() {
+        // Reemplaza doble comilla escapada ("") por una sola
+        row.push(field.replace(/""/g, '"'))
+        field = ''
+      }
+      function pushRow() {
+        rows.push(row)
+        row = []
+      }
+
+      while (i < text.length) {
+        const c = text[i]
+        if (inQuotes) {
+          if (c === '"') {
+            if (text[i + 1] === '"') {
+              field += '"'
+              i += 2
+              continue
+            } else {
+              inQuotes = false
+              i++
+              continue
+            }
+          } else {
+            field += c
+            i++
+            continue
+          }
+        } else {
+          if (c === '"') {
+            inQuotes = true
+            i++
+            continue
+          }
+          if (c === ',') {
+            pushField()
+            i++
+            continue
+          }
+          if (c === '\n') {
+            pushField()
+            pushRow()
+            i++
+            continue
+          }
+          if (c === '\r') { i++; continue } // Ignora CR
+          field += c
+          i++
+        }
+      }
+      // Último campo/fila
+      pushField()
+      if (row.length > 1 || (row.length === 1 && row[0] !== '')) pushRow()
+
+      if (rows.length === 0) return []
+
+      const headers = rows[0].map((h) => (h || '').trim())
+      const data = []
+      for (let r = 1; r < rows.length; r++) {
+        const values = rows[r]
+        const obj = {}
+        headers.forEach((h, idx) => { obj[h] = (values[idx] || '').trim() })
+        data.push(obj)
+      }
+      return data
+    }
+
+    /**
+     * @function fetchCsv
+     * @description Descarga texto CSV con no-store para evitar caché.
+     */
+    async function fetchCsv(url) {
+      const res = await fetch(url, { cache: 'no-store' })
+      if (!res.ok) throw new Error('HTTP ' + res.status)
+      return res.text()
+    }
+
+    /**
+     * @function firstImage
+     * @description Devuelve la primera imagen válida desde el campo "images" (separadas por "|").
+     */
+    function firstImage(p) {
+      const raw = p.images || ''
+      const parts = raw.split('|').map((s) => s.trim()).filter(Boolean)
+      return parts[0] || ''
+    }
+
+    /**
+     * @function formatPrice
+     * @description Construye un texto de precio a partir de price_label o (amount+currency+period).
+     */
+    function formatPrice(p) {
+      const label = p.price_label || ''
+      if (label) return label
+      const amount = p.price_amount || ''
+      const curr = p.price_currency || ''
+      const period = p.price_period || ''
+      let text = ''
+      if (curr && amount) text = `${curr} ${amount}`
+      else if (amount) text = amount
+      if (period) text += ` ${period}`
+      return text
+    }
+
+    /**
+     * @function createCard
+     * @description Construye la tarjeta DOM para una propiedad.
+     */
+    function createCard(p) {
+      const card = document.createElement('article')
+      card.className = 'ng-card'
+      card.setAttribute('aria-label', p.title || 'Propiedad')
+
+      // Imagen
+      const imgWrap = document.createElement('div')
+      imgWrap.className = 'ng-card-image'
+      const imgUrl = firstImage(p)
+      if (imgUrl) {
+        const img = document.createElement('img')
+        img.src = imgUrl
+        img.alt = p.title || 'Foto de propiedad'
+        imgWrap.appendChild(img)
+      }
+      card.appendChild(imgWrap)
+
+      // Título
+      const title = document.createElement('div')
+      title.className = 'ng-card-title'
+      title.textContent = p.title || 'Sin título'
+      card.appendChild(title)
+
+      // Subtítulo
+      const sub = document.createElement('div')
+      sub.className = 'ng-card-sub'
+      const op = p.operation ? p.operation : ''
+      const type = p.type ? p.type : ''
+      const loc = p.location ? ` • ${p.location}` : ''
+      sub.textContent = [op, type].filter(Boolean).join(' ') + loc
+      card.appendChild(sub)
+
+      // Precio
+      const priceText = formatPrice(p)
+      if (priceText) {
+        const price = document.createElement('div')
+        price.className = 'ng-price'
+        price.textContent = priceText
+        card.appendChild(price)
+      }
+
+      // Badges
+      const badges = document.createElement('div')
+      badges.style.display = 'flex'
+      badges.style.flexWrap = 'wrap'
+      badges.style.gap = '8px'
+
+      ;[
+        p.bedrooms ? `${p.bedrooms} hab.` : '',
+        p.bathrooms ? `${p.bathrooms} baños` : '',
+        p.garages ? `${p.garages} coch.` : '',
+        p.area_m2 ? `${p.area_m2} m²` : '',
+        p.lot_m2 ? `${p.lot_m2} m² lote` : '',
+        p.status ? `${p.status}` : ''
+      ].filter(Boolean).forEach((t) => {
+        const b = document.createElement('span')
+        b.className = 'ng-badge'
+        b.textContent = t
+        badges.appendChild(b)
+      })
+
+      if (badges.childNodes.length) card.appendChild(badges)
+
+      return card
+    }
+
+    /**
+     * @function renderList
+     * @description Pinta la lista de propiedades y el estado de resultados.
+     */
+    function renderList(list) {
+      elGrid.innerHTML = ''
+      if (!list || list.length === 0) {
+        elResults.textContent = ''
+        elEmpty.classList.remove('ng-hidden')
+        return
+      }
+      elEmpty.classList.add('ng-hidden')
+      for (const p of list) {
+        elGrid.appendChild(createCard(p))
+      }
+      elResults.textContent = list.length + ' resultados'
+    }
+
+    /**
+     * @function findVerPropiedadesLink
+     * @description Busca el primer enlace cuyo texto incluya "ver propiedades" (ignora mayúsculas/minúsculas).
+     */
+    function findVerPropiedadesLink() {
+      const links = Array.from(document.querySelectorAll('a'))
+      for (const a of links) {
+        const txt = (a.textContent || '').toLowerCase().trim()
+        if (txt.includes(CTA_TEXT)) return a
+      }
+      return null
+    }
+
+    /**
+     * @function ensureAdminButton
+     * @description Inserta el botón "Admin" junto al CTA. Si no encuentra el CTA, lo muestra flotante abajo a la derecha.
+     */
+    function ensureAdminButton() {
+      const btn = document.createElement('button')
+      btn.id = 'ng-admin-toggle'
+      btn.className = 'ng-btn ng-btn-ghost'
+      btn.type = 'button'
+      btn.setAttribute('aria-pressed', 'false')
+      btn.textContent = 'Admin'
+      btn.addEventListener('click', () => {
+        const isOpen = !elPanel.classList.contains('ng-hidden')
+        if (isOpen) {
+          elPanel.classList.add('ng-hidden')
+          btn.setAttribute('aria-pressed', 'false')
+        } else {
+          elPanel.classList.remove('ng-hidden')
+          btn.setAttribute('aria-pressed', 'true')
+          elInput?.focus()
+        }
+      })
+
+      const cta = findVerPropiedadesLink()
+      if (cta && cta.parentElement) {
+        cta.insertAdjacentElement('afterend', btn)
+      } else {
+        // Fallback flotante
+        const wrap = document.createElement('div')
+        wrap.className = 'ng-fab'
+        wrap.appendChild(btn)
+        document.body.appendChild(wrap)
+      }
+
+      // Soporte ?admin=1
+      try {
+        const u = new URL(window.location.href)
+        if (u.searchParams.get('admin') === '1') {
+          elPanel.classList.remove('ng-hidden')
+          btn.setAttribute('aria-pressed', 'true')
+          elInput?.focus()
+        }
+      } catch {}
+    }
+
+    /**
+     * @function loadFrom
+     * @description Descarga CSV, parsea y renderiza.
+     */
+    async function loadFrom(url) {
+      try {
+        elMsg.classList.remove('ng-error')
+        elMsg.classList.add('ng-hint')
+        elMsg.textContent = 'Cargando datos...'
+        const normalized = normalizeSheetUrlToCsv(url)
+        const text = await fetchCsv(normalized)
+        const rows = parseCSV(text)
+        // Filtra filas sin id o sin título
+        const data = rows.filter((r) => (r.id || '').trim() && (r.title || '').trim())
+        renderList(data)
+        elMsg.textContent = 'Datos cargados.'
+      } catch (e) {
+        console.error(e)
+        renderList([])
+        elMsg.classList.remove('ng-hint')
+        elMsg.classList.add('ng-error')
+        elMsg.textContent = 'No se pudo cargar el CSV. Revisá el enlace o permisos.'
+      }
+    }
+
+    /**
+     * @function init
+     * @description Inicializa: boton admin, eventos, y carga inicial.
+     */
+    function init() {
+      ensureAdminButton()
+
+      const saved = localStorage.getItem(LS_KEY)
+      const url = saved || defaultCsv
+      if (elInput) elInput.value = url || ''
+
+      if (url) loadFrom(url)
+
+      const btnTest = document.getElementById('ng-btn-test')
+      const btnSave = document.getElementById('ng-btn-save')
+
+      btnTest?.addEventListener('click', () => {
+        const v = (elInput?.value || '').trim()
+        if (!v) { elMsg.textContent = 'Pegá una URL de Google Sheets (CSV).'; return }
+        loadFrom(v)
+      })
+
+      btnSave?.addEventListener('click', () => {
+        const v = (elInput?.value || '').trim()
+        if (!v) { elMsg.textContent = 'Pegá una URL de Google Sheets (CSV).'; return }
+        localStorage.setItem(LS_KEY, v)
+        elMsg.classList.remove('ng-error')
+        elMsg.classList.add('ng-hint')
+        elMsg.textContent = 'Guardado en este navegador.'
+        loadFrom(v)
+      })
+    }
+
+    init()
+  })()
+</script>
   </body>
 </html>
