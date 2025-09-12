@@ -5,7 +5,8 @@
   - Listado de propiedades desde Google Sheets (CSV público)
   - Acceso Admin oculto: 5 toques/clicks rápidos sobre el logo → pide clave → abre panel
   - Modal de galería con ficha compacta
-  - Botón WhatsApp flotante
+  - Vista “Ficha” pantalla completa con descripción
+  - Botón “Descargar ficha” (usa Imprimir → Guardar como PDF)
 -->
 
 <!doctype html>
@@ -107,7 +108,7 @@
           >
             Ver propiedades
           </a>
-          <!-- No mostramos botón Admin visible. Acceso es por “tap secreto” en el logo. -->
+          <!-- Admin invisible; acceso secreto por taps en el logo -->
         </nav>
 
         <!-- Menú móvil -->
@@ -402,29 +403,42 @@
             href="#"
             target="_blank"
             rel="noreferrer"
-            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-green-600 text-white hover:bg-green-700 transition"
+            class="inline-flex items-center justify-center h-9 rounded-full bg-green-600 text-white px-3 hover:bg-green-700 transition"
             title="WhatsApp"
             aria-label="Abrir WhatsApp"
           >
             <i data-lucide="message-circle" class="h-4 w-4"></i>
+            <span class="hidden sm:inline text-xs ml-1">WhatsApp</span>
           </a>
+          <button
+            id="gallery-download"
+            type="button"
+            class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3"
+            title="Descargar ficha (PDF)"
+            aria-label="Descargar ficha"
+          >
+            <i data-lucide="download" class="h-4 w-4"></i>
+            <span class="hidden sm:inline text-xs ml-1">Descargar ficha</span>
+          </button>
           <button
             id="gallery-ficha-btn"
             type="button"
-            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition"
+            class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3"
             title="Ficha"
             aria-label="Ver ficha"
           >
             <i data-lucide="file-text" class="h-4 w-4"></i>
+            <span class="hidden sm:inline text-xs ml-1">Ficha</span>
           </button>
           <button
             id="gallery-close"
             type="button"
-            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition"
+            class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition px-3"
             aria-label="Cerrar"
             title="Cerrar"
           >
             <i data-lucide="x" class="h-4 w-4"></i>
+            <span class="hidden sm:inline text-xs ml-1">Cerrar</span>
           </button>
         </div>
 
@@ -450,7 +464,7 @@
 
         <!-- Imagen -->
         <figure class="relative w-full max-w-5xl aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9]">
-          <img id="gallery-img" src="" alt="" class="object-contain w-full h-full select-none" />
+          <img id="gallery-img" src="" alt="" class="object-contain w-full h-full select-none bg-black" />
           <figcaption id="gallery-counter" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 px-2 py-1 rounded-md"></figcaption>
         </figure>
 
@@ -474,7 +488,74 @@
       </div>
     </div>
 
-    <!-- JS: íconos, UI, galería, Admin oculto con clave -->
+    <!-- Modal Ficha pantalla completa -->
+    <div id="detail-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+      <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      <div class="relative mx-auto w-[96vw] max-w-4xl bg-white rounded-2xl shadow-xl border border-neutral-200 max-h-[92vh] overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="flex items-center justify-between px-4 h-12 border-b border-neutral-200 bg-white">
+          <h3 id="detail-title" class="text-base font-medium line-clamp-1"></h3>
+          <div class="flex items-center gap-2">
+            <a id="detail-wa" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 h-9 px-3 rounded-md bg-green-600 text-white hover:bg-green-700 text-sm">
+              <i data-lucide="message-circle" class="h-4 w-4"></i> WhatsApp
+            </a>
+            <button id="detail-open-gallery" type="button" class="inline-flex items-center gap-2 h-9 px-3 rounded-md border text-sm hover:bg-neutral-50">
+              <i data-lucide="image" class="h-4 w-4"></i> Ver
+            </button>
+            <button id="detail-download" type="button" class="inline-flex items-center gap-2 h-9 px-3 rounded-md border text-sm hover:bg-neutral-50">
+              <i data-lucide="download" class="h-4 w-4"></i> Descargar ficha
+            </button>
+            <button id="detail-close" type="button" class="inline-flex items-center justify-center h-9 w-9 rounded-full border hover:bg-neutral-50" aria-label="Cerrar">
+              <i data-lucide="x" class="h-4 w-4"></i>
+            </button>
+          </div>
+        </div>
+        <!-- Body scrollable -->
+        <div class="p-4 overflow-y-auto">
+          <!-- Portada -->
+          <div class="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50">
+            <img id="detail-cover" src="" alt="" class="w-full h-full object-cover aspect-[4/3]" />
+          </div>
+          <!-- Meta -->
+          <div class="mt-4 flex items-center justify-between gap-3">
+            <div class="space-y-1">
+              <p id="detail-location" class="flex items-center gap-1 text-neutral-700 text-sm">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span></span>
+              </p>
+              <div class="flex flex-wrap gap-2 text-xs">
+                <span id="detail-badge-op" class="rounded-md bg-neutral-100 px-2 py-1"></span>
+                <span id="detail-badge-type" class="rounded-md bg-neutral-900 text-white px-2 py-1"></span>
+                <span id="detail-badge-status" class="hidden rounded-md bg-amber-100 text-amber-800 border border-amber-200 px-2 py-1"></span>
+              </div>
+            </div>
+            <p id="detail-price" class="text-lg font-semibold text-[color:var(--brand-primary)]"></p>
+          </div>
+          <!-- Specs -->
+          <ul id="detail-specs" class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-neutral-700"></ul>
+          <!-- Features -->
+          <div id="detail-features" class="mt-2 hidden">
+            <h4 class="text-sm font-semibold mb-1">Características</h4>
+            <div id="detail-features-list" class="flex flex-wrap gap-2 text-sm"></div>
+          </div>
+          <!-- Descripción -->
+          <div id="detail-description" class="mt-3 hidden">
+            <h4 class="text-sm font-semibold mb-1">Descripción</h4>
+            <p id="detail-description-text" class="text-neutral-800 text-sm whitespace-pre-line"></p>
+          </div>
+          <!-- Datos de contacto -->
+          <div class="mt-6 rounded-lg border border-neutral-200 bg-neutral-50 p-3 text-sm">
+            <p class="font-medium">NGespacios — Natalia González</p>
+            <p class="text-neutral-700">Martillera y Corredora Pública • Matrícula Nº 377-RP-21 Fº456 TºII</p>
+            <p class="text-neutral-700">Email: <a href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar" class="text-[color:var(--brand-primary)] hover:underline">nataliagonzalezmartillerapublica@ngespacios.com.ar</a></p>
+            <p class="text-neutral-700">WhatsApp: <a href="https://wa.me/5492944635083" target="_blank" rel="noreferrer" class="text-[color:var(--brand-primary)] hover:underline">+54 9 294 463 5083</a></p>
+            <p class="text-neutral-700">San Carlos de Bariloche, Río Negro, Argentina</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS: íconos, UI, galería, detalle, Admin oculto con clave -->
     <script>
       // Año
       document.getElementById('year').textContent = new Date().getFullYear();
@@ -512,6 +593,39 @@
       window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMenu(false); });
 
       // --------------------------
+      // Utilidades imágenes: normaliza URLs comunes que no cargan directo
+      // --------------------------
+      /**
+       * @function normalizeImageUrl
+       * @description Convierte enlaces de Google Drive / Dropbox a formato embebible.
+       *  - Drive (file/d/ID/view) -> https://drive.google.com/uc?export=view&id=ID
+       *  - Drive (?id=ID) -> uc?export=view&id=ID
+       *  - Dropbox (...?dl=0) -> ...?raw=1
+       */
+      function normalizeImageUrl(url) {
+        if (!url) return url;
+        try {
+          const u = new URL(url);
+          // Google Drive variantes
+          if (u.hostname.includes('drive.google.com')) {
+            // /file/d/FILE_ID/view
+            const m = u.pathname.match(/\\/file\\/d\\/([^/]+)\\/view/);
+            const id = m ? m[1] : u.searchParams.get('id');
+            if (id) return `https://drive.google.com/uc?export=view&id=${id}`;
+          }
+          // Dropbox forzar raw
+          if (u.hostname.includes('dropbox.com')) {
+            u.searchParams.set('raw', '1');
+            u.searchParams.delete('dl');
+            return u.toString();
+          }
+          return url;
+        } catch {
+          return url;
+        }
+      }
+
+      // --------------------------
       // Galería
       // --------------------------
       const WA_PHONE = '5492944635083';
@@ -527,6 +641,7 @@
       const prevBtn = document.getElementById('gallery-prev');
       const nextBtn = document.getElementById('gallery-next');
       const fichaBtn = document.getElementById('gallery-ficha-btn');
+      const downloadBtn = document.getElementById('gallery-download');
       const infoPanel = document.getElementById('gallery-info');
       const waBtn = document.getElementById('gallery-wa');
       const titleEl = document.getElementById('gallery-title');
@@ -549,7 +664,7 @@
         renderIcons();
       }
       function openGallery({ images, meta, startIndex = 0, openFicha = false }) {
-        galleryState.images = images;
+        galleryState.images = images.map(normalizeImageUrl);
         galleryState.index = Math.max(0, Math.min(startIndex, images.length - 1));
         galleryState.meta = meta;
         galleryState.infoOpen = !!openFicha;
@@ -566,16 +681,307 @@
       closeBtn.addEventListener('click', closeGallery);
       prevBtn.addEventListener('click', prevImage);
       nextBtn.addEventListener('click', nextImage);
-      fichaBtn.addEventListener('click', toggleFicha);
+      fichaBtn.addEventListener('click', () => {
+        // Abrir vista detalle con la meta actual
+        openDetail(currentDetailSource || lastOpenedProperty);
+      });
+
+      // --------------------------
+      // Vista Detalle (Ficha pantalla completa)
+      // --------------------------
+      /**
+       * @typedef {Object} CsvProperty
+       * @property {string} id
+       * @property {string} title
+       * @property {string} operation
+       * @property {string} type
+       * @property {string} location
+       * @property {string} price_label
+       * @property {string} price_amount
+       * @property {string} price_currency
+       * @property {string} price_period
+       * @property {string} bedrooms
+       * @property {string} bathrooms
+       * @property {string} garages
+       * @property {string} area_m2
+       * @property {string} lot_m2
+       * @property {string} images
+       * @property {string} features
+       * @property {string} description
+       * @property {string} status
+       */
+
+      const detailModal = document.getElementById('detail-modal');
+      const detailTitle = document.getElementById('detail-title');
+      const detailCover = document.getElementById('detail-cover');
+      const detailLocationWrap = document.getElementById('detail-location');
+      const detailLocationText = detailLocationWrap?.querySelector('span');
+      const detailBadgeOp = document.getElementById('detail-badge-op');
+      const detailBadgeType = document.getElementById('detail-badge-type');
+      const detailBadgeStatus = document.getElementById('detail-badge-status');
+      const detailPrice = document.getElementById('detail-price');
+      const detailSpecs = document.getElementById('detail-specs');
+      const detailFeatures = document.getElementById('detail-features');
+      const detailFeaturesList = document.getElementById('detail-features-list');
+      const detailDesc = document.getElementById('detail-description');
+      const detailDescText = document.getElementById('detail-description-text');
+      const detailClose = document.getElementById('detail-close');
+      const detailOpenGallery = document.getElementById('detail-open-gallery');
+      const detailDownload = document.getElementById('detail-download');
+      const detailWa = document.getElementById('detail-wa');
+
+      // Variables de estado para reusar en descargas/ver
+      let lastOpenedProperty = null; // última propiedad abierta
+      let currentDetailSource = null; // fuente actual para abrir detalle desde galería
+
+      function formatPriceObj(p) {
+        const label = p.price_label || '';
+        if (label) return label;
+        const amount = p.price_amount || '';
+        const curr = (p.price_currency || '').toUpperCase();
+        const period = p.price_period || '';
+        let text = '';
+        if (curr && amount) text = `${curr} ${amount}`;
+        else if (amount) text = amount;
+        if (period) text += ` ${period}`;
+        return text || 'Consultar';
+      }
+
+      function parseImages(str) {
+        return (str || '').split('|').map((s) => s.trim()).filter(Boolean).map(normalizeImageUrl);
+      }
+
+      /** Construye HTML de badges y specs para la ficha */
+      function buildSpecs(p) {
+        const items = [];
+        if (p.bedrooms) items.push({ icon: 'bed', text: `${p.bedrooms} hab` });
+        if (p.bathrooms) items.push({ icon: 'bath', text: `${p.bathrooms} baños` });
+        if (p.garages) items.push({ icon: 'car', text: `${p.garages} coch` });
+        if (p.area_m2) items.push({ icon: 'square', text: `${p.area_m2} m² cub.` });
+        if (p.lot_m2) items.push({ icon: 'ruler', text: `${p.lot_m2} m² lote` });
+        return items;
+      }
+
+      function hydrateDetail(p) {
+        // Portada
+        const images = parseImages(p.images);
+        const cover = images[0] || 'https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9c2d819e-9803-48cf-bd3e-07c6023fe3c8.jpg';
+
+        detailTitle.textContent = p.title || 'Ficha';
+        detailCover.src = cover;
+        detailCover.alt = p.title || 'Ficha';
+        detailLocationText.textContent = p.location || '';
+        detailBadgeOp.textContent = p.operation || '';
+        detailBadgeType.textContent = p.type || '';
+        if (p.status && p.status.trim()) {
+          detailBadgeStatus.textContent = p.status.trim();
+          detailBadgeStatus.classList.remove('hidden');
+        } else {
+          detailBadgeStatus.classList.add('hidden');
+        }
+        detailPrice.textContent = formatPriceObj(p);
+
+        // Specs
+        detailSpecs.innerHTML = '';
+        buildSpecs(p).forEach((s) => {
+          const li = document.createElement('li');
+          li.className = 'inline-flex items-center gap-1';
+          li.innerHTML = `<i data-lucide="${s.icon}" class="h-4 w-4 text-neutral-600"></i><span>${s.text}</span>`;
+          detailSpecs.appendChild(li);
+        });
+
+        // Features
+        const feats = (p.features || '').split(';').map((x) => x.trim()).filter(Boolean);
+        if (feats.length) {
+          detailFeatures.classList.remove('hidden');
+          detailFeaturesList.innerHTML = '';
+          feats.forEach((f) => {
+            const span = document.createElement('span');
+            span.className = 'px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-800 border border-neutral-200';
+            span.textContent = f;
+            detailFeaturesList.appendChild(span);
+          });
+        } else {
+          detailFeatures.classList.add('hidden');
+        }
+
+        // Descripción
+        if (p.description && p.description.trim()) {
+          detailDesc.classList.remove('hidden');
+          detailDescText.textContent = p.description.trim();
+        } else {
+          detailDesc.classList.add('hidden');
+        }
+
+        // Acciones
+        const meta = {
+          title: p.title || '',
+          operation: p.operation || '',
+          type: p.type || '',
+          location: p.location || '',
+          price: formatPriceObj(p),
+        };
+        detailWa.href = buildWaLink(meta);
+
+        // Botones
+        detailOpenGallery.onclick = () => {
+          openGallery({ images: images.length ? images : [cover], meta, startIndex: 0, openFicha: false });
+          currentDetailSource = p;
+          closeDetail();
+        };
+        detailDownload.onclick = () => downloadFichaPDF(p);
+
+        renderIcons();
+      }
+
+      function openDetail(p) {
+        if (!p) return;
+        lastOpenedProperty = p;
+        hydrateDetail(p);
+        detailModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeDetail() {
+        detailModal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      detailClose.addEventListener('click', closeDetail);
+      // Cerrar con fondo y con Esc
+      detailModal.addEventListener('click', (e) => {
+        if (e.target === detailModal || e.target === detailModal.firstElementChild) closeDetail();
+      });
+      document.addEventListener('keydown', (e) => {
+        // galería
+        if (!modal.classList.contains('hidden')) {
+          if (e.key === 'Escape') closeGallery();
+          if (e.key === 'ArrowLeft') prevImage();
+          if (e.key === 'ArrowRight') nextImage();
+        }
+        // detalle
+        if (!detailModal.classList.contains('hidden')) {
+          if (e.key === 'Escape') closeDetail();
+        }
+      });
+
+      // Descargar ficha desde la galería
+      downloadBtn.addEventListener('click', () => {
+        if (currentDetailSource) downloadFichaPDF(currentDetailSource);
+        else if (lastOpenedProperty) downloadFichaPDF(lastOpenedProperty);
+      });
+
+      /**
+       * @function downloadFichaPDF
+       * @description Abre una ventana imprimible con el contenido de la ficha. El usuario puede “Guardar como PDF”.
+       * Incluye: portada + hasta 6 fotos, título, ubicación, badges, precio, specs, features, descripción y contacto.
+       */
+      function downloadFichaPDF(p) {
+        const images = parseImages(p.images);
+        const meta = {
+          title: p.title || '',
+          operation: p.operation || '',
+          type: p.type || '',
+          location: p.location || '',
+          price: formatPriceObj(p),
+        };
+        const specs = buildSpecs(p);
+        const feats = (p.features || '').split(';').map((x) => x.trim()).filter(Boolean);
+        const cover = images[0] || 'https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9c2d819e-9803-48cf-bd3e-07c6023fe3c8.jpg';
+
+        const w = window.open('', '_blank', 'noopener,noreferrer');
+        if (!w) return alert('Desbloqueá ventanas emergentes para descargar la ficha.');
+        const doc = w.document;
+        doc.write(`
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Ficha — ${meta.title}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --brand: #572d30; --text:#111827; --muted:#6b7280; }
+    body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color: var(--text); margin: 24px; }
+    h1, h2, h3 { margin: 0 0 6px 0; }
+    .header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; border-bottom:1px solid #e5e7eb; padding-bottom:10px; margin-bottom:12px; }
+    .brand { display:flex; align-items:center; gap:10px; }
+    .logo { width:28px; height:28px; border-radius:8px; background:var(--brand); color:#fff; display:grid; place-items:center; font-weight:600; }
+    .badges { display:flex; flex-wrap:wrap; gap:6px; font-size:12px; }
+    .badge { border:1px solid #e5e7eb; border-radius:999px; padding:2px 8px; }
+    .badge-dark { background:#111827; color:#fff; }
+    .price { color: var(--brand); font-weight:700; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .cover { width:100%; aspect-ratio:4/3; object-fit:cover; border:1px solid #e5e7eb; border-radius:8px; }
+    .thumb { width:100%; aspect-ratio:4/3; object-fit:cover; border:1px solid #e5e7eb; border-radius:8px; }
+    .section { margin-top:12px; }
+    .muted { color: var(--muted); }
+    .specs { display:flex; flex-wrap:wrap; gap:10px; font-size:14px; }
+    .features { display:flex; flex-wrap:wrap; gap:6px; }
+    .chip { background:#f3f4f6; border:1px solid #e5e7eb; border-radius:12px; padding:2px 8px; font-size:12px; }
+    .contact { border-top:1px solid #e5e7eb; margin-top:14px; padding-top:8px; font-size:12px; }
+    @media print {
+      body { margin: 16px; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>${meta.title}</h1>
+      <div class="muted">${meta.location || ''}</div>
+      <div class="badges">
+        ${meta.operation ? `<span class="badge">${meta.operation}</span>` : ''}
+        ${meta.type ? `<span class="badge badge-dark">${meta.type}</span>` : ''}
+        ${p.status ? `<span class="badge">${p.status}</span>` : ''}
+      </div>
+    </div>
+    <div class="brand">
+      <div class="logo">NG</div>
+      <div>
+        <div><strong>NGespacios — Natalia González</strong></div>
+        <div class="muted" style="max-width:260px;">Martillera y Corredora Pública • Matrícula Nº 377-RP-21 Fº456 TºII</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <img src="${cover}" class="cover" alt="Portada" />
+    <div>
+      <div class="price" style="margin-bottom:8px;">${meta.price}</div>
+      <div class="specs">
+        ${specs.map(s => `<span>• ${s.text}</span>`).join('')}
+      </div>
+      ${feats.length ? `<div class="section"><h3>Características</h3><div class="features">${feats.map(f=>`<span class="chip">${f}</span>`).join('')}</div></div>` : ''}
+    </div>
+  </div>
+
+  ${p.description ? `<div class="section"><h3>Descripción</h3><div class="muted" style="white-space:pre-line">${(p.description || '').replace(/</g,'&lt;')}</div></div>` : ''}
+
+  ${images.length > 1 ? `
+  <div class="section">
+    <h3>Fotos</h3>
+    <div class="grid">
+      ${images.slice(1, 7).map(src => `<img src="${src}" class="thumb" alt="Foto" />`).join('')}
+    </div>
+  </div>` : ''}
+
+  <div class="contact">
+    <div><strong>Contacto</strong></div>
+    <div>Email: <a href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar">nataliagonzalezmartillerapublica@ngespacios.com.ar</a></div>
+    <div>WhatsApp: <a href="https://wa.me/5492944635083" target="_blank" rel="noreferrer">+54 9 294 463 5083</a></div>
+    <div>San Carlos de Bariloche, Río Negro, Argentina</div>
+  </div>
+</body>
+</html>
+        `);
+        doc.close();
+        // Pequeño delay para asegurar render antes de imprimir
+        setTimeout(() => { w.focus(); w.print(); }, 400);
+      }
+
+      // Cerrar al clickear fuera (overlay) en galería
       modal.addEventListener('click', (e) => {
         const isBackdrop = e.target === modal || e.target === modal.firstElementChild;
         if (isBackdrop) closeGallery();
-      });
-      document.addEventListener('keydown', (e) => {
-        if (modal.classList.contains('hidden')) return;
-        if (e.key === 'Escape') closeGallery();
-        if (e.key === 'ArrowLeft') prevImage();
-        if (e.key === 'ArrowRight') nextImage();
       });
 
       // --------------------------
@@ -583,8 +989,8 @@
       // --------------------------
       const LS_KEY_URL = 'ngespacios:csvUrl';
       const LS_KEY_AUTH = 'ngespacios:adminAuth';
-      const ADMIN_PASSWORD = 'Valda2412'; // CAMBIAR por tu clave
-      const AUTH_HOURS = 0;
+      const ADMIN_PASSWORD = 'NGespacios2024'; // CAMBIAR por tu clave
+      const AUTH_HOURS = 12;
 
       const adminPanel = document.getElementById('ng-admin-panel');
       const csvInput = document.getElementById('ng-csv-url');
@@ -660,9 +1066,6 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         return res.text();
       }
-      function parseImages(str) {
-        return (str || '').split('|').map((s) => s.trim()).filter(Boolean);
-      }
       function formatPrice(p) {
         const label = p.price_label || '';
         if (label) return label;
@@ -675,11 +1078,12 @@
         if (period) text += ` ${period}`;
         return text || 'Consultar';
       }
+
       function createCard(p) {
         const images = parseImages(p.images);
         const src = images[0] || 'https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9c2d819e-9803-48cf-bd3e-07c6023fe3c8.jpg';
         const meta = {
-          title: p.title || 'Sin título',
+          title: (p.title || 'Sin título'),
           operation: p.operation || '',
           type: p.type || '',
           location: p.location || '',
@@ -703,12 +1107,14 @@
         `;
         imgWrap.appendChild(badges);
 
+        // Clic en imagen → abrir galería (VER)
         const overlayBtn = document.createElement('button');
         overlayBtn.type = 'button';
         overlayBtn.className = 'absolute inset-0 z-10';
         overlayBtn.setAttribute('aria-label', 'Abrir galería');
         overlayBtn.addEventListener('click', () => {
           openGallery({ images: images.length ? images : [src], meta, startIndex: 0, openFicha: false });
+          currentDetailSource = p;
         });
         imgWrap.appendChild(overlayBtn);
         article.appendChild(imgWrap);
@@ -747,28 +1153,41 @@
 
         const actions = document.createElement('div');
         actions.className = 'flex gap-2';
+
+        // WhatsApp
         const aWa = document.createElement('a');
         aWa.href = buildWaLink(meta); aWa.target = '_blank'; aWa.rel = 'noreferrer';
         aWa.className = 'text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition';
         aWa.textContent = 'WhatsApp';
         actions.appendChild(aWa);
 
+        // VER (abre galería)
+        const btnVer = document.createElement('button');
+        btnVer.type = 'button';
+        btnVer.className = 'text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition';
+        btnVer.textContent = 'Ver';
+        btnVer.addEventListener('click', () => {
+          openGallery({ images: images.length ? images : [src], meta, startIndex: 0, openFicha: false });
+          currentDetailSource = p;
+        });
+        actions.appendChild(btnVer);
+
+        // FICHA (abre vista detalle con descripción)
         const btnFicha = document.createElement('button');
         btnFicha.type = 'button';
-        btnFicha.className = 'text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition';
+        btnFicha.className = 'text-sm rounded-md border border-neutral-300 text-neutral-800 px-3 py-1.5 hover:bg-neutral-50 transition';
         btnFicha.textContent = 'Ficha';
-        btnFicha.addEventListener('click', () => {
-          openGallery({ images: images.length ? images : [src], meta, startIndex: 0, openFicha: true });
-        });
+        btnFicha.addEventListener('click', () => openDetail(p));
         actions.appendChild(btnFicha);
-        footer.appendChild(actions);
 
+        footer.appendChild(actions);
         body.appendChild(footer);
         article.appendChild(body);
 
         renderIcons();
         return article;
       }
+
       function renderToMainGrid(list) {
         grid.innerHTML = '';
         if (!list || !list.length) {
@@ -799,7 +1218,7 @@
         }
       }
 
-      // Botones del panel (siempre requieren auth aunque el panel ya esté abierto)
+      // Botones del panel (siempre requieren auth)
       document.getElementById('ng-btn-test')?.addEventListener('click', () => {
         requireAuth(() => {
           const v = (csvInput.value || '').trim();
@@ -827,9 +1246,7 @@
         const reset = () => { taps = 0; if (timer) { clearTimeout(timer); timer = null; } };
         logo.addEventListener('click', (e) => {
           taps++;
-          if (taps === 1) {
-            timer = setTimeout(reset, 2000); // ventana de 2s
-          }
+          if (taps === 1) { timer = setTimeout(reset, 2000); }
           if (taps >= 5) {
             reset();
             requireAuth(() => {
@@ -845,7 +1262,7 @@
         });
       })();
 
-      // Init: carga URL guardada sin mostrar el panel. Soporta ?admin=1 (con clave)
+      // Init
       (function init() {
         const saved = localStorage.getItem(LS_KEY_URL);
         if (saved) loadFrom(saved); else gridEmpty.classList.remove('hidden');
