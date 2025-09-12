@@ -1022,5 +1022,47 @@
         setTimeout(() => obs.disconnect(), 8000);
       })();
     </script>
+
+    <!-- Admin force-open helper: ensures the panel shows when ?admin=1 (supports ngd- and ng- variants) -->
+    <script>
+      /**
+       * @file force-admin-open
+       * @description If the URL contains ?admin=1, make any admin panel visible (ngd- or ng- variants).
+       */
+      (function forceOpenAdmin(){
+        try {
+          const u = new URL(location.href);
+          if (u.searchParams.get('admin') !== '1') return;
+        } catch { return; }
+
+        const SHOW = (el) => {
+          if (!el) return false;
+          el.classList?.remove('hidden', 'ng-hidden');
+          if (el.style) { el.style.display = 'block'; el.style.visibility = 'visible'; }
+          el.setAttribute?.('aria-hidden','false');
+          el.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+          return true;
+        };
+
+        const tryShow = () => {
+          const a = document.getElementById('ngd-admin-panel') || document.getElementById('ng-admin-panel');
+          if (a) {
+            SHOW(a);
+            const t = document.getElementById('ngd-admin-toggle') || document.getElementById('ng-admin-toggle');
+            if (t) t.setAttribute('aria-pressed','true');
+            const i = document.getElementById('ngd-csv') || document.getElementById('ng-csv-url') || a.querySelector('input[type="url"]');
+            i?.focus();
+            return true;
+          }
+          return false;
+        };
+
+        if (tryShow()) return;
+        const maxMs = 2000; const start = Date.now();
+        const iv = setInterval(() => {
+          if (tryShow() || Date.now() - start > maxMs) clearInterval(iv);
+        }, 120);
+      })();
+    </script>
   </body>
 </html>
