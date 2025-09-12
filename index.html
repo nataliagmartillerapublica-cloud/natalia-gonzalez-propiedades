@@ -1,44 +1,28 @@
-<!--
-  index.html (NGespacios)
-  - Header con logo y nav + botón Admin visible
-  - Panel Admin para pegar URL CSV pública de Google Sheets
-  - Grilla de propiedades renderizada desde CSV
-  - Galería con carrusel simple + Ficha + Descargar ficha (PDF con logo en encabezado, opción A)
-  - Tasación, Contacto, Footer
--->
-
 <!doctype html>
+<!--
+  @file index.html
+  @description HTML de arranque para la SPA React. Define el contenedor #app y
+               meta-etiquetas básicas. No incluye contenido estático; todo lo
+               renderiza React.
+-->
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>NGespacios — Inmobiliaria en Bariloche</title>
-    <meta
-      name="description"
-      content="NGespacios — Tu próximo hogar en Bariloche. Venta, alquiler, tasaciones y acompañamiento personalizado."
-    />
+    <meta name="description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
+    <meta name="theme-color" content="#572d30" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph básico -->
     <meta property="og:title" content="NGespacios — Inmobiliaria en Bariloche" />
-    <meta
-      property="og:description"
-      content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche."
-    />
-    <meta
-      property="og:image"
-      content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/a1e13e5a-7034-4d9c-8295-9a73d6f21947.jpg"
-    />
+    <meta property="og:description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/6c715f6c-1c32-408f-9cf2-57c23396ba62.jpg" />
 
-    <!-- Fuente + Tailwind + Lucide -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Favicon (SVG) -->
+    <link rel="icon" href="/static/logo-ngespacios-square.svg" type="image/svg+xml" />
 
-    <!-- Estilos base de marca -->
+    <!-- Variables de marca mínimas para evitar FOUC -->
     <style>
       :root {
         --brand-bg: #f4f2f2;
@@ -47,36 +31,32 @@
       }
       html, body { height: 100%; }
       body {
-        font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-        color: var(--brand-text);
+        margin: 0;
         background: var(--brand-bg);
-        font-weight: 300;
-        letter-spacing: 0.01em;
+        color: var(--brand-text);
+        font-synthesis-weight: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
-      a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
-        outline: 2px solid var(--brand-primary);
-        outline-offset: 2px;
-        border-radius: 6px;
+      /* Ayuda visual si JS no carga */
+      .nojs {
+        position: fixed; inset: 0;
+        display: grid; place-items: center;
+        padding: 16px;
+        background: #fff0;
+        color: #111;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, sans-serif;
       }
-      .container-max { max-width: 72rem; }
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-      /* Admin UI */
-      #ng-admin-panel .ng-card {
-        background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
-        box-shadow: 0 1px 2px rgba(16,24,40,0.04); padding: 14px;
-      }
-      #ng-admin-panel .ng-btn {
-        display: inline-flex; align-items: center; gap: 8px; border-radius: 10px;
-        padding: 8px 12px; font-size: 14px; border: 1px solid #d1d5db; background: #fff; color: #374151;
-      }
-      #ng-admin-panel .ng-btn:hover { background: #f9fafb; }
-      #ng-admin-panel .ng-btn-primary { border-color: #0ea5e9; background: #0284c7; color: #fff; }
-      #ng-admin-panel .ng-btn-primary:hover { background: #0369a1; }
-      #ng-admin-panel .ng-input {
-        width: 100%; border: 1px solid #d1d5db; border-radius: 10px; padding: 10px 12px; font-size: 14px; outline: none;
-      }
-      #ng-admin-panel .ng-input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.2); }
-      #ng-admin-panel .ng-msg { font-size: 13px; }
-      #ng-admin-panel .ng-msg.hint { color: #6b
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <div class="nojs">
+        Esta aplicación requiere JavaScript para funcionar. Por favor, activalo en tu navegador.
+      </div>
+    </noscript>
+    <!-- Contenedor que React necesita -->
+    <div id="app"></div>
+  </body>
+</html>
