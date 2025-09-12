@@ -1,7 +1,16 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
-  "trailingSlash": false,
   "redirects": [
-    { "source": "/admin", "destination": "/admin.html", "permanent": false }
+    { "source": "/admin", "destination": "/admin.html", "permanent": false },
+    { "source": "/admin/", "destination": "/admin.html", "permanent": false }
+  ],
+  "headers": [
+    {
+      "source": "/admin.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, max-age=0" }
+      ]
+    }
   ]
 }
