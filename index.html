@@ -1,6 +1,6 @@
 <!--
   @file index.html
-  @description NGespacios — Sitio público. Carga propiedades desde Google Sheets (CSV),
+  @description NGespacios — Sitio público. Carga propiedades desde Google Sheets (CSV), 
                incluye buscador funcional y galería. Sin panel Admin embebido.
                Anti-badge para ocultar cualquier overlay de Vercel o similares.
 -->
@@ -68,15 +68,28 @@
       .no-scrollbar::-webkit-scrollbar { display: none; }
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-      /* Anti-badge (oculta cualquier logo/botón inyectado del hosting: Vercel/insights) */
+      /* Anti-badge (oculta cualquier logo/botón/overlay inyectado del hosting: Vercel/insights) */
       a[href*="vercel.com"],
-      [aria-label*="Vercel"],
+      a[href*="vercel.app"],
+      [aria-label*="Vercel" i],
+      [aria-label*="vercel" i],
       [data-vercel-insights],
+      [data-vercel-analytics],
       [data-ai-insights],
-      img[alt*="vercel"],
-      .vercel-badge {
+      [data-nextjs-toast],
+      [data-vc],
+      [data-vercel-banner],
+      img[alt*="vercel" i],
+      iframe[src*="vercel" i],
+      .vercel-badge,
+      #vercel,
+      #__vercel {
         display: none !important;
         visibility: hidden !important;
+        pointer-events: none !important;
+        width: 0 !important;
+        height: 0 !important;
+        opacity: 0 !important;
       }
     </style>
   </head>
@@ -85,16 +98,14 @@
     <!-- Header -->
     <header class="sticky top-0 z-30 w-full border-b border-neutral-200 bg-[color:var(--brand-bg)]/90 backdrop-blur-md">
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between">
-        <a href="#" class="flex items-end gap-2" aria-label="NGespacios - Inicio">
-          <!-- Logo apilado: cuadrado más chico + texto ESPACIOS -->
-          <div class="flex flex-col leading-none">
-            <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
-              <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
-            </div>
-            <span class="mt-0.5 text-[10px] tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">
-              ESPACIOS
-            </span>
+        <a href="#" class="flex items-center gap-2" aria-label="NGespacios - Inicio">
+          <!-- Logo horizontal: cuadrado “NG” + texto ESPACIOS a la derecha -->
+          <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
+            <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
           </div>
+          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">
+            ESPACIOS
+          </span>
         </a>
 
         <nav class="hidden md:flex items-center gap-6 text-sm">
@@ -556,7 +567,7 @@
         let i = 0, field = '', row = [], inQuotes = false;
 
         function pushField() {
-          row.push(field.replace(/\"\"/g, '\"'));
+          row.push(field.replace(/\\"\\"/g, '\\"'));
           field = '';
         }
         function pushRow() {
@@ -567,9 +578,9 @@
         while (i < text.length) {
           const c = text[i];
           if (inQuotes) {
-            if (c === '\"') {
-              if (text[i + 1] === '\"') {
-                field += '\"';
+            if (c === '\\"') {
+              if (text[i + 1] === '\\"') {
+                field += '\\"';
                 i += 2; continue;
               } else {
                 inQuotes = false; i++; continue;
@@ -578,10 +589,10 @@
               field += c; i++; continue;
             }
           } else {
-            if (c === '\"') { inQuotes = true; i++; continue; }
+            if (c === '\\"') { inQuotes = true; i++; continue; }
             if (c === ',') { pushField(); i++; continue; }
-            if (c === '\n') { pushField(); pushRow(); i++; continue; }
-            if (c === '\r') { i++; continue; }
+            if (c === '\\n') { pushField(); pushRow(); i++; continue; }
+            if (c === '\\r') { i++; continue; }
             field += c; i++;
           }
         }
@@ -980,6 +991,36 @@
 
       // Init
       bootstrap();
+    </script>
+
+    <!-- Script anti-badge adicional: elimina overlays/badges inyectados por hosts (p. ej. Vercel) -->
+    <script>
+      (function hideHostBadges(){
+        const selectors = [
+          'a[href*="vercel.com"]',
+          'a[href*="vercel.app"]',
+          '[aria-label*="Vercel" i]',
+          '[aria-label*="vercel" i]',
+          '[data-vercel-insights]',
+          '[data-vercel-analytics]',
+          '[data-ai-insights]',
+          '[data-nextjs-toast]',
+          '[data-vc]',
+          '[data-vercel-banner]',
+          'img[alt*="vercel" i]',
+          'iframe[src*="vercel" i]',
+          '.vercel-badge',
+          '#vercel',
+          '#__vercel'
+        ];
+        const removeAll = () => {
+          try { document.querySelectorAll(selectors.join(',')).forEach((el) => el.remove()); } catch {}
+        };
+        const obs = new MutationObserver(removeAll);
+        obs.observe(document.documentElement, { subtree: true, childList: true });
+        removeAll();
+        setTimeout(() => obs.disconnect(), 8000);
+      })();
     </script>
   </body>
 </html>
