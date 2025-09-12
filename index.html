@@ -1,28 +1,36 @@
-<!doctype html>
 <!--
   @file index.html
-  @description HTML de arranque para la SPA React. Define el contenedor #app y
-               meta-etiquetas básicas. No incluye contenido estático; todo lo
-               renderiza React.
+  @description Landing estática de NGespacios, lista para publicar en Vercel/GitHub Pages sin build.
+               Incluye Tailwind CDN, Google Fonts, íconos Lucide, tarjetas de propiedades,
+               galería modal con carrusel, botón de WhatsApp y un drop‑in Admin para leer un CSV (Google Sheets).
 -->
+
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>NGespacios — Inmobiliaria en Bariloche</title>
     <meta name="description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta name="theme-color" content="#572d30" />
 
-    <!-- Open Graph básico -->
+    <!-- Open Graph -->
     <meta property="og:title" content="NGespacios — Inmobiliaria en Bariloche" />
     <meta property="og:description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/6c715f6c-1c32-408f-9cf2-57c23396ba62.jpg" />
+    <meta property="og:image" content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ea65a1b8-690c-4544-909e-d44a40ea8675.jpg" />
 
-    <!-- Favicon (SVG) -->
-    <link rel="icon" href="/static/logo-ngespacios-square.svg" type="image/svg+xml" />
+    <!-- Fuente -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
-    <!-- Variables de marca mínimas para evitar FOUC -->
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Estilos de marca y accesibilidad -->
     <style>
       :root {
         --brand-bg: #f4f2f2;
@@ -31,32 +39,871 @@
       }
       html, body { height: 100%; }
       body {
-        margin: 0;
-        background: var(--brand-bg);
+        font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
         color: var(--brand-text);
-        font-synthesis-weight: none;
-        text-rendering: optimizeLegibility;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+        background: var(--brand-bg);
+        font-weight: 300;
+        letter-spacing: 0.01em;
+        margin: 0;
       }
-      /* Ayuda visual si JS no carga */
-      .nojs {
-        position: fixed; inset: 0;
-        display: grid; place-items: center;
-        padding: 16px;
-        background: #fff0;
-        color: #111;
-        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, sans-serif;
+      a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
+        outline: 2px solid var(--brand-primary);
+        outline-offset: 2px;
+        border-radius: 6px;
       }
+      /* Utilidades */
+      .container-max { max-width: 72rem; } /* ~6xl */
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
   </head>
-  <body>
+
+  <body class="min-h-screen bg-[color:var(--brand-bg)] text-[color:var(--brand-text)]">
     <noscript>
-      <div class="nojs">
-        Esta aplicación requiere JavaScript para funcionar. Por favor, activalo en tu navegador.
+      <div class="fixed inset-0 grid place-items-center p-6">
+        <div class="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm text-sm text-neutral-700">
+          Esta página utiliza JavaScript para la galería y el panel Admin.
+        </div>
       </div>
     </noscript>
-    <!-- Contenedor que React necesita -->
-    <div id="app"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-30 w-full border-b border-neutral-200 bg-[color:var(--brand-bg)]/90 backdrop-blur-md">
+      <div class="mx-auto container-max px-4 h-16 flex items-center justify-between">
+        <a href="#" class="flex items-end gap-2" aria-label="NGespacios - Inicio">
+          <div class="flex flex-col leading-none">
+            <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
+              <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
+            </div>
+            <span class="mt-0.5 text-[10px] tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">ESPACIOS</span>
+          </div>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-6 text-sm">
+          <a href="#propiedades" class="hover:text-[color:var(--brand-primary)]">Propiedades</a>
+          <a href="#tasacion" class="hover:text-[color:var(--brand-primary)]">Tasación</a>
+          <a href="#contacto" class="hover:text-[color:var(--brand-primary)]">Contacto</a>
+          <a href="#propiedades" class="rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors">Ver propiedades</a>
+        </nav>
+
+        <button id="btn-mobile" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu" type="button">
+          <i data-lucide="menu" class="h-4 w-4"></i>
+        </button>
+      </div>
+
+      <!-- Menú móvil -->
+      <div id="mobile-menu" class="md:hidden hidden border-t border-neutral-200 bg-[color:var(--brand-bg)]/95 backdrop-blur-md">
+        <div class="mx-auto container-max px-4 py-3">
+          <div class="grid gap-2 text-sm">
+            <a href="#propiedades" class="py-2 hover:text-[color:var(--brand-primary)]">Propiedades</a>
+            <a href="#tasacion" class="py-2 hover:text-[color:var(--brand-primary)]">Tasación</a>
+            <a href="#contacto" class="py-2 hover:text-[color:var(--brand-primary)]">Contacto</a>
+            <a href="#propiedades" class="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors">Ver propiedades</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="relative isolate">
+        <div class="absolute inset-0 -z-10">
+          <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c0105bbf-bf3c-42e0-bc2b-88d39c05c4aa.jpg" alt="Lago en Bariloche" class="object-cover w-full h-full" />
+          <div class="absolute inset-0 bg-[color:var(--brand-bg)] mix-blend-multiply opacity-30"></div>
+          <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/30"></div>
+        </div>
+
+        <div class="mx-auto container-max px-4 py-16 md:py-24">
+          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">
+            Natalia González • Martillera y Corredora Pública • MAT. Nº377- RP-21 Fº456 TºII
+          </p>
+          <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">Tu próximo hogar en Bariloche</h1>
+          <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">Acompañamiento de punta a punta.</p>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="#propiedades" class="rounded-lg bg-[color:var(--brand-primary)] text-white px-5 py-2.5 text-sm md:text-base hover:opacity-90 transition">Ver propiedades</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel de búsqueda (simple) -->
+      <div class="mx-auto container-max px-4 -mt-14 relative z-10">
+        <form class="rounded-xl border border-neutral-200 bg-white p-4 md:p-5 shadow-sm">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div class="flex flex-col">
+              <label class="text-xs text-neutral-600 mb-1">Operación</label>
+              <select class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
+                <option>Venta</option>
+                <option>Alquiler</option>
+              </select>
+            </div>
+            <div class="flex flex-col">
+              <label class="text-xs text-neutral-600 mb-1">Tipo</label>
+              <select class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
+                <option>Casa</option>
+                <option>Departamento</option>
+                <option>Lote</option>
+                <option>Local</option>
+              </select>
+            </div>
+            <div class="flex flex-col">
+              <label class="text-xs text-neutral-600 mb-1">Barrio/Zona</label>
+              <input class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Ej. Centro" />
+            </div>
+            <div class="flex items-end">
+              <button type="button" class="w-full md:w-auto h-10 rounded-lg bg-[color:var(--brand-primary)] text-white px-4 hover:opacity-90 transition">Buscar</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Propiedades destacadas -->
+      <section id="propiedades" class="mx-auto container-max px-4 pt-16">
+        <div>
+          <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Selección</p>
+          <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Propiedades destacadas</h2>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1 -->
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="1"
+            data-title="Casa con vista al lago"
+            data-operation="Venta"
+            data-type="Casa"
+            data-location="Playa Bonita, Bariloche"
+            data-price="USD 380.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ab96235c-2f9a-4233-adb8-a4991075af4e.jpg|https://sider.ai/autoimage/lake house|https://sider.ai/autoimage/patagonia house"
+          >
+            <div class="relative h-48 w-full overflow-hidden">
+              <button type="button" class="absolute inset-0 z-10" aria-label="Abrir galería" data-action="open-gallery" title="Abrir galería"></button>
+              <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ab96235c-2f9a-4233-adb8-a4991075af4e.jpg" class="object-cover h-full w-full" alt="Casa con vista al lago" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">Venta</span>
+                <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium">Casa</span>
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium tracking-tight line-clamp-1">Casa con vista al lago</h3>
+              <div class="mt-1 flex items-center gap-1 text-sm text-neutral-600">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span class="line-clamp-1">Playa Bonita, Bariloche</span>
+              </div>
+              <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700">
+                <li class="inline-flex items-center gap-1"><i data-lucide="bed" class="h-4 w-4 text-neutral-600"></i><span>3 hab</span></li>
+                <li class="inline-flex items-center gap-1"><i data-lucide="bath" class="h-4 w-4 text-neutral-600"></i><span>2 baños</span></li>
+                <li class="inline-flex items-center gap-1"><i data-lucide="car" class="h-4 w-4 text-neutral-600"></i><span>2 coch</span></li>
+                <li class="inline-flex items-center gap-1"><i data-lucide="square" class="h-4 w-4 text-neutral-600"></i><span>165 m² cub.</span></li>
+                <li class="inline-flex items-center gap-1"><i data-lucide="ruler" class="h-4 w-4 text-neutral-600"></i><span>600 m² lote</span></li>
+              </ul>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-lg font-semibold text-[color:var(--brand-primary)]">USD 380.000</span>
+                <div class="flex gap-2">
+                  <a
+                    href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Casa%20con%20vista%20al%20lago%22%20%28Venta%20-%20Casa%29%20en%20Playa%20Bonita%2C%20Bariloche.%20Precio%3A%20USD%20380.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
+                    target="_blank" rel="noreferrer" class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
+                  >WhatsApp</a>
+                  <button type="button" data-action="open-gallery-ficha" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="2"
+            data-title="Departamento céntrico 2 amb."
+            data-operation="Venta"
+            data-type="Departamento"
+            data-location="Centro, Bariloche"
+            data-price="USD 125.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/79c8bc3a-b592-49a0-a8ec-faba3688f0ac.jpg|https://sider.ai/autoimage/apartment interior|https://sider.ai/autoimage/city apartment"
+          >
+            <div class="relative h-48 w-full overflow-hidden">
+              <button type="button" class="absolute inset-0 z-10" aria-label="Abrir galería" data-action="open-gallery" title="Abrir galería"></button>
+              <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/79c8bc3a-b592-49a0-a8ec-faba3688f0ac.jpg" class="object-cover h-full w-full" alt="Departamento céntrico 2 amb." />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">Venta</span>
+                <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium">Departamento</span>
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium tracking-tight line-clamp-1">Departamento céntrico 2 amb.</h3>
+              <div class="mt-1 flex items-center gap-1 text-sm text-neutral-600">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span class="line-clamp-1">Centro, Bariloche</span>
+              </div>
+              <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700">
+                <li class="inline-flex items-center gap-1"><i data-lucide="bed" class="h-4 w-4 text-neutral-600"></i><span>1 hab</span></li>
+                <li class="inline-flex items-center gap-1"><i data-lucide="bath" class="h-4 w-4 text-neutral-600"></i><span>1 baño</span></li>
+                <li class="inline-flex items-center gap-1"><i data-lucide="square" class="h-4 w-4 text-neutral-600"></i><span>48 m² cub.</span></li>
+              </ul>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-lg font-semibold text-[color:var(--brand-primary)]">USD 125.000</span>
+                <div class="flex gap-2">
+                  <a
+                    href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Departamento%20c%C3%A9ntrico%202%20amb.%22%20%28Venta%20-%20Departamento%29%20en%20Centro%2C%20Bariloche.%20Precio%3A%20USD%20125.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
+                    target="_blank" rel="noreferrer" class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
+                  >WhatsApp</a>
+                  <button type="button" data-action="open-gallery-ficha" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="3"
+            data-title="Local sobre avenida principal"
+            data-operation="Alquiler"
+            data-type="Local"
+            data-location="Av. Bustillo Km 2, Bariloche"
+            data-price="USD 950/mes"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9e1f0894-9b5c-4faf-ac0c-f89d21816514.jpg|https://sider.ai/autoimage/retail interior|https://sider.ai/autoimage/storefront"
+          >
+            <div class="relative h-48 w-full overflow-hidden">
+              <button type="button" class="absolute inset-0 z-10" aria-label="Abrir galería" data-action="open-gallery" title="Abrir galería"></button>
+              <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/9e1f0894-9b5c-4faf-ac0c-f89d21816514.jpg" class="object-cover h-full w-full" alt="Local sobre avenida principal" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">Alquiler</span>
+                <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium">Local</span>
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium tracking-tight line-clamp-1">Local sobre avenida principal</h3>
+              <div class="mt-1 flex items-center gap-1 text-sm text-neutral-600">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span class="line-clamp-1">Av. Bustillo Km 2, Bariloche</span>
+              </div>
+              <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700">
+                <li class="inline-flex items-center gap-1"><i data-lucide="bath" class="h-4 w-4 text-neutral-600"></i><span>1 baño</span></li>
+                <li class="inline-flex items-center gap-1"><i data-lucide="square" class="h-4 w-4 text-neutral-600"></i><span>75 m² cub.</span></li>
+              </ul>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-lg font-semibold text-[color:var(--brand-primary)]">USD 950/mes</span>
+                <div class="flex gap-2">
+                  <a
+                    href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Local%20sobre%20avenida%20principal%22%20%28Alquiler%20-%20Local%29%20en%20Av.%20Bustillo%20Km%202%2C%20Bariloche.%20Precio%3A%20USD%20950%2Fmes.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
+                    target="_blank" rel="noreferrer" class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
+                  >WhatsApp</a>
+                  <button type="button" data-action="open-gallery-ficha" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article
+            class="group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition"
+            data-id="4"
+            data-title="Lote con bosque nativo"
+            data-operation="Venta"
+            data-type="Lote"
+            data-location="Arelauquen, Bariloche"
+            data-price="USD 85.000"
+            data-images="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/3e3adf52-c027-43a9-97d4-97fb2a62841d.jpg|https://sider.ai/autoimage/forest land|https://sider.ai/autoimage/mountain lot"
+          >
+            <div class="relative h-48 w-full overflow-hidden">
+              <button type="button" class="absolute inset-0 z-10" aria-label="Abrir galería" data-action="open-gallery" title="Abrir galería"></button>
+              <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/3e3adf52-c027-43a9-97d4-97fb2a62841d.jpg" class="object-cover h-full w-full" alt="Lote con bosque nativo" />
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="rounded-md bg-white/90 px-2 py-1 text-xs font-medium">Venta</span>
+                <span class="rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium">Lote</span>
+              </div>
+            </div>
+            <div class="p-4">
+              <h3 class="font-medium tracking-tight line-clamp-1">Lote con bosque nativo</h3>
+              <div class="mt-1 flex items-center gap-1 text-sm text-neutral-600">
+                <i data-lucide="map-pin" class="h-4 w-4"></i>
+                <span class="line-clamp-1">Arelauquen, Bariloche</span>
+              </div>
+              <ul class="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700">
+                <li class="inline-flex items-center gap-1"><i data-lucide="ruler" class="h-4 w-4 text-neutral-600"></i><span>1200 m² lote</span></li>
+              </ul>
+              <div class="mt-3 flex items-center justify-between">
+                <span class="text-lg font-semibold text-[color:var(--brand-primary)]">USD 85.000</span>
+                <div class="flex gap-2">
+                  <a
+                    href="https://wa.me/5492944635083?text=Hola%20Natalia%2C%20me%20interesa%20la%20propiedad%20%22Lote%20con%20bosque%20nativo%22%20%28Venta%20-%20Lote%29%20en%20Arelauquen%2C%20Bariloche.%20Precio%3A%20USD%2085.000.%20%C2%BFPodemos%20coordinar%20una%20visita%3F%20Gracias."
+                    target="_blank" rel="noreferrer" class="text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition"
+                  >WhatsApp</a>
+                  <button type="button" data-action="open-gallery-ficha" class="text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition">Ficha</button>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Tasación / Escribime -->
+      <section id="tasacion" class="mx-auto container-max px-4 pt-20">
+        <div>
+          <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Tu propiedad</p>
+          <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Escribime</h2>
+        </div>
+        <p class="mt-2 text-neutral-700">Completá tus datos y el motivo de tu consulta; me contactaré muy pronto.</p>
+
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <form id="contact-form" class="rounded-xl border border-neutral-200 p-4 md:p-6 bg-white">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="flex flex-col">
+                <label for="nombre" class="text-xs text-neutral-600 mb-1">Nombre</label>
+                <input id="nombre" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Tu nombre" />
+              </div>
+              <div class="flex flex-col">
+                <label for="email" class="text-xs text-neutral-600 mb-1">Email</label>
+                <input id="email" type="email" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="tucorreo@mail.com" />
+              </div>
+              <div class="flex flex-col">
+                <label for="telefono" class="text-xs text-neutral-600 mb-1">Teléfono</label>
+                <input id="telefono" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="+54 9 ..." />
+              </div>
+              <div class="flex flex-col">
+                <label for="tipo" class="text-xs text-neutral-600 mb-1">Tipo de propiedad</label>
+                <select id="tipo" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
+                  <option value="" disabled selected>Seleccionar</option>
+                  <option value="Casa">Casa</option>
+                  <option value="Departamento">Departamento</option>
+                  <option value="Lote">Lote</option>
+                  <option value="Local">Local</option>
+                </select>
+              </div>
+              <div class="flex flex-col">
+                <label for="operacion" class="text-xs text-neutral-600 mb-1">Operación</label>
+                <select id="operacion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
+                  <option value="" disabled selected>Seleccionar</option>
+                  <option value="Venta">Venta</option>
+                  <option value="Alquiler">Alquiler</option>
+                </select>
+              </div>
+              <div class="flex flex-col md:col-span-2">
+                <label for="direccion" class="text-xs text-neutral-600 mb-1">Dirección</label>
+                <input id="direccion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Calle, número, barrio" />
+              </div>
+              <div class="flex flex-col md:col-span-2">
+                <label for="mensaje" class="text-xs text-neutral-600 mb-1">Mensaje</label>
+                <textarea id="mensaje" rows="4" class="rounded-lg border border-neutral-300 px-3 py-2 bg-white" placeholder="Detalles relevantes o el tema por el que querés consultar"></textarea>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[color:var(--brand-primary)] text-white h-10 px-4 hover:opacity-90 transition">Enviar</button>
+              <span id="form-ok" class="text-sm text-green-700 hidden">¡Gracias! Me contactaré a la brevedad.</span>
+            </div>
+          </form>
+
+          <div class="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50">
+            <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c4bf838c-8b53-4947-a908-295e7052c60c.jpg" alt="Bariloche" class="object-cover h-full w-full" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Contacto -->
+      <section id="contacto" class="mx-auto container-max px-4 pt-20 pb-24">
+        <div class="w-full rounded-xl border border-neutral-200 bg-white p-6 break-words">
+          <div>
+            <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Contacto</p>
+            <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Hablemos</h2>
+          </div>
+
+          <div class="mt-4 space-y-2 text-sm md:text-base">
+            <p class="text-neutral-700">
+              Email
+              <a href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline">
+                nataliagonzalezmartillerapublica@ngespacios.com.ar
+              </a>
+            </p>
+            <p class="text-neutral-700">
+              WhatsApp
+              <a href="https://wa.me/5492944635083" target="_blank" rel="noreferrer" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block">
+                +54 9 294 463 5083
+              </a>
+            </p>
+            <p class="text-neutral-700">San Carlos de Bariloche, Río Negro, Argentina</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-200 mt-8">
+      <div class="mx-auto container-max px-4 h-16 flex items-center justify-between text-sm">
+        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium">NGespacios — Natalia González</span></p>
+        <p class="text-neutral-700">Hecho con ♥ en Bariloche</p>
+      </div>
+    </footer>
+
+    <!-- WhatsApp Floating -->
+    <a
+      href="https://wa.me/5492944635083"
+      target="_blank"
+      rel="noreferrer"
+      class="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-green-600 text-white px-4 py-2 shadow-lg hover:bg-green-700 transition"
+      aria-label="Contactar por WhatsApp"
+    >
+      <i data-lucide="message-circle" class="h-5 w-5"></i>
+      WhatsApp
+    </a>
+
+    <!-- Modal Galería con Carrusel + Ficha -->
+    <div id="gallery-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="gallery-title">
+      <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+
+      <div class="relative h-full w-full flex items-center justify-center px-4">
+        <!-- Controles superiores -->
+        <div class="absolute top-3 right-3 flex items-center gap-2 z-50">
+          <a id="gallery-wa" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-green-600 text-white hover:bg-green-700 transition" title="WhatsApp" aria-label="Abrir WhatsApp">
+            <i data-lucide="message-circle" class="h-4 w-4"></i>
+          </a>
+          <button id="gallery-ficha-btn" type="button" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition" title="Ficha" aria-label="Ver ficha">
+            <i data-lucide="file-text" class="h-4 w-4"></i>
+          </button>
+          <button id="gallery-close" type="button" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition" aria-label="Cerrar" title="Cerrar">
+            <i data-lucide="x" class="h-4 w-4"></i>
+          </button>
+        </div>
+
+        <!-- Flechas -->
+        <button id="gallery-prev" type="button" class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40" aria-label="Anterior" title="Anterior">
+          <i data-lucide="chevron-left" class="h-4 w-4"></i>
+        </button>
+        <button id="gallery-next" type="button" class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40" aria-label="Siguiente" title="Siguiente">
+          <i data-lucide="chevron-right" class="h-4 w-4"></i>
+        </button>
+
+        <!-- Imagen -->
+        <figure class="relative w-full max-w-5xl aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9]">
+          <img id="gallery-img" src="" alt="" class="object-contain w-full h-full select-none" />
+          <figcaption id="gallery-counter" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 px-2 py-1 rounded-md"></figcaption>
+        </figure>
+
+        <!-- Ficha compacta -->
+        <div id="gallery-info" class="hidden absolute left-1/2 -translate-x-1/2 bottom-4 w-[95%] max-w-2xl rounded-lg border border-neutral-200 bg-white/95 backdrop-blur p-3 md:p-4 shadow-lg z-40">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 id="gallery-title" class="text-sm md:text-base font-medium tracking-tight"></h3>
+              <p id="gallery-sub" class="text-xs text-neutral-600 mt-0.5"></p>
+              <div class="mt-2 inline-flex items-center gap-2">
+                <span id="gallery-badge-op" class="text-[10px] rounded-md bg-neutral-100 px-2 py-1"></span>
+                <span id="gallery-badge-type" class="text-[10px] rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1"></span>
+              </div>
+            </div>
+            <div class="text-[color:var(--brand-primary)] text-sm md:text-base font-semibold shrink-0" id="gallery-price"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS: utilidades, menú móvil, formulario, galería -->
+    <script>
+      // Año en footer
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Lucide render
+      const renderIcons = () => { if (window.lucide) window.lucide.createIcons(); };
+      window.addEventListener('DOMContentLoaded', renderIcons);
+
+      // Scroll suave
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          const href = a.getAttribute('href');
+          if (!href || href === '#') return;
+          const el = document.querySelector(href);
+          if (el) {
+            e.preventDefault();
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // Menú móvil
+      const btnMobile = document.getElementById('btn-mobile');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const toggleMenu = (open) => {
+        const willOpen = typeof open === 'boolean' ? open : mobileMenu.classList.contains('hidden');
+        mobileMenu.classList.toggle('hidden', !willOpen);
+        btnMobile?.setAttribute('aria-expanded', String(willOpen));
+        if (window.lucide) {
+          btnMobile.innerHTML = willOpen ? '<i data-lucide="x" class="h-4 w-4"></i>' : '<i data-lucide="menu" class="h-4 w-4"></i>';
+          window.lucide.createIcons();
+        }
+      };
+      btnMobile?.addEventListener('click', () => toggleMenu());
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMenu(false); });
+      mobileMenu?.querySelectorAll('a').forEach((link) => { link.addEventListener('click', () => toggleMenu(false)); });
+      window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMenu(false); });
+
+      // Simulación submit del formulario
+      const form = document.getElementById('contact-form');
+      const ok = document.getElementById('form-ok');
+      form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        ok?.classList.remove('hidden');
+        setTimeout(() => { form.reset(); }, 200);
+      });
+
+      // --------------------------
+      // Galería con carrusel
+      // --------------------------
+      const WA_PHONE = '5492944635083';
+
+      function buildWaLink({ title, operation, type, location, price }) {
+        const msg = `Hola Natalia, me interesa la propiedad "${title}" (${operation} - ${type}) en ${location}. Precio: ${price}. ¿Podemos coordinar una visita? Gracias.`;
+        return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(msg)}`;
+      }
+
+      const galleryState = {
+        images: [],
+        index: 0,
+        meta: { title: '', operation: '', type: '', location: '', price: '' },
+        infoOpen: false,
+      };
+
+      const modal = document.getElementById('gallery-modal');
+      const imgEl = document.getElementById('gallery-img');
+      const counterEl = document.getElementById('gallery-counter');
+      const closeBtn = document.getElementById('gallery-close');
+      const prevBtn = document.getElementById('gallery-prev');
+      const nextBtn = document.getElementById('gallery-next');
+      const fichaBtn = document.getElementById('gallery-ficha-btn');
+      const infoPanel = document.getElementById('gallery-info');
+      const waBtn = document.getElementById('gallery-wa');
+
+      const titleEl = document.getElementById('gallery-title');
+      const subEl = document.getElementById('gallery-sub');
+      const priceEl = document.getElementById('gallery-price');
+      const badgeOp = document.getElementById('gallery-badge-op');
+      const badgeType = document.getElementById('gallery-badge-type');
+
+      function updateGalleryUI() {
+        if (!galleryState.images.length) return;
+        imgEl.src = galleryState.images[galleryState.index];
+        imgEl.alt = galleryState.meta.title || 'Imagen de propiedad';
+        counterEl.textContent = (galleryState.index + 1) + ' / ' + galleryState.images.length;
+
+        titleEl.textContent = galleryState.meta.title;
+        subEl.textContent = galleryState.meta.location;
+        priceEl.textContent = galleryState.meta.price;
+        badgeOp.textContent = galleryState.meta.operation;
+        badgeType.textContent = galleryState.meta.type;
+
+        waBtn.href = buildWaLink(galleryState.meta);
+        renderIcons();
+      }
+
+      function openGallery({ images, meta, startIndex = 0, openFicha = false }) {
+        galleryState.images = images;
+        galleryState.index = Math.max(0, Math.min(startIndex, images.length - 1));
+        galleryState.meta = meta;
+        galleryState.infoOpen = !!openFicha;
+
+        infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+
+        updateGalleryUI();
+      }
+
+      function closeGallery() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+
+      function prevImage() {
+        if (!galleryState.images.length) return;
+        galleryState.index = (galleryState.index - 1 + galleryState.images.length) % galleryState.images.length;
+        updateGalleryUI();
+      }
+      function nextImage() {
+        if (!galleryState.images.length) return;
+        galleryState.index = (galleryState.index + 1) % galleryState.images.length;
+        updateGalleryUI();
+      }
+
+      function toggleFicha() {
+        galleryState.infoOpen = !galleryState.infoOpen;
+        infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
+      }
+
+      closeBtn.addEventListener('click', closeGallery);
+      prevBtn.addEventListener('click', prevImage);
+      nextBtn.addEventListener('click', nextImage);
+      fichaBtn.addEventListener('click', toggleFicha);
+
+      modal.addEventListener('click', (e) => {
+        const isBackdrop = e.target === modal || e.target === modal.firstElementChild;
+        if (isBackdrop) closeGallery();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeGallery();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'ArrowRight') nextImage();
+      });
+
+      function parseImages(str) {
+        return (str || '').split('|').map((s) => s.trim()).filter(Boolean);
+      }
+      function getCardMeta(card) {
+        return {
+          title: card.getAttribute('data-title') || '',
+          operation: card.getAttribute('data-operation') || '',
+          type: card.getAttribute('data-type') || '',
+          location: card.getAttribute('data-location') || '',
+          price: card.getAttribute('data-price') || '',
+        };
+      }
+
+      document.querySelectorAll('article[data-images]').forEach((card) => {
+        const openButtons = card.querySelectorAll('[data-action="open-gallery"]');
+        openButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const images = parseImages(card.getAttribute('data-images'));
+            const meta = getCardMeta(card);
+            openGallery({ images, meta, startIndex: 0, openFicha: false });
+          });
+        });
+
+        const openFichaBtn = card.querySelector('[data-action="open-gallery-ficha"]');
+        openFichaBtn?.addEventListener('click', () => {
+          const images = parseImages(card.getAttribute('data-images'));
+          const meta = getCardMeta(card);
+          openGallery({ images, meta, startIndex: 0, openFicha: true });
+        });
+      });
+    </script>
+
+    <!--
+      @file static/gh-admin-dropin.html
+      @description Drop-in para sitios estáticos:
+                   - Inserta un botón "Admin" junto a "Ver propiedades".
+                   - Permite configurar una URL de Google Sheets publicada como CSV.
+                   - Carga y renderiza tarjetas de propiedades desde ese CSV.
+                   - Guarda la URL en localStorage y soporta ?admin=1.
+    -->
+    <div
+      id="ngespacios-admin-dropin"
+      data-csv-default="https://docs.google.com/spreadsheets/d/e/2PACX-1vRE45mae2W4RPiAVFq7Jl8E0WeD7XXoPxXDT6oGKXFPxAACcGVC30Bq-FUcbM90iIn5H-5ddOr9hl1K/pub?output=csv"
+      data-cta-text="ver propiedades"
+    >
+      <style>
+        #ngespacios-admin-dropin * { box-sizing: border-box; }
+        #ngespacios-admin-dropin .ng-hidden { display: none !important; }
+        .ng-card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow:0 1px 2px rgba(16,24,40,0.04); padding:16px; }
+        .ng-muted { color:#6b7280; } .ng-strong { color:#111827; } .ng-accent { color:#0c4a6e; }
+        .ng-badge { display:inline-block; border:1px solid #e5e7eb; color:#374151; border-radius:999px; padding:2px 8px; font-size:12px; line-height:18px; background:#f9fafb; }
+        .ng-btn { display:inline-flex; align-items:center; gap:8px; border-radius:10px; padding:8px 12px; font-size:14px; border:1px solid #d1d5db; background:#fff; color:#374151; cursor:pointer; }
+        .ng-btn:hover { background:#f9fafb; }
+        .ng-btn-primary { border-color:#0ea5e9; background:#0284c7; color:#fff; }
+        .ng-btn-primary:hover { background:#0369a1; }
+        .ng-btn-ghost { background:#fff; color:#0c4a6e; border-color:#cbd5e1; }
+        .ng-btn-ghost[aria-pressed="true"] { background:#e0f2fe; color:#075985; border-color:#0ea5e9; }
+        .ng-input { width:100%; border:1px solid #d1d5db; border-radius:10px; padding:10px 12px; font-size:14px; outline:none; }
+        .ng-input:focus { border-color:#0ea5e9; box-shadow:0 0 0 3px rgba(14,165,233,0.2); }
+        .ng-grid { display:grid; grid-template-columns:repeat(1,minmax(0,1fr)); gap:16px; }
+        @media (min-width:640px){ .ng-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+        @media (min-width:1024px){ .ng-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+        .ng-card-image { width:100%; aspect-ratio:4/3; border-radius:10px; overflow:hidden; background:linear-gradient(135deg,#e5e7eb,#f3f4f6); border:1px solid #e5e7eb; }
+        .ng-card-image img { width:100%; height:100%; object-fit:cover; display:block; }
+        .ng-card-title { font-weight:700; font-size:16px; color:#111827; margin:8px 0 2px; }
+        .ng-card-sub { font-size:13px; color:#6b7280; margin-bottom:8px; }
+        .ng-price { font-weight:600; color:#0c4a6e; margin-bottom:8px; }
+        .ng-section { max-width:1120px; margin:0 auto; padding:16px; }
+        .ng-section h2 { font-size:24px; font-weight:800; margin:4px 0 2px; color:#111827; }
+        .ng-flex-between { display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:8px; }
+        .ng-fab { position:fixed; right:16px; bottom:16px; z-index:50; }
+        .ng-alert { margin-top:8px; font-size:13px; }
+        .ng-error { color:#b91c1c; } .ng-hint { color:#6b7280; }
+      </style>
+
+      <!-- Panel Admin -->
+      <section id="ng-admin-panel" class="ng-card ng-section ng-hidden" role="region" aria-label="Panel de administración">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+          <div class="ng-strong" style="display:flex; align-items:center; gap:8px; font-size:14px;"><span aria-hidden="true">🔗</span> Fuente de datos (CSV público)</div>
+          <input id="ng-csv-url" type="url" placeholder="https://docs.google.com/spreadsheets/.../export?format=csv" class="ng-input" style="flex:1 1 320px;" aria-label="URL de Google Sheets en formato CSV" />
+          <button id="ng-btn-test" class="ng-btn" title="Probar carga">⟳ Probar</button>
+          <button id="ng-btn-save" class="ng-btn ng-btn-primary" title="Guardar en este navegador">✔ Guardar</button>
+        </div>
+        <p id="ng-admin-msg" class="ng-alert ng-hint">Publicá tu hoja como CSV en Google Sheets o compartila como “Cualquiera con el enlace: lector”.</p>
+      </section>
+
+      <!-- Sección Propiedades (listado) -->
+      <section id="propiedades-list" class="ng-section" aria-label="Propiedades">
+        <div class="ng-flex-between">
+          <div>
+            <h2>Propiedades</h2>
+            <p class="ng-muted" style="font-size:13px;">Listado leído desde tu hoja publicada.</p>
+          </div>
+          <span id="ng-results" class="ng-muted" style="font-size:13px;"></span>
+        </div>
+        <div id="ng-grid" class="ng-grid"></div>
+        <div id="ng-empty" class="ng-card ng-hidden" style="text-align:center;">
+          <p class="ng-strong" style="margin-bottom:4px;">No hay propiedades para mostrar</p>
+          <p class="ng-muted" style="font-size:13px;">Verificá el enlace de CSV o agregá filas en tu hoja. Luego tocá “Probar”.</p>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      ;(() => {
+        const LS_KEY = 'ngespacios:csvUrl'
+        const root = document.getElementById('ngespacios-admin-dropin'); if (!root) return
+        const CTA_TEXT = (root.dataset.ctaText || 'ver propiedades').toLowerCase().trim()
+        const defaultCsv = root.dataset.csvDefault || ''
+
+        const elPanel = document.getElementById('ng-admin-panel')
+        const elInput = document.getElementById('ng-csv-url')
+        const elMsg = document.getElementById('ng-admin-msg')
+        const elGrid = document.getElementById('ng-grid')
+        const elEmpty = document.getElementById('ng-empty')
+        const elResults = document.getElementById('ng-results')
+
+        function normalizeSheetUrlToCsv(url) {
+          try {
+            const u = new URL(url)
+            if (u.hostname.includes('docs.google.com')) {
+              if (u.pathname.endsWith('/pub')) { u.searchParams.set('output', 'csv'); return u.toString() }
+              if (u.pathname.includes('/export')) { u.searchParams.set('format', 'csv'); return u.toString() }
+            }
+            return url
+          } catch { return url }
+        }
+        function parseCSV(text) {
+          const rows = []; let i = 0, field = '', row = [], inQuotes = false
+          function pushField(){ row.push(field.replace(/""/g, '"')); field = '' }
+          function pushRow(){ rows.push(row); row = [] }
+          while (i < text.length) {
+            const c = text[i]
+            if (inQuotes) {
+              if (c === '"') { if (text[i+1] === '"') { field += '"'; i += 2; continue } else { inQuotes = false; i++; continue } }
+              else { field += c; i++; continue }
+            } else {
+              if (c === '"'){ inQuotes = true; i++; continue }
+              if (c === ','){ pushField(); i++; continue }
+              if (c === '\n'){ pushField(); pushRow(); i++; continue }
+              if (c === '\r'){ i++; continue }
+              field += c; i++
+            }
+          }
+          pushField(); if (row.length > 1 || (row.length === 1 && row[0] !== '')) pushRow()
+          if (!rows.length) return []
+          const headers = rows[0].map((h)=> (h||'').trim())
+          const data = []
+          for (let r=1;r<rows.length;r++){ const values = rows[r]; const obj = {}; headers.forEach((h,idx)=> obj[h]=(values[idx]||'').trim()); data.push(obj) }
+          return data
+        }
+        async function fetchCsv(url) {
+          const res = await fetch(url, { cache: 'no-store' })
+          if (!res.ok) throw new Error('HTTP ' + res.status)
+          return res.text()
+        }
+        function firstImage(p) {
+          const parts = (p.images||'').split('|').map(s=>s.trim()).filter(Boolean)
+          return parts[0] || ''
+        }
+        function formatPrice(p) {
+          const label = p.price_label || ''
+          if (label) return label
+          const amount = p.price_amount || ''
+          const curr = p.price_currency || ''
+          const period = p.price_period || ''
+          let text = ''
+          if (curr && amount) text = `${curr} ${amount}`
+          else if (amount) text = amount
+          if (period) text += ` ${period}`
+          return text
+        }
+        function createCard(p) {
+          const card = document.createElement('article'); card.className = 'ng-card'; card.setAttribute('aria-label', p.title || 'Propiedad')
+          const imgWrap = document.createElement('div'); imgWrap.className = 'ng-card-image'
+          const imgUrl = firstImage(p)
+          if (imgUrl) { const img = document.createElement('img'); img.src = imgUrl; img.alt = p.title || 'Foto de propiedad'; imgWrap.appendChild(img) }
+          card.appendChild(imgWrap)
+          const title = document.createElement('div'); title.className = 'ng-card-title'; title.textContent = p.title || 'Sin título'; card.appendChild(title)
+          const sub = document.createElement('div'); sub.className = 'ng-card-sub'
+          const op = p.operation ? p.operation : ''; const type = p.type ? p.type : ''; const loc = p.location ? ` • ${p.location}` : ''
+          sub.textContent = [op, type].filter(Boolean).join(' ') + loc; card.appendChild(sub)
+          const priceText = formatPrice(p); if (priceText){ const price = document.createElement('div'); price.className = 'ng-price'; price.textContent = priceText; card.appendChild(price) }
+          const badges = document.createElement('div'); badges.style.display='flex'; badges.style.flexWrap='wrap'; badges.style.gap='8px'
+          ;[
+            p.bedrooms ? `${p.bedrooms} hab.` : '',
+            p.bathrooms ? `${p.bathrooms} baños` : '',
+            p.garages ? `${p.garages} coch.` : '',
+            p.area_m2 ? `${p.area_m2} m²` : '',
+            p.lot_m2 ? `${p.lot_m2} m² lote` : '',
+            p.status ? `${p.status}` : ''
+          ].filter(Boolean).forEach((t)=>{ const b=document.createElement('span'); b.className='ng-badge'; b.textContent=t; badges.appendChild(b) })
+          if (badges.childNodes.length) card.appendChild(badges)
+          return card
+        }
+        function renderList(list) {
+          elGrid.innerHTML = ''
+          if (!list || !list.length) { elResults.textContent = ''; elEmpty.classList.remove('ng-hidden'); return }
+          elEmpty.classList.add('ng-hidden')
+          for (const p of list) elGrid.appendChild(createCard(p))
+          elResults.textContent = list.length + ' resultados'
+        }
+        function findVerPropiedadesLink() {
+          const links = Array.from(document.querySelectorAll('a'))
+          for (const a of links) { const txt = (a.textContent||'').toLowerCase().trim(); if (txt.includes(CTA_TEXT)) return a }
+          return null
+        }
+        function ensureAdminButton() {
+          const btn = document.createElement('button')
+          btn.id = 'ng-admin-toggle'; btn.className = 'ng-btn ng-btn-ghost'; btn.type = 'button'; btn.setAttribute('aria-pressed', 'false'); btn.textContent = 'Admin'
+          btn.addEventListener('click', () => {
+            const isOpen = !elPanel.classList.contains('ng-hidden')
+            if (isOpen) { elPanel.classList.add('ng-hidden'); btn.setAttribute('aria-pressed', 'false') }
+            else { elPanel.classList.remove('ng-hidden'); btn.setAttribute('aria-pressed', 'true'); elInput?.focus() }
+          })
+          const cta = findVerPropiedadesLink()
+          if (cta && cta.parentElement) cta.insertAdjacentElement('afterend', btn)
+          else { const wrap = document.createElement('div'); wrap.className = 'ng-fab'; wrap.appendChild(btn); document.body.appendChild(wrap) }
+
+          try {
+            const u = new URL(window.location.href)
+            if (u.searchParams.get('admin') === '1') {
+              elPanel.classList.remove('ng-hidden'); btn.setAttribute('aria-pressed', 'true'); elInput?.focus()
+            }
+          } catch {}
+        }
+        async function loadFrom(url) {
+          try {
+            elMsg.classList.remove('ng-error'); elMsg.classList.add('ng-hint'); elMsg.textContent = 'Cargando datos...'
+            const normalized = normalizeSheetUrlToCsv(url)
+            const text = await fetchCsv(normalized)
+            const rows = parseCSV(text)
+            const data = rows.filter((r)=> (r.id||'').trim() && (r.title||'').trim())
+            renderList(data)
+            elMsg.textContent = 'Datos cargados.'
+          } catch (e) {
+            console.error(e)
+            renderList([])
+            elMsg.classList.remove('ng-hint'); elMsg.classList.add('ng-error'); elMsg.textContent = 'No se pudo cargar el CSV. Revisá el enlace o permisos.'
+          }
+        }
+        function init() {
+          ensureAdminButton()
+          const saved = localStorage.getItem(LS_KEY)
+          const url = saved || defaultCsv
+          if (elInput) elInput.value = url || ''
+          if (url) loadFrom(url)
+          document.getElementById('ng-btn-test')?.addEventListener('click', () => {
+            const v = (elInput?.value || '').trim(); if (!v) { elMsg.textContent = 'Pegá una URL de Google Sheets (CSV).'; return } ; loadFrom(v)
+          })
+          document.getElementById('ng-btn-save')?.addEventListener('click', () => {
+            const v = (elInput?.value || '').trim(); if (!v) { elMsg.textContent = 'Pegá una URL de Google Sheets (CSV).'; return }
+            localStorage.setItem(LS_KEY, v); elMsg.classList.remove('ng-error'); elMsg.classList.add('ng-hint'); elMsg.textContent = 'Guardado en este navegador.'; loadFrom(v)
+          })
+        }
+        init()
+      })()
+    </script>
+
+    <!-- Contenedor reservado para un futuro montaje con React (oculto) -->
+    <div id="app" style="display:none"></div>
   </body>
 </html>
