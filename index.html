@@ -8,7 +8,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{ --brand:#572d30; --brand-ink:#ffffff; --accent:#363332; --ink:#363332; --muted:#666; --bg:#f4f2f2; --line:#e5e5e5; --tint:#efeded }
+    :root{
+      --brand:#572d30; --brand-ink:#ffffff; --accent:#363332;
+      --ink:#363332; --muted:#666; --bg:#f4f2f2; --line:#e5e5e5; --tint:#efeded;
+    }
     *{box-sizing:border-box}
     body{margin:0;font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,'Noto Sans',sans-serif;color:var(--ink);background:var(--bg)}
     .container{max-width:1100px;margin:0 auto;padding:24px}
@@ -26,6 +29,13 @@
     .h2{font-size:20px;margin:24px 0 8px}
     .img{width:100%;height:160px;object-fit:cover;border-radius:12px;display:block}
     .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+    @media(max-width:600px){
+      .btns .pill{width:100%;text-align:center}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .img{height:200px}
+      .h1{font-size:24px}
+      .container{padding:16px}
+    }
     /* Modal ficha */
     .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
     .modal{max-width:520px;width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
@@ -35,13 +45,6 @@
     .admin-card{border:1px dashed #d4a373;background:#fff7ed;color:#7c3e00;border-radius:12px;padding:12px}
     .input{height:40px;border:1px solid #ddd;border-radius:10px;padding:8px;background:#fff}
     .micro{font-size:12px;color:#7c3e00}
-    /* Listado de propiedades */
-    .cards{display:grid;grid-template-columns:1fr;gap:16px}
-    @media(min-width:720px){.cards{grid-template-columns:repeat(2,1fr)}}
-    @media(min-width:1040px){.cards{grid-template-columns:repeat(3,1fr)}}
-    .prop-card img{width:100%;height:180px;object-fit:cover;border-radius:12px}
-    .prop-title{font-weight:600;margin:8px 0 4px}
-    .prop-meta{font-size:13px;color:var(--muted)}
   </style>
 </head>
 <body>
@@ -58,11 +61,13 @@
       <div>
         <h1 class="h1">Casa estilo patagónico – 4 dormitorios – vista al lago (Aldea del Este)</h1>
         <p><strong>Aldea del Este – La Morena 4276, Bariloche.</strong> Arquitectura patagónica con vistas al lago Nahuel Huapi desde ambientes principales. Lote <strong>874 m²</strong>, superficie cubierta <strong>190 m²</strong>. Cochera doble. Accesos ágiles y cercanía a servicios.</p>
+
         <div class="card" style="background:var(--tint);border-color:var(--line)">
           <strong>¿Querés coordinar una visita?</strong>
           <p class="muted" style="margin:6px 0 0">El botón de contacto está al final de esta página. Desde allí te respondo por WhatsApp con la ficha y opciones de visita.</p>
         </div>
       </div>
+
       <div aria-label="Galería de imágenes">
         <div class="grid" role="img" aria-label="Galería de fotos de la casa">
           <img src="/img/portada.jpg"    alt="Fachada principal de la casa en Aldea del Este" class="img" loading="eager" />
@@ -111,20 +116,19 @@
           <p><strong>Visitas:</strong> con coordinación previa.</p>
 
           <div class="btns" style="margin-top:20px">
+            <!-- VER (lleva a tu publicación pública) -->
             <a id="btn-ver" class="pill ghost" href="#" target="_blank" rel="noopener">VER</a>
+
+            <!-- FICHA (abre modal Ver/Descargar) -->
             <button id="btn-ficha" class="pill primary" type="button">FICHA</button>
+
+            <!-- WhatsApp -->
             <a id="whatsapp-buyvisit" class="pill" href="#">Escribime por WhatsApp</a>
           </div>
+
           <p class="muted" style="margin-top:8px">Coordinamos por WhatsApp para agilizar.</p>
         </div>
       </div>
-    </section>
-
-    <!-- OTRAS PROPIEDADES (desde Google Sheet) -->
-    <section id="otras-prop">
-      <h2 class="h2">Otras propiedades</h2>
-      <div id="props-wrap" class="cards"></div>
-      <p id="props-empty" class="muted hidden">No hay propiedades cargadas aún.</p>
     </section>
 
     <!-- ADMIN (oculto, se muestra con ?admin=1) -->
@@ -132,11 +136,15 @@
       <div class="admin-card">
         <strong>Admin (privado): fuentes de datos</strong>
         <p class="micro" style="margin:6px 0 10px">Este panel no es visible al público. Se abre con <code>?admin=1</code> y guarda en tu navegador.</p>
+
         <label class="micro" for="ngd-csv">URL CSV de Google Sheets (propiedades)</label>
         <input id="ngd-csv" class="input" placeholder="https://docs.google.com/.../pub?output=csv" />
+
         <div style="height:8px"></div>
+
         <label class="micro" for="ngd-pdf">URL PDF de la FICHA (esta propiedad)</label>
         <input id="ngd-pdf" class="input" placeholder="https://.../ficha.pdf" />
+
         <div style="display:flex;gap:8px;margin-top:10px">
           <button id="ngd-test"  class="pill ghost" type="button">Probar CSV</button>
           <button id="ngd-save"  class="pill primary" type="button">Guardar</button>
@@ -166,21 +174,19 @@
 
   <script>
     /* ---------- CONFIG RÁPIDA (si no usás el admin) ---------- */
-    const PUBLIC_LINK = 'https://www.zonaprop.com.ar/';
-    const PDF_FICHA_FALLBACK = 'https://tu-dominio.com/ficha.pdf';
+    const PUBLIC_LINK = 'https://www.zonaprop.com.ar/';      // <-- link público (Zonaprop / tu página)
+    const PDF_FICHA_FALLBACK = 'https://tu-dominio.com/ficha.pdf'; // <-- PDF si no cargás por admin
 
-    /* ---------- STORAGE KEYS ---------- */
-    const LS_KEY_CSV = 'ngespacios:csvUrl';
-    const LS_KEY_PDF = 'ngespacios:fichaPdf';
+    /* ---------- UTILIDADES CSV (para futuro listado) ---------- */
+    const LS_KEY_CSV  = 'ngespacios:csvUrl';
+    const LS_KEY_PDF  = 'ngespacios:fichaPdf';
 
-    /* ---------- HELPERS ---------- */
     function normalizeSheetUrlToCsv(u){
       try {
         const x = new URL(u);
         if (x.hostname.includes('docs.google.com')) {
           if (x.pathname.endsWith('/pub')) { x.searchParams.set('output','csv'); return x.toString(); }
           if (x.pathname.includes('/export')) { x.searchParams.set('format','csv'); return x.toString(); }
-          if (x.pathname.includes('/gviz/tq')) { x.searchParams.set('tqx','out:csv'); return x.toString(); }
         }
       } catch {}
       return u;
@@ -196,12 +202,12 @@
       }
       PF(); if(row.length>1||(row.length==1&&row[0]!=='')) PR();
       if(!rows.length) return [];
-      const h=rows[0].map(x=>(x||'').trim().toLowerCase()),data=[];
+      const h=rows[0].map(x=>(x||'').trim()),data=[];
       for(let r=1;r<rows.length;r++){const v=rows[r],o={};h.forEach((k,ix)=>o[k]=(v[ix]||'').trim());data.push(o)}
       return data;
     }
 
-    /* ---------- WHATSAPP CTA ---------- */
+    /* ---------- WHATSAPP ---------- */
     (function setupWhatsApp(){
       const msg = encodeURIComponent('Hola, me interesa la casa de Aldea del Este. Mi nombre es: ______. Quiero coordinar una visita.');
       const href = 'https://wa.me/5492944635083?text=' + msg + '&utm_source=landing&utm_medium=cta&utm_campaign=aldea_del_este';
@@ -209,17 +215,21 @@
       if (btn) btn.href = href;
     })();
 
-    /* ---------- BOTÓN VER + FICHA (propiedad principal) ---------- */
+    /* ---------- BOTÓN VER + FICHA ---------- */
     (function setupVerYFicha(){
+      // VER
       const aVer = document.getElementById('btn-ver');
       if (aVer) aVer.href = PUBLIC_LINK;
 
+      // FICHA (modal)
       const getPdfUrl = () => (localStorage.getItem(LS_KEY_PDF) || '').trim() || PDF_FICHA_FALLBACK;
+
       const openModal = () => {
         const url = getPdfUrl();
         const bd = document.getElementById('ficha-backdrop');
         const aOpen = document.getElementById('ficha-ver');
         const aDl   = document.getElementById('ficha-descargar');
+
         if (aOpen) aOpen.href = url;
         if (aDl)   { aDl.href = url; aDl.setAttribute('download', 'ficha.pdf'); }
         if (bd) { bd.style.display = 'flex'; bd.setAttribute('aria-hidden','false'); }
@@ -228,20 +238,25 @@
         const bd = document.getElementById('ficha-backdrop');
         if (bd) { bd.style.display = 'none'; bd.setAttribute('aria-hidden','true'); }
       };
+
       document.getElementById('btn-ficha')?.addEventListener('click', openModal);
       document.getElementById('ficha-cerrar')?.addEventListener('click', closeModal);
       document.getElementById('ficha-backdrop')?.addEventListener('click', (e)=>{ if(e.target.id==='ficha-backdrop') closeModal(); });
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
     })();
 
-    /* ---------- ADMIN PANEL (abre con ?admin=1) ---------- */
+    /* ---------- ADMIN (abre con ?admin=1) ---------- */
     (function adminPanel(){
       const $ = id => document.getElementById(id);
       const p = $('ngd-admin-panel'); if (!p) return;
+
+      // Mostrar auto si viene ?admin=1
       try { const u = new URL(location.href); if (u.searchParams.get('admin')==='1') p.classList.remove('hidden'); } catch {}
+
       const iCsv = $('ngd-csv'),  iPdf = $('ngd-pdf'), s = $('ngd-status');
       try { iCsv.value = localStorage.getItem(LS_KEY_CSV) || ''; } catch {}
       try { iPdf.value = localStorage.getItem(LS_KEY_PDF) || ''; } catch {}
+
       $('ngd-test')?.addEventListener('click', async ()=>{
         s.textContent = 'Probando CSV...';
         try {
@@ -249,9 +264,11 @@
           const url = normalizeSheetUrlToCsv(raw);
           const csv = await fetchCsv(url);
           const rows = parseCSV(csv);
-          s.textContent = `OK: ${rows.length-1} filas de datos detectadas.`;
+          const valid = rows.filter(r => (r.id||'').trim() && (r.title||'').trim());
+          s.textContent = `OK: ${rows.length} filas, ${valid.length} válidas (id+title).`;
         } catch(e){ console.error(e); s.textContent='Error leyendo el CSV.'; }
       });
+
       $('ngd-save')?.addEventListener('click', ()=>{
         try {
           if (iCsv.value.trim()) localStorage.setItem(LS_KEY_CSV, normalizeSheetUrlToCsv(iCsv.value.trim()));
@@ -259,59 +276,12 @@
           s.textContent='Guardado. Recargá la página si cambiaste la fuente.';
         } catch { s.textContent='No se pudo guardar en este navegador.'; }
       });
+
       $('ngd-clear')?.addEventListener('click', ()=>{
         try { localStorage.removeItem(LS_KEY_CSV); localStorage.removeItem(LS_KEY_PDF); } catch {}
         if (iCsv) iCsv.value=''; if (iPdf) iPdf.value='';
         s.textContent='Borrado. Usará los valores por defecto del sitio.';
       });
-    })();
-
-    /* ---------- LISTADO DESDE GOOGLE SHEET ---------- */
-    (async function renderListado(){
-      const wrap = document.getElementById('props-wrap');
-      const empty = document.getElementById('props-empty');
-      if (!wrap) return;
-
-      let csvUrl = '';
-      try { csvUrl = (localStorage.getItem(LS_KEY_CSV)||'').trim(); } catch {}
-      if (!csvUrl){ empty?.classList.remove('hidden'); return; }
-
-      try {
-        const csv = await fetchCsv(normalizeSheetUrlToCsv(csvUrl));
-        const data = parseCSV(csv);
-        // Mapea columnas tolerando variantes simples:
-        const items = data.map(row => {
-          const title = row.title || row.titulo || '';
-          const img   = row.img || row.foto || row.imagen || '';
-          const link  = row.link || row.url || '';
-          const pdf   = row.pdf || row.ficha || '';
-          const barrio = row.barrio || row.zona || '';
-          const valor  = row.valor || row.precio || '';
-          return { title, img, link, pdf, barrio, valor };
-        }).filter(x => x.title && x.img && x.link);
-
-        wrap.innerHTML = '';
-        if (!items.length){ empty?.classList.remove('hidden'); return; }
-
-        items.forEach(it => {
-          const card = document.createElement('div');
-          card.className = 'card prop-card';
-          card.innerHTML = `
-            <img src="${it.img}" alt="${it.title}">
-            <div class="prop-title">${it.title}</div>
-            <div class="prop-meta">${[it.barrio, it.valor].filter(Boolean).join(' · ')}</div>
-            <div class="btns" style="margin-top:10px">
-              <a class="pill ghost" href="${it.link}" target="_blank" rel="noopener">VER</a>
-              ${it.pdf ? `<a class="pill primary" href="${it.pdf}" target="_blank" rel="noopener">FICHA</a>` : ''}
-            </div>
-          `;
-          wrap.appendChild(card);
-        });
-        empty?.classList.add('hidden');
-      } catch (e){
-        console.error(e);
-        if (empty){ empty.textContent = 'No se pudo leer la hoja (CSV). Revisá el enlace en /?admin=1'; empty.classList.remove('hidden'); }
-      }
     })();
 
     /* ---------- AÑO FOOTER ---------- */
