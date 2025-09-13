@@ -1,1068 +1,291 @@
-<!--
-  @file index.html
-  @description NGespacios — Sitio público. Carga propiedades desde Google Sheets (CSV), 
-               incluye buscador funcional y galería. Sin panel Admin embebido.
-               Anti-badge para ocultar cualquier overlay de Vercel o similares.
--->
-
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Casa patagónica con vista al lago – Aldea del Este</title>
+  <meta name="description" content="Casa patagónica 4 dormitorios con vista al Nahuel Huapi, Aldea del Este, Bariloche. Lote 874 m², 190 m² cubiertos. Coordinación por WhatsApp." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --brand:#572d30; --brand-ink:#ffffff; --accent:#363332;
+      --ink:#363332; --muted:#666; --bg:#f4f2f2; --line:#e5e5e5; --tint:#efeded;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:'Montserrat',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,'Noto Sans',sans-serif;color:var(--ink);background:var(--bg)}
+    .container{max-width:1100px;margin:0 auto;padding:24px}
+    .header{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:saturate(160%) blur(8px);border-bottom:1px solid var(--line);z-index:10}
+    .brandbar{height:4px;background:linear-gradient(90deg,var(--brand),var(--accent))}
+    .row{display:grid;grid-template-columns:1fr;gap:24px}
+    @media(min-width:960px){.row{grid-template-columns:1.15fr .85fr}}
+    .pill{display:inline-block;padding:12px 18px;border:1px solid var(--ink);border-radius:999px;text-decoration:none;color:var(--ink)}
+    .pill.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+    .pill.ghost{background:#fff}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--tint);padding:8px;border-radius:16px}
+    .card{border:1px solid var(--line);border-radius:16px;padding:16px;background:white}
+    .muted{color:var(--muted);font-size:14px}
+    .h1{font-size:28px;margin:0 0 8px}
+    .h2{font-size:20px;margin:24px 0 8px}
+    .img{width:100%;height:160px;object-fit:cover;border-radius:12px;display:block}
+    .btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+    @media(max-width:600px){
+      .btns .pill{width:100%;text-align:center}
+      .grid{grid-template-columns:repeat(2,1fr)}
+      .img{height:200px}
+      .h1{font-size:24px}
+      .container{padding:16px}
+    }
+    /* Modal ficha */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+    .modal{max-width:520px;width:100%;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+    .modal h3{margin:0 0 6px}
+    .hidden{display:none}
+    /* Admin */
+    .admin-card{border:1px dashed #d4a373;background:#fff7ed;color:#7c3e00;border-radius:12px;padding:12px}
+    .input{height:40px;border:1px solid #ddd;border-radius:10px;padding:8px;background:#fff}
+    .micro{font-size:12px;color:#7c3e00}
+  </style>
+</head>
+<body>
+  <header class="header" aria-label="Encabezado">
+    <div class="brandbar"></div>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;padding-bottom:12px">
+      <strong>Natalia González · Martillera (Mat. 377-RP-21 Fº456 TºII)</strong>
+    </div>
+  </header>
 
-    <title>NGespacios — Inmobiliaria en Bariloche</title>
-    <meta
-      name="description"
-      content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche."
-    />
-    <meta name="theme-color" content="#572d30" />
+  <main class="container">
+    <!-- HERO -->
+    <section class="row" style="margin-top:24px">
+      <div>
+        <h1 class="h1">Casa estilo patagónico – 4 dormitorios – vista al lago (Aldea del Este)</h1>
+        <p><strong>Aldea del Este – La Morena 4276, Bariloche.</strong> Arquitectura patagónica con vistas al lago Nahuel Huapi desde ambientes principales. Lote <strong>874 m²</strong>, superficie cubierta <strong>190 m²</strong>. Cochera doble. Accesos ágiles y cercanía a servicios.</p>
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="NGespacios — Inmobiliaria en Bariloche" />
-    <meta
-      property="og:description"
-      content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche."
-    />
-    <meta property="og:type" content="website" />
-    <meta
-      property="og:image"
-      content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ea65a1b8-690c-4544-909e-d44a40ea8675.jpg"
-    />
-
-    <!-- Fuente -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Lucide Icons CDN -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Estilos de marca y accesibilidad -->
-    <style>
-      :root {
-        --brand-bg: #f4f2f2;
-        --brand-primary: #572d30;
-        --brand-text: #363332;
-      }
-      html, body { height: 100%; }
-      body {
-        font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-        color: var(--brand-text);
-        background: var(--brand-bg);
-        font-weight: 300;
-        letter-spacing: 0.01em;
-      }
-      a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
-        outline: 2px solid var(--brand-primary);
-        outline-offset: 2px;
-        border-radius: 6px;
-      }
-      /* Contenedor ancho máximo similar al proyecto */
-      .container-max { max-width: 72rem; } /* ~6xl */
-      /* Utilidad para ocultar la barra de scroll dentro del carrusel en algunos navegadores */
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-      /* Anti-badge (oculta cualquier logo/botón/overlay inyectado del hosting: Vercel/insights) */
-      a[href*="vercel.com"],
-      a[href*="vercel.app"],
-      [aria-label*="Vercel" i],
-      [aria-label*="vercel" i],
-      [data-vercel-insights],
-      [data-vercel-analytics],
-      [data-ai-insights],
-      [data-nextjs-toast],
-      [data-vc],
-      [data-vercel-banner],
-      img[alt*="vercel" i],
-      iframe[src*="vercel" i],
-      .vercel-badge,
-      #vercel,
-      #__vercel {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        opacity: 0 !important;
-      }
-    </style>
-  </head>
-
-  <body class="min-h-screen bg-[color:var(--brand-bg)] text-[color:var(--brand-text)]">
-    <!-- Header -->
-    <header class="sticky top-0 z-30 w-full border-b border-neutral-200 bg-[color:var(--brand-bg)]/90 backdrop-blur-md">
-      <div class="mx-auto container-max px-4 h-16 flex items-center justify-between">
-        <a href="#" class="flex items-center gap-2" aria-label="NGespacios - Inicio">
-          <!-- Logo horizontal: cuadrado “NG” + texto ESPACIOS a la derecha -->
-          <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
-            <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
-          </div>
-          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">
-            ESPACIOS
-          </span>
-        </a>
-
-        <nav class="hidden md:flex items-center gap-6 text-sm">
-          <a href="#propiedades" class="hover:text-[color:var(--brand-primary)]">Propiedades</a>
-          <a href="#tasacion" class="hover:text-[color:var(--brand-primary)]">Tasación</a>
-          <a href="#contacto" class="hover:text-[color:var(--brand-primary)]">Contacto</a>
-          <a
-            href="#propiedades"
-            class="rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors"
-          >
-            Ver propiedades
-          </a>
-        </nav>
-
-        <button
-          id="btn-mobile"
-          class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300"
-          aria-label="Abrir menú"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-          type="button"
-        >
-          <i data-lucide="menu" class="h-4 w-4"></i>
-        </button>
-      </div>
-
-      <!-- Menú móvil -->
-      <div id="mobile-menu" class="md:hidden hidden border-t border-neutral-200 bg-[color:var(--brand-bg)]/95 backdrop-blur-md">
-        <div class="mx-auto container-max px-4 py-3">
-          <div class="grid gap-2 text-sm">
-            <a href="#propiedades" class="py-2 hover:text-[color:var(--brand-primary)]">Propiedades</a>
-            <a href="#tasacion" class="py-2 hover:text-[color:var(--brand-primary)]">Tasación</a>
-            <a href="#contacto" class="py-2 hover:text-[color:var(--brand-primary)]">Contacto</a>
-            <a
-              href="#propiedades"
-              class="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors"
-            >
-              Ver propiedades
-            </a>
-          </div>
+        <div class="card" style="background:var(--tint);border-color:var(--line)">
+          <strong>¿Querés coordinar una visita?</strong>
+          <p class="muted" style="margin:6px 0 0">El botón de contacto está al final de esta página. Desde allí te respondo por WhatsApp con la ficha y opciones de visita.</p>
         </div>
       </div>
-    </header>
 
-    <main>
-      <!-- Hero -->
-      <section class="relative isolate">
-        <div class="absolute inset-0 -z-10">
-          <img
-            src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c0105bbf-bf3c-42e0-bc2b-88d39c05c4aa.jpg"
-            alt="Lago en Bariloche"
-            class="object-cover w-full h-full"
-          />
-          <div class="absolute inset-0 bg-[color:var(--brand-bg)] mix-blend-multiply opacity-30"></div>
-          <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/30"></div>
+      <div aria-label="Galería de imágenes">
+        <div class="grid" role="img" aria-label="Galería de fotos de la casa">
+          <img src="/img/portada.jpg"    alt="Fachada principal de la casa en Aldea del Este" class="img" loading="eager" />
+          <img src="/img/living.jpg"     alt="Living con vista al lago" class="img" loading="lazy" />
+          <img src="/img/dormitorio.jpg" alt="Dormitorio principal" class="img" loading="lazy" />
+          <img src="/img/cocina.jpg"     alt="Cocina amplia" class="img" loading="lazy" />
+          <img src="/img/galeria.jpg"    alt="Galería, deck y jardín" class="img" loading="lazy" />
+          <img src="/img/vista.jpg"      alt="Vista al lago Nahuel Huapi" class="img" loading="lazy" />
         </div>
-
-        <div class="mx-auto container-max px-4 py-16 md:py-24">
-          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">
-            Natalia González • Martillera y Corredora Pública • MAT. Nº377- RP-21 Fº456 TºII
-          </p>
-
-          <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">
-            Tu próximo hogar en Bariloche
-          </h1>
-          <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">
-            Acompañamiento de punta a punta.
-          </p>
-
-          <div class="mt-6 flex flex-wrap gap-3">
-            <a
-              href="#propiedades"
-              class="rounded-lg bg-[color:var(--brand-primary)] text-white px-5 py-2.5 text-sm md:text-base hover:opacity-90 transition"
-            >
-              Ver propiedades
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Search Panel (funcional) -->
-      <div class="mx-auto container-max px-4 -mt-14 relative z-10">
-        <form id="search-form" class="rounded-xl border border-neutral-200 bg-white p-4 md:p-5 shadow-sm">
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
-            <div class="flex flex-col">
-              <label class="text-xs text-neutral-600 mb-1" for="filter-operation">Operación</label>
-              <select id="filter-operation" class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
-                <option value="">Todas</option>
-                <option>Venta</option>
-                <option>Alquiler</option>
-              </select>
-            </div>
-            <div class="flex flex-col">
-              <label class="text-xs text-neutral-600 mb-1" for="filter-type">Tipo</label>
-              <select id="filter-type" class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
-                <option value="">Todos</option>
-                <option>Casa</option>
-                <option>Departamento</option>
-                <option>Lote</option>
-                <option>Local</option>
-              </select>
-            </div>
-            <div class="flex flex-col md:col-span-2">
-              <label class="text-xs text-neutral-600 mb-1" for="filter-location">Barrio/Zona</label>
-              <input id="filter-location" class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Ej. Centro" />
-            </div>
-            <div class="flex items-end gap-2">
-              <button
-                id="btn-search"
-                type="submit"
-                class="w-full md:w-auto h-10 rounded-lg bg-[color:var(--brand-primary)] text-white px-4 hover:opacity-90 transition"
-              >
-                Buscar
-              </button>
-              <button
-                id="btn-reset"
-                type="button"
-                class="w-full md:w-auto h-10 rounded-lg border border-neutral-300 text-neutral-700 px-4 hover:bg-neutral-50 transition"
-              >
-                Limpiar
-              </button>
-            </div>
-          </div>
-        </form>
       </div>
+    </section>
 
-      <!-- Propiedades (dinámico desde CSV) -->
-      <section id="propiedades" class="mx-auto container-max px-4 pt-16">
-        <div class="flex items-end justify-between flex-wrap gap-2">
-          <div>
-            <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Selección</p>
-            <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Propiedades</h2>
-          </div>
-          <span id="prop-count" class="text-sm text-neutral-600"></span>
+    <!-- HIGHLIGHTS -->
+    <section>
+      <h2 class="h2">Highlights</h2>
+      <div class="row">
+        <div class="card" aria-label="Características destacadas">
+          <span class="pill">Apto crédito hipotecario</span>
+          <span class="pill">4 dormitorios + escritorio</span>
+          <span class="pill">2 baños</span>
+          <span class="pill">Vista al lago</span>
+          <span class="pill">Lote 874 m²</span>
+          <span class="pill">Cubiertos 190 m²</span>
+          <span class="pill">Calefacción por radiadores</span>
+          <span class="pill">Cochera para 2 autos</span>
+          <span class="pill">Orientación Norte</span>
+          <span class="pill">Antigüedad: 23 años</span>
         </div>
-
-        <div id="prop-grid" class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-        <div id="prop-empty" class="mt-6 rounded-xl border border-neutral-200 bg-white p-4 text-sm text-neutral-700 hidden">
-          <p>No hay resultados para los filtros aplicados.</p>
-        </div>
-
-        <div id="prop-config" class="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 hidden">
-          <p>
-            Aún no se configuró la fuente de datos. Ingresá a
-            <a class="underline font-medium" href="/static/admin.html">Admin</a>
-            para guardar la URL de tu Google Sheets (CSV). Luego volvé a esta página.
-          </p>
-        </div>
-      </section>
-
-      <!-- Tasación / Escribime -->
-      <section id="tasacion" class="mx-auto container-max px-4 pt-20">
-        <div>
-          <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Tu propiedad</p>
-          <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Escribime</h2>
-        </div>
-        <p class="mt-2 text-neutral-700">
-          Completá tus datos y el motivo de tu consulta; me contactaré muy pronto.
-        </p>
-
-        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <form id="contact-form" class="rounded-xl border border-neutral-200 p-4 md:p-6 bg-white">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="flex flex-col">
-                <label for="nombre" class="text-xs text-neutral-600 mb-1">Nombre</label>
-                <input id="nombre" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Tu nombre" />
-              </div>
-
-              <div class="flex flex-col">
-                <label for="email" class="text-xs text-neutral-600 mb-1">Email</label>
-                <input id="email" type="email" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="tucorreo@mail.com" />
-              </div>
-
-              <div class="flex flex-col">
-                <label for="telefono" class="text-xs text-neutral-600 mb-1">Teléfono</label>
-                <input id="telefono" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="+54 9 ..." />
-              </div>
-
-              <div class="flex flex-col">
-                <label for="tipo" class="text-xs text-neutral-600 mb-1">Tipo de propiedad</label>
-                <select id="tipo" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
-                  <option value="" disabled selected>Seleccionar</option>
-                  <option value="Casa">Casa</option>
-                  <option value="Departamento">Departamento</option>
-                  <option value="Lote">Lote</option>
-                  <option value="Local">Local</option>
-                </select>
-              </div>
-
-              <div class="flex flex-col">
-                <label for="operacion" class="text-xs text-neutral-600 mb-1">Operación</label>
-                <select id="operacion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
-                  <option value="" disabled selected>Seleccionar</option>
-                  <option value="Venta">Venta</option>
-                  <option value="Alquiler">Alquiler</option>
-                </select>
-              </div>
-
-              <div class="flex flex-col md:col-span-2">
-                <label for="direccion" class="text-xs text-neutral-600 mb-1">Dirección</label>
-                <input id="direccion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Calle, número, barrio" />
-              </div>
-
-              <div class="flex flex-col md:col-span-2">
-                <label for="mensaje" class="text-xs text-neutral-600 mb-1">Mensaje</label>
-                <textarea id="mensaje" rows="4" class="rounded-lg border border-neutral-300 px-3 py-2 bg-white" placeholder="Detalles relevantes o el tema por el que querés consultar"></textarea>
-              </div>
-            </div>
-
-            <div class="mt-4 flex items-center justify-between gap-3">
-              <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[color:var(--brand-primary)] text-white h-10 px-4 hover:opacity-90 transition">
-                Enviar
-              </button>
-              <span id="form-ok" class="text-sm text-green-700 hidden">¡Gracias! Me contactaré a la brevedad.</span>
-            </div>
-          </form>
-
-          <div class="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50">
-            <img
-              src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c4bf838c-8b53-4947-a908-295e7052c60c.jpg"
-              alt="Bariloche"
-              class="object-cover h-full w-full"
-            />
-          </div>
-        </div>
-      </section>
-
-      <!-- Contacto -->
-      <section id="contacto" class="mx-auto container-max px-4 pt-20 pb-24">
-        <div class="w-full rounded-xl border border-neutral-200 bg-white p-6 break-words">
-          <div>
-            <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Contacto</p>
-            <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Hablemos</h2>
-          </div>
-
-          <div class="mt-4 space-y-2 text-sm md:text-base">
-            <p class="text-neutral-700">
-              Email
-              <a
-                href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base"
-              >
-                nataliagonzalezmartillerapublica@ngespacios.com.ar
-              </a>
-            </p>
-            <p class="text-neutral-700">
-              WhatsApp
-              <a
-                href="https://wa.me/5492944635083"
-                target="_blank"
-                rel="noreferrer"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline"
-              >
-                +54 9 294 463 5083
-              </a>
-            </p>
-            <p class="text-neutral-700">San Carlos de Bariloche, Río Negro, Argentina</p>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-neutral-200 mt-8">
-      <div class="mx-auto container-max px-4 h-16 flex items-center justify-between text-sm">
-        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium">NGespacios — Natalia González</span></p>
-        <p class="text-neutral-700">Hecho con ♥ en Bariloche</p>
       </div>
-    </footer>
+    </section>
 
-    <!-- WhatsApp Floating -->
-    <a
-      href="https://wa.me/5492944635083"
-      target="_blank"
-      rel="noreferrer"
-      class="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-green-600 text-white px-4 py-2 shadow-lg hover:bg-green-700 transition"
-      aria-label="Contactar por WhatsApp"
-    >
-      <i data-lucide="message-circle" class="h-5 w-5"></i>
-      WhatsApp
-    </a>
+    <!-- DESCRIPCIÓN -->
+    <section>
+      <h2 class="h2">Descripción breve</h2>
+      <p>Distribución: living-comedor con hogar y ventanales a vistas, cocina amplia, dormitorio principal (en planta a confirmar), tres dormitorios secundarios, escritorio/vestidor, dos baños completos y lavadero. Exterior: jardín, deck y cochera doble cubierta.</p>
+      <p>Terminaciones en piedra y madera; carpinterías de calidad y buena iluminación natural. Servicios: luz, gas y agua. Sistema de calefacción por radiadores en todos los ambientes.</p>
+    </section>
 
-    <!-- Modal Galería con Carrusel + Ficha -->
-    <div
-      id="gallery-modal"
-      class="fixed inset-0 z-50 hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="gallery-title"
-    >
-      <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+    <!-- INFO COMERCIAL + BOTONES -->
+    <section>
+      <h2 class="h2">Información comercial</h2>
+      <div class="row">
+        <div class="card">
+          <p><strong>VALOR:</strong> USD 296.000</p>
+          <p><strong>Condiciones:</strong> apto crédito hipotecario (sujeto a calificación y tasación bancaria).</p>
+          <p><strong>Visitas:</strong> con coordinación previa.</p>
 
-      <div class="relative h-full w-full flex items-center justify-center px-4">
-        <!-- Controles superiores -->
-        <div class="absolute top-3 right-3 flex items-center gap-2 z-50">
-          <a
-            id="gallery-wa"
-            href="#"
-            target="_blank"
-            rel="noreferrer"
-            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-green-600 text-white hover:bg-green-700 transition"
-            title="WhatsApp"
-            aria-label="Abrir WhatsApp"
-          >
-            <i data-lucide="message-circle" class="h-4 w-4"></i>
-          </a>
-          <button
-            id="gallery-ficha-btn"
-            type="button"
-            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition"
-            title="Ficha"
-            aria-label="Ver ficha"
-          >
-            <i data-lucide="file-text" class="h-4 w-4"></i>
-          </button>
-          <button
-            id="gallery-close"
-            type="button"
-            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition"
-            aria-label="Cerrar"
-            title="Cerrar"
-          >
-            <i data-lucide="x" class="h-4 w-4"></i>
-          </button>
-        </div>
+          <div class="btns" style="margin-top:20px">
+            <!-- VER (lleva a tu publicación pública) -->
+            <a id="btn-ver" class="pill ghost" href="#" target="_blank" rel="noopener">VER</a>
 
-        <!-- Flechas -->
-        <button
-          id="gallery-prev"
-          type="button"
-          class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40"
-          aria-label="Anterior"
-          title="Anterior"
-        >
-          <i data-lucide="chevron-left" class="h-4 w-4"></i>
-        </button>
-        <button
-          id="gallery-next"
-          type="button"
-          class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40"
-          aria-label="Siguiente"
-          title="Siguiente"
-        >
-          <i data-lucide="chevron-right" class="h-4 w-4"></i>
-        </button>
+            <!-- FICHA (abre modal Ver/Descargar) -->
+            <button id="btn-ficha" class="pill primary" type="button">FICHA</button>
 
-        <!-- Imagen -->
-        <figure class="relative w-full max-w-5xl aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9]">
-          <img id="gallery-img" src="" alt="" class="object-contain w-full h-full select-none" />
-          <!-- Indicadores -->
-          <figcaption id="gallery-counter" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 px-2 py-1 rounded-md"></figcaption>
-        </figure>
-
-        <!-- Ficha compacta -->
-        <div
-          id="gallery-info"
-          class="hidden absolute left-1/2 -translate-x-1/2 bottom-4 w-[95%] max-w-2xl rounded-lg border border-neutral-200 bg-white/95 backdrop-blur p-3 md:p-4 shadow-lg z-40"
-        >
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <h3 id="gallery-title" class="text-sm md:text-base font-medium tracking-tight"></h3>
-              <p id="gallery-sub" class="text-xs text-neutral-600 mt-0.5"></p>
-              <div class="mt-2 inline-flex items-center gap-2">
-                <span id="gallery-badge-op" class="text-[10px] rounded-md bg-neutral-100 px-2 py-1"></span>
-                <span id="gallery-badge-type" class="text-[10px] rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1"></span>
-              </div>
-            </div>
-            <div class="text-[color:var(--brand-primary)] text-sm md:text-base font-semibold shrink-0" id="gallery-price"></div>
+            <!-- WhatsApp -->
+            <a id="whatsapp-buyvisit" class="pill" href="#">Escribime por WhatsApp</a>
           </div>
+
+          <p class="muted" style="margin-top:8px">Coordinamos por WhatsApp para agilizar.</p>
         </div>
+      </div>
+    </section>
+
+    <!-- ADMIN (oculto, se muestra con ?admin=1) -->
+    <section id="ngd-admin-panel" class="hidden" style="margin-top:28px">
+      <div class="admin-card">
+        <strong>Admin (privado): fuentes de datos</strong>
+        <p class="micro" style="margin:6px 0 10px">Este panel no es visible al público. Se abre con <code>?admin=1</code> y guarda en tu navegador.</p>
+
+        <label class="micro" for="ngd-csv">URL CSV de Google Sheets (propiedades)</label>
+        <input id="ngd-csv" class="input" placeholder="https://docs.google.com/.../pub?output=csv" />
+
+        <div style="height:8px"></div>
+
+        <label class="micro" for="ngd-pdf">URL PDF de la FICHA (esta propiedad)</label>
+        <input id="ngd-pdf" class="input" placeholder="https://.../ficha.pdf" />
+
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button id="ngd-test"  class="pill ghost" type="button">Probar CSV</button>
+          <button id="ngd-save"  class="pill primary" type="button">Guardar</button>
+          <button id="ngd-clear" class="pill ghost" type="button">Borrar</button>
+        </div>
+        <div id="ngd-status" class="micro" style="margin-top:8px"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container muted" style="padding:16px 24px">© <span id="year"></span> Natalia González · Martillera Pública. Bariloche.</div>
+  </footer>
+
+  <!-- MODAL FICHA -->
+  <div id="ficha-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <h3>Ficha de la propiedad</h3>
+      <p class="muted" style="margin:6px 0 12px">Podés abrirla para ver online o descargarla.</p>
+      <div class="btns">
+        <a id="ficha-ver" class="pill primary" target="_blank" rel="noopener">Ver ficha</a>
+        <a id="ficha-descargar" class="pill ghost" download>Descargar PDF</a>
+        <button id="ficha-cerrar" class="pill ghost" type="button">Cerrar</button>
       </div>
     </div>
+  </div>
 
-    <!-- JS: UI (menú, formulario), CSV loader, render de propiedades y buscador -->
-    <script>
-      /**
-       * @file index.html script
-       * @description Interactividad del home: menú, formulario de contacto, carga de CSV,
-       *              render dinámico de propiedades, buscador, y galería.
-       */
+  <script>
+    /* ---------- CONFIG RÁPIDA (si no usás el admin) ---------- */
+    const PUBLIC_LINK = 'https://www.zonaprop.com.ar/';      // <-- link público (Zonaprop / tu página)
+    const PDF_FICHA_FALLBACK = 'https://tu-dominio.com/ficha.pdf'; // <-- PDF si no cargás por admin
 
-      // Año
-      document.getElementById('year').textContent = new Date().getFullYear();
+    /* ---------- UTILIDADES CSV (para futuro listado) ---------- */
+    const LS_KEY_CSV  = 'ngespacios:csvUrl';
+    const LS_KEY_PDF  = 'ngespacios:fichaPdf';
 
-      // Lucide render
-      const renderIcons = () => { if (window.lucide) window.lucide.createIcons(); };
-      window.addEventListener('DOMContentLoaded', renderIcons);
-
-      // Scroll suave para anclas internas
-      document.querySelectorAll('a[href^="#"]').forEach((a) => {
-        a.addEventListener('click', (e) => {
-          const href = a.getAttribute('href');
-          if (!href || href === '#') return;
-          e.preventDefault();
-          const el = document.querySelector(href);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      });
-
-      // Menú móvil
-      const btnMobile = document.getElementById('btn-mobile');
-      const mobileMenu = document.getElementById('mobile-menu');
-      const toggleMenu = (open) => {
-        const willOpen = typeof open === 'boolean' ? open : mobileMenu.classList.contains('hidden');
-        mobileMenu.classList.toggle('hidden', !willOpen);
-        btnMobile?.setAttribute('aria-expanded', String(willOpen));
-        if (window.lucide) {
-          btnMobile.innerHTML = willOpen ? '<i data-lucide="x" class="h-4 w-4"></i>' : '<i data-lucide="menu" class="h-4 w-4"></i>';
-          window.lucide.createIcons();
+    function normalizeSheetUrlToCsv(u){
+      try {
+        const x = new URL(u);
+        if (x.hostname.includes('docs.google.com')) {
+          if (x.pathname.endsWith('/pub')) { x.searchParams.set('output','csv'); return x.toString(); }
+          if (x.pathname.includes('/export')) { x.searchParams.set('format','csv'); return x.toString(); }
         }
+      } catch {}
+      return u;
+    }
+    async function fetchCsv(u){ const r = await fetch(u,{cache:'no-store'}); if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); }
+    function parseCSV(t){
+      const rows=[];let i=0,f='',row=[],q=false;
+      function PF(){row.push(f.replace(/\\"\\"/g,'\\"'));f=''}
+      function PR(){rows.push(row);row=[]}
+      while(i<t.length){const c=t[i];
+        if(q){ if(c=='"'){ if(t[i+1]=='"'){f+='"';i+=2;continue}else{q=false;i++;continue} } else { f+=c;i++;continue } }
+        else{ if(c=='"'){ q=true;i++;continue } if(c==','){ PF();i++;continue } if(c=='\n'){ PF();PR();i++;continue } if(c=='\r'){ i++;continue } f+=c;i++; }
+      }
+      PF(); if(row.length>1||(row.length==1&&row[0]!=='')) PR();
+      if(!rows.length) return [];
+      const h=rows[0].map(x=>(x||'').trim()),data=[];
+      for(let r=1;r<rows.length;r++){const v=rows[r],o={};h.forEach((k,ix)=>o[k]=(v[ix]||'').trim());data.push(o)}
+      return data;
+    }
+
+    /* ---------- WHATSAPP ---------- */
+    (function setupWhatsApp(){
+      const msg = encodeURIComponent('Hola, me interesa la casa de Aldea del Este. Mi nombre es: ______. Quiero coordinar una visita.');
+      const href = 'https://wa.me/5492944635083?text=' + msg + '&utm_source=landing&utm_medium=cta&utm_campaign=aldea_del_este';
+      const btn = document.getElementById('whatsapp-buyvisit');
+      if (btn) btn.href = href;
+    })();
+
+    /* ---------- BOTÓN VER + FICHA ---------- */
+    (function setupVerYFicha(){
+      // VER
+      const aVer = document.getElementById('btn-ver');
+      if (aVer) aVer.href = PUBLIC_LINK;
+
+      // FICHA (modal)
+      const getPdfUrl = () => (localStorage.getItem(LS_KEY_PDF) || '').trim() || PDF_FICHA_FALLBACK;
+
+      const openModal = () => {
+        const url = getPdfUrl();
+        const bd = document.getElementById('ficha-backdrop');
+        const aOpen = document.getElementById('ficha-ver');
+        const aDl   = document.getElementById('ficha-descargar');
+
+        if (aOpen) aOpen.href = url;
+        if (aDl)   { aDl.href = url; aDl.setAttribute('download', 'ficha.pdf'); }
+        if (bd) { bd.style.display = 'flex'; bd.setAttribute('aria-hidden','false'); }
       };
-      btnMobile?.addEventListener('click', () => toggleMenu());
-      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMenu(false); });
-      mobileMenu?.querySelectorAll('a').forEach((link) => { link.addEventListener('click', () => toggleMenu(false)); });
-      window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMenu(false); });
-
-      // Simulación de envío del formulario (muestra mensaje de ok)
-      const form = document.getElementById('contact-form');
-      const ok = document.getElementById('form-ok');
-      form?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        ok?.classList.remove('hidden');
-        setTimeout(() => { form.reset(); }, 200);
-      });
-
-      // --------------------------
-      // Utilidades CSV + Render
-      // --------------------------
-      const LS_KEY_CSV = 'ngespacios:csvUrl';
-
-      /** Normaliza URLs de Google Sheets a CSV */
-      function normalizeSheetUrlToCsv(url) {
-        try {
-          const u = new URL(url);
-          if (u.hostname.includes('docs.google.com')) {
-            if (u.pathname.endsWith('/pub')) {
-              u.searchParams.set('output', 'csv');
-              return u.toString();
-            }
-            if (u.pathname.includes('/export')) {
-              u.searchParams.set('format', 'csv');
-              return u.toString();
-            }
-          }
-          return url;
-        } catch {
-          return url;
-        }
-      }
-
-      /**
-       * Parser CSV simple con soporte de comillas dobles
-       * @param {string} text
-       * @returns {Array<Object>}
-       */
-      function parseCSV(text) {
-        const rows = [];
-        let i = 0, field = '', row = [], inQuotes = false;
-
-        function pushField() {
-          row.push(field.replace(/\\"\\"/g, '\\"'));
-          field = '';
-        }
-        function pushRow() {
-          rows.push(row);
-          row = [];
-        }
-
-        while (i < text.length) {
-          const c = text[i];
-          if (inQuotes) {
-            if (c === '\\"') {
-              if (text[i + 1] === '\\"') {
-                field += '\\"';
-                i += 2; continue;
-              } else {
-                inQuotes = false; i++; continue;
-              }
-            } else {
-              field += c; i++; continue;
-            }
-          } else {
-            if (c === '\\"') { inQuotes = true; i++; continue; }
-            if (c === ',') { pushField(); i++; continue; }
-            if (c === '\\n') { pushField(); pushRow(); i++; continue; }
-            if (c === '\\r') { i++; continue; }
-            field += c; i++;
-          }
-        }
-        pushField();
-        if (row.length > 1 || (row.length === 1 && row[0] !== '')) pushRow();
-
-        if (rows.length === 0) return [];
-        const headers = rows[0].map((h) => (h || '').trim());
-        const data = [];
-        for (let r = 1; r < rows.length; r++) {
-          const values = rows[r];
-          const obj = {};
-          headers.forEach((h, idx) => { obj[h] = (values[idx] || '').trim(); });
-          data.push(obj);
-        }
-        return data;
-      }
-
-      /** Descarga texto CSV evitando caché */
-      async function fetchCsv(url) {
-        const res = await fetch(url, { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.text();
-      }
-
-      /** Devuelve la primera imagen válida desde "images" (separadas por |) */
-      function firstImage(p) {
-        const raw = p.images || '';
-        const parts = raw.split('|').map((s) => s.trim()).filter(Boolean);
-        return parts[0] || '';
-      }
-
-      /** Construye un texto de precio a partir de price_label o (amount+currency+period) */
-      function formatPrice(p) {
-        const label = p.price_label || '';
-        if (label) return label;
-        const amount = p.price_amount || '';
-        const curr = p.price_currency || '';
-        const period = p.price_period || '';
-        let text = '';
-        if (curr && amount) text = `${curr} ${amount}`;
-        else if (amount) text = amount;
-        if (period) text += ` ${period}`;
-        return text;
-      }
-
-      // --------------------------
-      // Render de tarjetas + Galería
-      // --------------------------
-      const WA_PHONE = '5492944635083';
-
-      /** Arma el link a WhatsApp con mensaje precargado */
-      function buildWaLink({ title, operation, type, location, price }) {
-        const msg = `Hola Natalia, me interesa la propiedad "${title}" (${operation} - ${type}) en ${location}. Precio: ${price}. ¿Podemos coordinar una visita? Gracias.`;
-        return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(msg)}`;
-      }
-
-      /** Crea el nodo Article de una propiedad */
-      function createPropertyCard(p) {
-        const card = document.createElement('article');
-        card.className = 'group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition';
-        card.setAttribute('data-title', p.title || '');
-        card.setAttribute('data-operation', p.operation || '');
-        card.setAttribute('data-type', p.type || '');
-        card.setAttribute('data-location', p.location || '');
-        card.setAttribute('data-price', formatPrice(p));
-        card.setAttribute('data-images', (p.images || '').split('|').map(s => s.trim()).filter(Boolean).join('|'));
-
-        // Imagen
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'relative h-48 w-full overflow-hidden';
-
-        const btnOpen = document.createElement('button');
-        btnOpen.type = 'button';
-        btnOpen.className = 'absolute inset-0 z-10';
-        btnOpen.setAttribute('data-action', 'open-gallery');
-        btnOpen.setAttribute('title', 'Abrir galería');
-        btnOpen.setAttribute('aria-label', 'Abrir galería');
-
-        const img = document.createElement('img');
-        img.src = firstImage(p) || 'https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/436c51ea-42dc-495c-a5ed-840f07947a61.jpg';
-        img.alt = p.title || 'Foto de propiedad';
-        img.className = 'object-cover h-full w-full';
-
-        const badges = document.createElement('div');
-        badges.className = 'absolute top-3 left-3 flex gap-2';
-        const op = document.createElement('span');
-        op.className = 'rounded-md bg-white/90 px-2 py-1 text-xs font-medium';
-        op.textContent = p.operation || '';
-        const typ = document.createElement('span');
-        typ.className = 'rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1 text-xs font-medium';
-        typ.textContent = p.type || '';
-        if (p.operation) badges.appendChild(op);
-        if (p.type) badges.appendChild(typ);
-
-        imgWrap.appendChild(btnOpen);
-        imgWrap.appendChild(img);
-        imgWrap.appendChild(badges);
-        card.appendChild(imgWrap);
-
-        // Contenido
-        const content = document.createElement('div');
-        content.className = 'p-4';
-
-        const h3 = document.createElement('h3');
-        h3.className = 'font-medium tracking-tight line-clamp-1';
-        h3.textContent = p.title || 'Sin título';
-
-        const loc = document.createElement('div');
-        loc.className = 'mt-1 flex items-center gap-1 text-sm text-neutral-600';
-        loc.innerHTML = '<i data-lucide="map-pin" class="h-4 w-4"></i><span class="line-clamp-1"></span>';
-        loc.querySelector('span').textContent = p.location || '';
-
-        const specs = document.createElement('ul');
-        specs.className = 'mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs text-neutral-700';
-        const specItems = [
-          p.bedrooms ? { icon: 'bed', text: `${p.bedrooms} hab` } : null,
-          p.bathrooms ? { icon: 'bath', text: `${p.bathrooms} baños` } : null,
-          p.garages ? { icon: 'car', text: `${p.garages} coch` } : null,
-          p.area_m2 ? { icon: 'square', text: `${p.area_m2} m² cub.` } : null,
-          p.lot_m2 ? { icon: 'ruler', text: `${p.lot_m2} m² lote` } : null
-        ].filter(Boolean);
-        specItems.forEach((s) => {
-          const li = document.createElement('li');
-          li.className = 'inline-flex items-center gap-1';
-          li.innerHTML = `<i data-lucide="${s.icon}" class="h-4 w-4 text-neutral-600"></i><span>${s.text}</span>`;
-          specs.appendChild(li);
-        });
-
-        const footer = document.createElement('div');
-        footer.className = 'mt-3 flex items-center justify-between';
-
-        const price = document.createElement('span');
-        price.className = 'text-lg font-semibold text-[color:var(--brand-primary)]';
-        price.textContent = formatPrice(p);
-
-        const ctas = document.createElement('div');
-        ctas.className = 'flex gap-2';
-
-        const aWa = document.createElement('a');
-        aWa.target = '_blank';
-        aWa.rel = 'noreferrer';
-        aWa.className = 'text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition';
-        aWa.textContent = 'WhatsApp';
-        aWa.href = buildWaLink({
-          title: p.title || '',
-          operation: p.operation || '',
-          type: p.type || '',
-          location: p.location || '',
-          price: formatPrice(p)
-        });
-
-        const btnFicha = document.createElement('button');
-        btnFicha.type = 'button';
-        btnFicha.className = 'text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition';
-        btnFicha.textContent = 'Ficha';
-        btnFicha.setAttribute('data-action', 'open-gallery-ficha');
-
-        ctas.appendChild(aWa);
-        ctas.appendChild(btnFicha);
-
-        footer.appendChild(price);
-        footer.appendChild(ctas);
-
-        content.appendChild(h3);
-        content.appendChild(loc);
-        if (specItems.length) content.appendChild(specs);
-        content.appendChild(footer);
-
-        card.appendChild(content);
-
-        return card;
-      }
-
-      /** Estado simple de galería */
-      const galleryState = {
-        images: [],
-        index: 0,
-        meta: { title: '', operation: '', type: '', location: '', price: '' },
-        infoOpen: false,
+      const closeModal = () => {
+        const bd = document.getElementById('ficha-backdrop');
+        if (bd) { bd.style.display = 'none'; bd.setAttribute('aria-hidden','true'); }
       };
 
-      // Elementos de galería
-      const modal = document.getElementById('gallery-modal');
-      const imgEl = document.getElementById('gallery-img');
-      const counterEl = document.getElementById('gallery-counter');
-      const closeBtn = document.getElementById('gallery-close');
-      const prevBtn = document.getElementById('gallery-prev');
-      const nextBtn = document.getElementById('gallery-next');
-      const fichaBtn = document.getElementById('gallery-ficha-btn');
-      const infoPanel = document.getElementById('gallery-info');
-      const waBtn = document.getElementById('gallery-wa');
+      document.getElementById('btn-ficha')?.addEventListener('click', openModal);
+      document.getElementById('ficha-cerrar')?.addEventListener('click', closeModal);
+      document.getElementById('ficha-backdrop')?.addEventListener('click', (e)=>{ if(e.target.id==='ficha-backdrop') closeModal(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+    })();
 
-      const titleEl = document.getElementById('gallery-title');
-      const subEl = document.getElementById('gallery-sub');
-      const priceEl = document.getElementById('gallery-price');
-      const badgeOp = document.getElementById('gallery-badge-op');
-      const badgeType = document.getElementById('gallery-badge-type');
+    /* ---------- ADMIN (abre con ?admin=1) ---------- */
+    (function adminPanel(){
+      const $ = id => document.getElementById(id);
+      const p = $('ngd-admin-panel'); if (!p) return;
 
-      /** Actualiza la UI con la imagen actual */
-      function updateGalleryUI() {
-        if (!galleryState.images.length) return;
-        imgEl.src = galleryState.images[galleryState.index];
-        imgEl.alt = galleryState.meta.title || 'Imagen de propiedad';
-        counterEl.textContent = (galleryState.index + 1) + ' / ' + galleryState.images.length;
+      // Mostrar auto si viene ?admin=1
+      try { const u = new URL(location.href); if (u.searchParams.get('admin')==='1') p.classList.remove('hidden'); } catch {}
 
-        // Datos de ficha
-        titleEl.textContent = galleryState.meta.title;
-        subEl.textContent = galleryState.meta.location;
-        priceEl.textContent = galleryState.meta.price;
-        badgeOp.textContent = galleryState.meta.operation;
-        badgeType.textContent = galleryState.meta.type;
+      const iCsv = $('ngd-csv'),  iPdf = $('ngd-pdf'), s = $('ngd-status');
+      try { iCsv.value = localStorage.getItem(LS_KEY_CSV) || ''; } catch {}
+      try { iPdf.value = localStorage.getItem(LS_KEY_PDF) || ''; } catch {}
 
-        // Link de WhatsApp
-        waBtn.href = buildWaLink(galleryState.meta);
-
-        // Render de iconos luego de actualizar botones
-        renderIcons();
-      }
-
-      /** Abre el modal de galería */
-      function openGallery({ images, meta, startIndex = 0, openFicha = false }) {
-        galleryState.images = images;
-        galleryState.index = Math.max(0, Math.min(startIndex, images.length - 1));
-        galleryState.meta = meta;
-        galleryState.infoOpen = !!openFicha;
-
-        // Mostrar/ocultar ficha compacta
-        infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
-
-        // Mostrar modal
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-
-        updateGalleryUI();
-      }
-
-      /** Cierra el modal */
-      function closeGallery() {
-        modal.classList.add('hidden');
-        document.body.style.overflow = '';
-      }
-
-      /** Navegación */
-      function prevImage() {
-        if (!galleryState.images.length) return;
-        galleryState.index = (galleryState.index - 1 + galleryState.images.length) % galleryState.images.length;
-        updateGalleryUI();
-      }
-      function nextImage() {
-        if (!galleryState.images.length) return;
-        galleryState.index = (galleryState.index + 1) % galleryState.images.length;
-        updateGalleryUI();
-      }
-
-      /** Toggle ficha */
-      function toggleFicha() {
-        galleryState.infoOpen = !galleryState.infoOpen;
-        infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
-      }
-
-      // Eventos globales del modal
-      closeBtn.addEventListener('click', closeGallery);
-      prevBtn.addEventListener('click', prevImage);
-      nextBtn.addEventListener('click', nextImage);
-      fichaBtn.addEventListener('click', toggleFicha);
-
-      // Cerrar al clickear fuera (overlay)
-      modal.addEventListener('click', (e) => {
-        const isBackdrop = e.target === modal || e.target === modal.firstElementChild;
-        if (isBackdrop) closeGallery();
-      });
-
-      // Teclado
-      document.addEventListener('keydown', (e) => {
-        if (modal.classList.contains('hidden')) return;
-        if (e.key === 'Escape') closeGallery();
-        if (e.key === 'ArrowLeft') prevImage();
-        if (e.key === 'ArrowRight') nextImage();
-      });
-
-      // --------------------------
-      // Estado y filtros
-      // --------------------------
-      let ALL_PROPS = [];
-      const grid = document.getElementById('prop-grid');
-      const empty = document.getElementById('prop-empty');
-      const cfg = document.getElementById('prop-config');
-      const count = document.getElementById('prop-count');
-
-      const selOp = document.getElementById('filter-operation');
-      const selType = document.getElementById('filter-type');
-      const inLoc = document.getElementById('filter-location');
-      const searchForm = document.getElementById('search-form');
-      const btnReset = document.getElementById('btn-reset');
-
-      /** Conecta botones de cada tarjeta a la galería */
-      function wireCardGallery(card) {
-        function parseImages(str) {
-          return (str || '')
-            .split('|')
-            .map((s) => s.trim())
-            .filter(Boolean);
-        }
-        const meta = {
-          title: card.getAttribute('data-title') || '',
-          operation: card.getAttribute('data-operation') || '',
-          type: card.getAttribute('data-type') || '',
-          location: card.getAttribute('data-location') || '',
-          price: card.getAttribute('data-price') || '',
-        };
-        const imgs = parseImages(card.getAttribute('data-images') || '');
-
-        const openButtons = card.querySelectorAll('[data-action="open-gallery"]');
-        openButtons.forEach((btn) => btn.addEventListener('click', () => openGallery({ images: imgs, meta, startIndex: 0, openFicha: false })));
-
-        const openFichaBtn = card.querySelector('[data-action="open-gallery-ficha"]');
-        openFichaBtn?.addEventListener('click', () => openGallery({ images: imgs, meta, startIndex: 0, openFicha: true }));
-      }
-
-      /** Renderiza una lista de propiedades */
-      function renderList(list) {
-        grid.innerHTML = '';
-        if (!list || list.length === 0) {
-          empty.classList.remove('hidden');
-          count.textContent = '';
-          renderIcons();
-          return;
-        }
-        empty.classList.add('hidden');
-        list.forEach((p) => {
-          const card = createPropertyCard(p);
-          grid.appendChild(card);
-          wireCardGallery(card);
-        });
-        count.textContent = list.length + ' resultados';
-        renderIcons();
-      }
-
-      /** Aplica filtros del buscador */
-      function applyFilters() {
-        const op = (selOp.value || '').trim().toLowerCase();
-        const type = (selType.value || '').trim().toLowerCase();
-        const loc = (inLoc.value || '').trim().toLowerCase();
-
-        const filtered = ALL_PROPS.filter((p) => {
-          const pOp = (p.operation || '').toLowerCase();
-          const pType = (p.type || '').toLowerCase();
-          const pLoc = (p.location || '').toLowerCase();
-
-          const okOp = !op || pOp === op;
-          const okType = !type || pType === type;
-          const okLoc = !loc || pLoc.includes(loc);
-
-          return okOp && okType && okLoc;
-        });
-
-        renderList(filtered);
-      }
-
-      /** Carga inicial desde CSV (localStorage o default) */
-      async function bootstrap() {
+      $('ngd-test')?.addEventListener('click', async ()=>{
+        s.textContent = 'Probando CSV...';
         try {
-          const saved = localStorage.getItem(LS_KEY_CSV) || '';
-          const csvUrl = saved || 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRE45mae2W4RPiAVFq7Jl8E0WeD7XXoPxXDT6oGKXFPxAACcGVC30Bq-FUcbM90iIn5H-5ddOr9hl1K/pub?output=csv';
-
-          if (!csvUrl) {
-            cfg.classList.remove('hidden');
-            renderList([]);
-            return;
-          }
-
-          const normalized = normalizeSheetUrlToCsv(csvUrl);
-          const text = await fetchCsv(normalized);
-          const rows = parseCSV(text);
-          // Filtrar filas mínimas válidas
-          ALL_PROPS = rows.filter((r) => (r.id || '').trim() && (r.title || '').trim());
-
-          cfg.classList.add('hidden');
-          renderList(ALL_PROPS);
-        } catch (e) {
-          console.error(e);
-          cfg.classList.remove('hidden');
-          renderList([]);
-        }
-      }
-
-      // Eventos buscador
-      searchForm?.addEventListener('submit', (e) => { e.preventDefault(); applyFilters(); });
-      btnReset?.addEventListener('click', () => {
-        selOp.value = '';
-        selType.value = '';
-        inLoc.value = '';
-        renderList(ALL_PROPS);
+          const raw = iCsv.value.trim(); if(!raw){ s.textContent='Pegá una URL CSV.'; return; }
+          const url = normalizeSheetUrlToCsv(raw);
+          const csv = await fetchCsv(url);
+          const rows = parseCSV(csv);
+          const valid = rows.filter(r => (r.id||'').trim() && (r.title||'').trim());
+          s.textContent = `OK: ${rows.length} filas, ${valid.length} válidas (id+title).`;
+        } catch(e){ console.error(e); s.textContent='Error leyendo el CSV.'; }
       });
 
-      // Init
-      bootstrap();
-    </script>
-
-    <!-- Script anti-badge adicional: elimina overlays/badges inyectados por hosts (p. ej. Vercel) -->
-    <script>
-      (function hideHostBadges(){
-        const selectors = [
-          'a[href*="vercel.com"]',
-          'a[href*="vercel.app"]',
-          '[aria-label*="Vercel" i]',
-          '[aria-label*="vercel" i]',
-          '[data-vercel-insights]',
-          '[data-vercel-analytics]',
-          '[data-ai-insights]',
-          '[data-nextjs-toast]',
-          '[data-vc]',
-          '[data-vercel-banner]',
-          'img[alt*="vercel" i]',
-          'iframe[src*="vercel" i]',
-          '.vercel-badge',
-          '#vercel',
-          '#__vercel'
-        ];
-        const removeAll = () => {
-          try { document.querySelectorAll(selectors.join(',')).forEach((el) => el.remove()); } catch {}
-        };
-        const obs = new MutationObserver(removeAll);
-        obs.observe(document.documentElement, { subtree: true, childList: true });
-        removeAll();
-        setTimeout(() => obs.disconnect(), 8000);
-      })();
-    </script>
-
-    <!-- Admin force-open helper: ensures the panel shows when ?admin=1 (supports ngd- and ng- variants) -->
-    <script>
-      /**
-       * @file force-admin-open
-       * @description If the URL contains ?admin=1, make any admin panel visible (ngd- or ng- variants).
-       */
-      (function forceOpenAdmin(){
+      $('ngd-save')?.addEventListener('click', ()=>{
         try {
-          const u = new URL(location.href);
-          if (u.searchParams.get('admin') !== '1') return;
-        } catch { return; }
+          if (iCsv.value.trim()) localStorage.setItem(LS_KEY_CSV, normalizeSheetUrlToCsv(iCsv.value.trim()));
+          if (iPdf.value.trim()) localStorage.setItem(LS_KEY_PDF, iPdf.value.trim());
+          s.textContent='Guardado. Recargá la página si cambiaste la fuente.';
+        } catch { s.textContent='No se pudo guardar en este navegador.'; }
+      });
 
-        const SHOW = (el) => {
-          if (!el) return false;
-          el.classList?.remove('hidden', 'ng-hidden');
-          if (el.style) { el.style.display = 'block'; el.style.visibility = 'visible'; }
-          el.setAttribute?.('aria-hidden','false');
-          el.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
-          return true;
-        };
+      $('ngd-clear')?.addEventListener('click', ()=>{
+        try { localStorage.removeItem(LS_KEY_CSV); localStorage.removeItem(LS_KEY_PDF); } catch {}
+        if (iCsv) iCsv.value=''; if (iPdf) iPdf.value='';
+        s.textContent='Borrado. Usará los valores por defecto del sitio.';
+      });
+    })();
 
-        const tryShow = () => {
-          const a = document.getElementById('ngd-admin-panel') || document.getElementById('ng-admin-panel');
-          if (a) {
-            SHOW(a);
-            const t = document.getElementById('ngd-admin-toggle') || document.getElementById('ng-admin-toggle');
-            if (t) t.setAttribute('aria-pressed','true');
-            const i = document.getElementById('ngd-csv') || document.getElementById('ng-csv-url') || a.querySelector('input[type="url"]');
-            i?.focus();
-            return true;
-          }
-          return false;
-        };
-
-        if (tryShow()) return;
-        const maxMs = 2000; const start = Date.now();
-        const iv = setInterval(() => {
-          if (tryShow() || Date.now() - start > maxMs) clearInterval(iv);
-        }, 120);
-      })();
-    </script>
-  </body>
+    /* ---------- AÑO FOOTER ---------- */
+    (function(){ const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear(); })();
+  </script>
+</body>
 </html>
