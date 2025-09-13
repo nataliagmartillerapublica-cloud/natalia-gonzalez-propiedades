@@ -1,8 +1,8 @@
 <!--
   @file index.html
   @description NGespacios — Sitio público. Carga propiedades desde Google Sheets (CSV),
-               incluye buscador funcional, galería y panel Admin oculto (?admin=1).
-               Botones por propiedad: VER (link público) + FICHA (modal Abrir/Descargar PDF).
+               incluye buscador, galería, panel Admin oculto (?admin=1),
+               botón VER (link), FICHA (modal PDF Abrir/Descargar) y WhatsApp.
 -->
 
 <!doctype html>
@@ -12,29 +12,17 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
 
     <title>NGespacios — Inmobiliaria en Bariloche</title>
-    <meta
-      name="description"
-      content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche."
-    />
+    <meta name="description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta name="theme-color" content="#572d30" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="NGespacios — Inmobiliaria en Bariloche" />
-    <meta
-      property="og:description"
-      content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche."
-    />
+    <meta property="og:description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta property="og:type" content="website" />
-    <meta
-      property="og:image"
-      content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ea65a1b8-690c-4544-909e-d44a40ea8675.jpg"
-    />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=1200&auto=format&fit=crop" />
 
     <!-- Fuente -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -42,62 +30,37 @@
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Estilos de marca y accesibilidad -->
     <style>
-      :root {
-        --brand-bg: #f4f2f2;
-        --brand-primary: #572d30;
-        --brand-text: #363332;
+      :root{
+        --brand-bg:#f4f2f2;
+        --brand-primary:#572d30;
+        --brand-text:#363332;
       }
-      html, body { height: 100%; }
-      body {
-        font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-        color: var(--brand-text);
-        background: var(--brand-bg);
-        font-weight: 300;
-        letter-spacing: 0.01em;
+      html,body{height:100%}
+      body{
+        font-family:'Montserrat',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif;
+        color:var(--brand-text); background:var(--brand-bg); font-weight:300; letter-spacing:.01em;
       }
-      a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
-        outline: 2px solid var(--brand-primary);
-        outline-offset: 2px;
-        border-radius: 6px;
+      a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{
+        outline:2px solid var(--brand-primary); outline-offset:2px; border-radius:6px;
       }
-      .container-max { max-width: 72rem; } /* ~6xl */
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      .container-max{max-width:72rem}
+      .no-scrollbar::-webkit-scrollbar{display:none}
+      .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
 
-      /* Anti-badge hosting overlays */
-      a[href*="vercel.com"],
-      a[href*="vercel.app"],
-      [aria-label*="Vercel" i],
-      [aria-label*="vercel" i],
-      [data-vercel-insights],
-      [data-vercel-analytics],
-      [data-ai-insights],
-      [data-nextjs-toast],
-      [data-vc],
-      [data-vercel-banner],
-      img[alt*="vercel" i],
-      iframe[src*="vercel" i],
-      .vercel-badge,
-      #vercel,
-      #__vercel {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-        width: 0 !important;
-        height: 0 !important;
-        opacity: 0 !important;
-      }
+      /* Oculta badges/overlays de hosting si los hubiera */
+      a[href*="vercel.com"],a[href*="vercel.app"],[aria-label*="Vercel" i],[data-vercel-insights],
+      [data-vercel-analytics],[data-vercel-banner],img[alt*="vercel" i],iframe[src*="vercel" i],
+      .vercel-badge,#vercel,#__vercel{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;opacity:0!important}
 
-      /* Admin panel */
+      /* Admin */
       .admin-card{border:1px dashed #d4a373;background:#fff7ed;color:#7c3e00;border-radius:12px;padding:12px}
       .admin-input{width:100%;height:42px;border:1px solid #e5e5e5;border-radius:10px;padding:8px;background:#fff}
       .admin-micro{font-size:12px;color:#7c3e00}
       .hidden-admin{display:none}
       .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid #ddd;border-radius:999px;padding:8px 12px;background:#fff}
 
-      /* Modal FICHA PDF */
+      /* Modal Ficha PDF */
       .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:16px;z-index:60}
       .modal{max-width:520px;width:100%;background:#fff;border:1px solid #e5e5e5;border-radius:14px;padding:16px}
     </style>
@@ -111,31 +74,17 @@
           <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
             <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
           </div>
-          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">
-            ESPACIOS
-          </span>
+          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">ESPACIOS</span>
         </a>
 
         <nav class="hidden md:flex items-center gap-6 text-sm">
           <a href="#propiedades" class="hover:text-[color:var(--brand-primary)]">Propiedades</a>
           <a href="#tasacion" class="hover:text-[color:var(--brand-primary)]">Tasación</a>
           <a href="#contacto" class="hover:text-[color:var(--brand-primary)]">Contacto</a>
-          <a
-            href="#propiedades"
-            class="rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors"
-          >
-            Ver propiedades
-          </a>
+          <a href="#propiedades" class="rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors">Ver propiedades</a>
         </nav>
 
-        <button
-          id="btn-mobile"
-          class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300"
-          aria-label="Abrir menú"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-          type="button"
-        >
+        <button id="btn-mobile" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu" type="button">
           <i data-lucide="menu" class="h-4 w-4"></i>
         </button>
       </div>
@@ -147,12 +96,7 @@
             <a href="#propiedades" class="py-2 hover:text-[color:var(--brand-primary)]">Propiedades</a>
             <a href="#tasacion" class="py-2 hover:text-[color:var(--brand-primary)]">Tasación</a>
             <a href="#contacto" class="py-2 hover:text-[color:var(--brand-primary)]">Contacto</a>
-            <a
-              href="#propiedades"
-              class="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors"
-            >
-              Ver propiedades
-            </a>
+            <a href="#propiedades" class="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors">Ver propiedades</a>
           </div>
         </div>
       </div>
@@ -162,39 +106,22 @@
       <!-- Hero -->
       <section class="relative isolate">
         <div class="absolute inset-0 -z-10">
-          <img
-            src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c0105bbf-bf3c-42e0-bc2b-88d39c05c4aa.jpg"
-            alt="Lago en Bariloche"
-            class="object-cover w-full h-full"
-          />
+          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop" alt="Lago en Bariloche" class="object-cover w-full h-full" />
           <div class="absolute inset-0 bg-[color:var(--brand-bg)] mix-blend-multiply opacity-30"></div>
           <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/30"></div>
         </div>
 
         <div class="mx-auto container-max px-4 py-16 md:py-24">
-          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">
-            Natalia González • Martillera y Corredora Pública • MAT. Nº377- RP-21 Fº456 TºII
-          </p>
-
-          <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">
-            Tu próximo hogar en Bariloche
-          </h1>
-          <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">
-            Acompañamiento de punta a punta.
-          </p>
-
+          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">Natalia González • Martillera y Corredora Pública • MAT. Nº377- RP-21 Fº456 TºII</p>
+          <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">Tu próximo hogar en Bariloche</h1>
+          <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">Acompañamiento de punta a punta.</p>
           <div class="mt-6 flex flex-wrap gap-3">
-            <a
-              href="#propiedades"
-              class="rounded-lg bg-[color:var(--brand-primary)] text-white px-5 py-2.5 text-sm md:text-base hover:opacity-90 transition"
-            >
-              Ver propiedades
-            </a>
+            <a href="#propiedades" class="rounded-lg bg-[color:var(--brand-primary)] text-white px-5 py-2.5 text-sm md:text-base hover:opacity-90 transition">Ver propiedades</a>
           </div>
         </div>
       </section>
 
-      <!-- Search Panel -->
+      <!-- Panel de búsqueda -->
       <div class="mx-auto container-max px-4 -mt-14 relative z-10">
         <form id="search-form" class="rounded-xl border border-neutral-200 bg-white p-4 md:p-5 shadow-sm">
           <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
@@ -221,20 +148,8 @@
               <input id="filter-location" class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Ej. Centro" />
             </div>
             <div class="flex items-end gap-2">
-              <button
-                id="btn-search"
-                type="submit"
-                class="w-full md:w-auto h-10 rounded-lg bg-[color:var(--brand-primary)] text-white px-4 hover:opacity-90 transition"
-              >
-                Buscar
-              </button>
-              <button
-                id="btn-reset"
-                type="button"
-                class="w-full md:w-auto h-10 rounded-lg border border-neutral-300 text-neutral-700 px-4 hover:bg-neutral-50 transition"
-              >
-                Limpiar
-              </button>
+              <button id="btn-search" type="submit" class="w-full md:w-auto h-10 rounded-lg bg-[color:var(--brand-primary)] text-white px-4 hover:opacity-90 transition">Buscar</button>
+              <button id="btn-reset" type="button" class="w-full md:w-auto h-10 rounded-lg border border-neutral-300 text-neutral-700 px-4 hover:bg-neutral-50 transition">Limpiar</button>
             </div>
           </div>
         </form>
@@ -289,9 +204,7 @@
           <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Tu propiedad</p>
           <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Escribime</h2>
         </div>
-        <p class="mt-2 text-neutral-700">
-          Completá tus datos y el motivo de tu consulta; me contactaré muy pronto.
-        </p>
+        <p class="mt-2 text-neutral-700">Completá tus datos y el motivo de tu consulta; me contactaré muy pronto.</p>
 
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <form id="contact-form" class="rounded-xl border border-neutral-200 p-4 md:p-6 bg-white">
@@ -300,17 +213,14 @@
                 <label for="nombre" class="text-xs text-neutral-600 mb-1">Nombre</label>
                 <input id="nombre" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Tu nombre" />
               </div>
-
               <div class="flex flex-col">
                 <label for="email" class="text-xs text-neutral-600 mb-1">Email</label>
                 <input id="email" type="email" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="tucorreo@mail.com" />
               </div>
-
               <div class="flex flex-col">
                 <label for="telefono" class="text-xs text-neutral-600 mb-1">Teléfono</label>
                 <input id="telefono" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="+54 9 ..." />
               </div>
-
               <div class="flex flex-col">
                 <label for="tipo" class="text-xs text-neutral-600 mb-1">Tipo de propiedad</label>
                 <select id="tipo" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
@@ -321,7 +231,6 @@
                   <option value="Local">Local</option>
                 </select>
               </div>
-
               <div class="flex flex-col">
                 <label for="operacion" class="text-xs text-neutral-600 mb-1">Operación</label>
                 <select id="operacion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
@@ -330,32 +239,23 @@
                   <option value="Alquiler">Alquiler</option>
                 </select>
               </div>
-
               <div class="flex flex-col md:col-span-2">
                 <label for="direccion" class="text-xs text-neutral-600 mb-1">Dirección</label>
                 <input id="direccion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Calle, número, barrio" />
               </div>
-
               <div class="flex flex-col md:col-span-2">
                 <label for="mensaje" class="text-xs text-neutral-600 mb-1">Mensaje</label>
                 <textarea id="mensaje" rows="4" class="rounded-lg border border-neutral-300 px-3 py-2 bg-white" placeholder="Detalles relevantes o el tema por el que querés consultar"></textarea>
               </div>
             </div>
-
             <div class="mt-4 flex items-center justify-between gap-3">
-              <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[color:var(--brand-primary)] text-white h-10 px-4 hover:opacity-90 transition">
-                Enviar
-              </button>
+              <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[color:var(--brand-primary)] text-white h-10 px-4 hover:opacity-90 transition">Enviar</button>
               <span id="form-ok" class="text-sm text-green-700 hidden">¡Gracias! Me contactaré a la brevedad.</span>
             </div>
           </form>
 
           <div class="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50">
-            <img
-              src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c4bf838c-8b53-4947-a908-295e7052c60c.jpg"
-              alt="Bariloche"
-              class="object-cover h-full w-full"
-            />
+            <img src="https://images.unsplash.com/photo-1523419409543-a9e1a844ab2e?q=80&w=1200&auto=format&fit=crop" alt="Bariloche" class="object-cover h-full w-full" />
           </div>
         </div>
       </section>
@@ -371,21 +271,13 @@
           <div class="mt-4 space-y-2 text-sm md:text-base">
             <p class="text-neutral-700">
               Email
-              <a
-                href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base"
-              >
+              <a href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base">
                 nataliagonzalezmartillerapublica@ngespacios.com.ar
               </a>
             </p>
             <p class="text-neutral-700">
               WhatsApp
-              <a
-                href="https://wa.me/5492944635083"
-                target="_blank"
-                rel="noreferrer"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline"
-              >
+              <a href="https://wa.me/5492944635083" target="_blank" rel="noreferrer" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline">
                 +54 9 294 463 5083
               </a>
             </p>
@@ -404,79 +296,33 @@
     </footer>
 
     <!-- WhatsApp Floating -->
-    <a
-      href="https://wa.me/5492944635083"
-      target="_blank"
-      rel="noreferrer"
-      class="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-green-600 text-white px-4 py-2 shadow-lg hover:bg-green-700 transition"
-      aria-label="Contactar por WhatsApp"
-    >
-      <i data-lucide="message-circle" class="h-5 w-5"></i>
-      WhatsApp
+    <a href="https://wa.me/5492944635083" target="_blank" rel="noreferrer" class="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-green-600 text-white px-4 py-2 shadow-lg hover:bg-green-700 transition" aria-label="Contactar por WhatsApp">
+      <i data-lucide="message-circle" class="h-5 w-5"></i> WhatsApp
     </a>
 
-    <!-- Modal Galería con Carrusel -->
-    <div
-      id="gallery-modal"
-      class="fixed inset-0 z-50 hidden"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="gallery-title"
-    >
+    <!-- Modal Galería -->
+    <div id="gallery-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="gallery-title">
       <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
 
       <div class="relative h-full w-full flex items-center justify-center px-4">
         <!-- Controles superiores -->
         <div class="absolute top-3 right-3 flex items-center gap-2 z-50">
-          <a
-            id="gallery-wa"
-            href="#"
-            target="_blank"
-            rel="noreferrer"
-            class="inline-flex items-center justify-center h-9 rounded-full bg-green-600 text-white px-3 hover:bg-green-700 transition"
-            title="WhatsApp"
-            aria-label="Abrir WhatsApp"
-          >
+          <a id="gallery-wa" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center h-9 rounded-full bg-green-600 text-white px-3 hover:bg-green-700 transition" title="WhatsApp" aria-label="Abrir WhatsApp">
             <i data-lucide="message-circle" class="h-4 w-4 mr-1"></i> WhatsApp
           </a>
-          <!-- NUEVO: VER FICHA -->
-          <button
-            id="gallery-ficha-open"
-            type="button"
-            class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3"
-            title="Ver ficha"
-            aria-label="Ver ficha"
-          >
+          <button id="gallery-ficha-open" type="button" class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3" title="Ver ficha" aria-label="Ver ficha">
             <i data-lucide="file-text" class="h-4 w-4 mr-1"></i> VER FICHA
           </button>
-          <button
-            id="gallery-close"
-            type="button"
-            class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition"
-            aria-label="Cerrar"
-            title="Cerrar"
-          >
+          <button id="gallery-close" type="button" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition" aria-label="Cerrar" title="Cerrar">
             <i data-lucide="x" class="h-4 w-4"></i>
           </button>
         </div>
 
         <!-- Flechas -->
-        <button
-          id="gallery-prev"
-          type="button"
-          class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40"
-          aria-label="Anterior"
-          title="Anterior"
-        >
+        <button id="gallery-prev" type="button" class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40" aria-label="Anterior" title="Anterior">
           <i data-lucide="chevron-left" class="h-4 w-4"></i>
         </button>
-        <button
-          id="gallery-next"
-          type="button"
-          class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40"
-          aria-label="Siguiente"
-          title="Siguiente"
-        >
+        <button id="gallery-next" type="button" class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40" aria-label="Siguiente" title="Siguiente">
           <i data-lucide="chevron-right" class="h-4 w-4"></i>
         </button>
 
@@ -486,11 +332,8 @@
           <figcaption id="gallery-counter" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 px-2 py-1 rounded-md"></figcaption>
         </figure>
 
-        <!-- Ficha compacta (info) -->
-        <div
-          id="gallery-info"
-          class="hidden absolute left-1/2 -translate-x-1/2 bottom-4 w-[95%] max-w-2xl rounded-lg border border-neutral-200 bg-white/95 backdrop-blur p-3 md:p-4 shadow-lg z-40"
-        >
+        <!-- Info visible por defecto -->
+        <div id="gallery-info" class="absolute left-1/2 -translate-x-1/2 bottom-4 w-[95%] max-w-2xl rounded-lg border border-neutral-200 bg-white/95 backdrop-blur p-3 md:p-4 shadow-lg z-40">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h3 id="gallery-title" class="text-sm md:text-base font-medium tracking-tight"></h3>
@@ -500,13 +343,13 @@
                 <span id="gallery-badge-type" class="text-[10px] rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1"></span>
               </div>
             </div>
-            <div class="text-[color:var(--brand-primary)] text-sm md:text-base font-semibold shrink-0" id="gallery-price"></div>
+            <div id="gallery-price" class="text-[color:var(--brand-primary)] text-sm md:text-base font-semibold shrink-0"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- MODAL FICHA PDF (reutilizado desde cards y galería) -->
+    <!-- Modal FICHA PDF -->
     <div id="ficha-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
       <div class="modal">
         <h3 class="font-medium">Ficha de la propiedad</h3>
@@ -518,19 +361,17 @@
           <a id="ficha-download" class="inline-flex items-center rounded-full border border-neutral-300 px-4 py-2" download>
             <i data-lucide="download" class="h-4 w-4 mr-2"></i> Descargar
           </a>
-          <button id="ficha-close" class="inline-flex items-center rounded-full border border-neutral-300 px-4 py-2" type="button">
-            Cerrar
-          </button>
+          <button id="ficha-close" class="inline-flex items-center rounded-full border border-neutral-300 px-4 py-2" type="button">Cerrar</button>
         </div>
       </div>
     </div>
 
-    <!-- JS principal -->
+    <!-- JS -->
     <script>
       // Año
       document.getElementById('year').textContent = new Date().getFullYear();
 
-      // Lucide render
+      // Lucide
       const renderIcons = () => { if (window.lucide) window.lucide.createIcons(); };
       window.addEventListener('DOMContentLoaded', renderIcons);
 
@@ -562,14 +403,10 @@
       mobileMenu?.querySelectorAll('a').forEach((link) => { link.addEventListener('click', () => toggleMenu(false)); });
       window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMenu(false); });
 
-      // Form contacto (simulación)
+      // Form contacto (demo)
       const form = document.getElementById('contact-form');
       const ok = document.getElementById('form-ok');
-      form?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        ok?.classList.remove('hidden');
-        setTimeout(() => { form.reset(); }, 200);
-      });
+      form?.addEventListener('submit', (e) => { e.preventDefault(); ok?.classList.remove('hidden'); setTimeout(() => { form.reset(); }, 200); });
 
       // ---------- CSV / Admin ----------
       const LS_KEY_CSV = 'ngespacios:csvUrl';
@@ -593,7 +430,7 @@
         } catch {}
       })();
 
-      // Mostrar panel Admin si ?admin=1
+      // Mostrar Admin con ?admin=1
       (function openAdminIfRequested(){
         try {
           const u = new URL(location.href);
@@ -642,6 +479,53 @@
         } catch { return url; }
       }
 
+      // --- URL helpers e imágenes ---
+      function ensureHttp(u) {
+        if (!u) return '';
+        try {
+          const hasScheme = /^[a-z]+:\/\//i.test(u);
+          if (!hasScheme) return 'https://' + u.replace(/^\/\//,'');
+          return u;
+        } catch { return u; }
+      }
+      function smartImageUrl(u) {
+        if (!u) return '';
+        u = u.trim();
+        // Google Drive file/d/ID
+        let m = u.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+        if (m && m[1]) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+        // open?id=ID
+        m = u.match(/drive\.google\.com\/open\?id=([^&]+)/);
+        if (m && m[1]) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+        // uc?id=ID
+        m = u.match(/drive\.google\.com\/uc\?id=([^&]+)/);
+        if (m && m[1]) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+        // Dropbox
+        if (/dropbox\.com/.test(u)) {
+          if (u.includes('?dl=0')) return u.replace('?dl=0', '?raw=1');
+          if (!u.includes('?')) return u + '?raw=1';
+          return u + '&raw=1';
+        }
+        return u;
+      }
+      function firstImage(p) {
+        const raw = (p.images || '').trim();
+        const arr = raw.split('|').map(s => smartImageUrl(s)).filter(Boolean);
+        return arr[0] || '';
+      }
+      function formatPrice(p) {
+        const label = p.price_label || '';
+        if (label) return label;
+        const amount = p.price_amount || '';
+        const curr = p.price_currency || '';
+        const period = p.price_period || '';
+        let text = '';
+        if (curr && amount) text = `${curr} ${amount}`;
+        else if (amount) text = amount;
+        if (period) text += ` ${period}`;
+        return text;
+      }
+
       // Parser CSV correcto
       function parseCSV(text) {
         const rows = [];
@@ -674,36 +558,9 @@
         }
         return data;
       }
-
       async function fetchCsv(url){ const res = await fetch(url,{cache:'no-store'}); if(!res.ok) throw new Error('HTTP '+res.status); return res.text(); }
 
-      // Helpers datos
-      function firstImage(p) {
-        const raw = p.images || '';
-        const parts = raw.split('|').map((s)=>s.trim()).filter(Boolean);
-        return parts[0] || '';
-      }
-      function formatPrice(p) {
-        const label = p.price_label || '';
-        if (label) return label;
-        const amount = p.price_amount || '';
-        const curr = p.price_currency || '';
-        const period = p.price_period || '';
-        let text = '';
-        if (curr && amount) text = `${curr} ${amount}`;
-        else if (amount) text = amount;
-        if (period) text += ` ${period}`;
-        return text;
-      }
-
-      // Construye link de WhatsApp
-      const WA_PHONE = '5492944635083';
-      function buildWaLink({ title, operation, type, location, price }) {
-        const msg = `Hola Natalia, me interesa la propiedad "${title}" (${operation} - ${type}) en ${location}. Precio: ${price}. ¿Podemos coordinar una visita? Gracias.`;
-        return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(msg)}`;
-      }
-
-      // Normalización de filas del CSV a modelo UI
+      // Normalización de filas
       function pickImages(row){
         if (row.images) return row.images;
         const single = row.img || row.foto || row.imagen || '';
@@ -712,10 +569,10 @@
       }
       function normalizeRow(row){
         const out = {...row};
-        out.title     = row.title || row.titulo || row.nombre || '';
+        out.title     = row.title || row.titulo || row.nombre || row.subject || '';
         out.operation = row.operation || row.operacion || row.op || '';
         out.type      = row.type || row.tipo || '';
-        out.location  = row.location || row.barrio || row.zona || row.ubicacion || '';
+        out.location  = row.location || row.barrio || row.zona || row.ubicacion || row.localidad || '';
         out.images    = pickImages(row);
 
         out.price_label    = row.price_label || row.valor || row.precio || '';
@@ -724,18 +581,21 @@
         out.price_period   = row.price_period || '';
 
         out.bedrooms  = row.bedrooms || row.habitaciones || row.dormitorios || '';
-        out.bathrooms = row.bathrooms || row.banos || row.baños || '';
+        out.bathrooms = row.bathrooms || row.banos || row['baños'] || '';
         out.garages   = row.garages || row.cochera || row.cocheras || '';
         out.area_m2   = row.area_m2 || row.cubiertos || row.superficie || '';
         out.lot_m2    = row.lot_m2  || row.lote_m2 || row.terreno || '';
 
-        // NUEVOS: enlaces
-        out.link = row.link || row.url || '';
-        out.pdf  = row.pdf  || row.ficha || '';
+        out.link = row.link || row.url || row.publicacion || row.enlace || '';
+        out.pdf  = row.pdf  || row.ficha || row.brochure || '';
+
+        out.link = out.link ? ensureHttp(out.link) : '';
+        out.pdf  = out.pdf  ? ensureHttp(out.pdf)  : '';
+
         return out;
       }
 
-      // Estado y filtros
+      // Estado y UI propiedades
       let ALL_PROPS = [];
       const grid  = document.getElementById('prop-grid');
       const empty = document.getElementById('prop-empty');
@@ -748,7 +608,13 @@
       const searchForm = document.getElementById('search-form');
       const btnReset   = document.getElementById('btn-reset');
 
-      // Galería estado/elements
+      const WA_PHONE = '5492944635083';
+      function buildWaLink({ title, operation, type, location, price }) {
+        const msg = `Hola Natalia, me interesa la propiedad "${title}" (${operation} - ${type}) en ${location}. Precio: ${price}. ¿Podemos coordinar una visita? Gracias.`;
+        return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(msg)}`;
+      }
+
+      // Galería elementos/estado
       const modal    = document.getElementById('gallery-modal');
       const imgEl    = document.getElementById('gallery-img');
       const counterEl= document.getElementById('gallery-counter');
@@ -772,8 +638,7 @@
       const galleryState = {
         images: [],
         index: 0,
-        meta: { title:'', operation:'', type:'', location:'', price:'', pdf:'' },
-        infoOpen: false,
+        meta: { title:'', operation:'', type:'', location:'', price:'', pdf:'' }
       };
 
       function updateGalleryUI() {
@@ -791,12 +656,13 @@
         waBtn.href = buildWaLink(galleryState.meta);
         renderIcons();
       }
-      function openGallery({ images, meta, startIndex=0, openFicha=false }) {
+      function openGallery({ images, meta, startIndex=0 }) {
         galleryState.images = images;
         galleryState.index  = Math.max(0, Math.min(startIndex, images.length-1));
         galleryState.meta   = meta;
-        galleryState.infoOpen = false; // dejamos compacta cerrada
-        infoPanel.classList.add('hidden');
+
+        // Panel info visible por defecto
+        infoPanel.classList.remove('hidden');
 
         modal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -806,7 +672,7 @@
       function prevImage(){ if(!galleryState.images.length) return; galleryState.index = (galleryState.index - 1 + galleryState.images.length) % galleryState.images.length; updateGalleryUI(); }
       function nextImage(){ if(!galleryState.images.length) return; galleryState.index = (galleryState.index + 1) % galleryState.images.length; updateGalleryUI(); }
 
-      // Abrir modal FICHA (desde galería o card)
+      // Ficha PDF modal
       function openFichaModal(pdfUrl){
         if(!pdfUrl){ alert('Esta propiedad aún no tiene ficha PDF.'); return; }
         fichaOpenLink.href = pdfUrl;
@@ -824,9 +690,7 @@
       fichaBackdrop.addEventListener('click', (e)=>{ if(e.target.id==='ficha-backdrop') closeFichaModal(); });
       document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeFichaModal(); });
 
-      galleryFichaOpen.addEventListener('click', ()=>{
-        openFichaModal(galleryState.meta.pdf);
-      });
+      galleryFichaOpen.addEventListener('click', ()=> { openFichaModal(galleryState.meta.pdf); });
 
       closeBtn.addEventListener('click', closeGallery);
       prevBtn.addEventListener('click', prevImage);
@@ -842,7 +706,7 @@
         if (e.key === 'ArrowRight') nextImage();
       });
 
-      // Render tarjetas
+      // Tarjetas
       function createPropertyCard(p) {
         const card = document.createElement('article');
         card.className = 'group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition';
@@ -866,9 +730,11 @@
         btnOpen.setAttribute('aria-label', 'Abrir galería');
 
         const img = document.createElement('img');
-        img.src = firstImage(p) || 'https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/436c51ea-42dc-495c-a5ed-840f07947a61.jpg';
+        const first = firstImage(p);
+        img.src = first || 'https://images.unsplash.com/photo-1505691723518-36a5ac3b2d52?q=80&w=1200&auto=format&fit=crop';
         img.alt = p.title || 'Foto de propiedad';
         img.className = 'object-cover h-full w-full';
+        img.loading = 'lazy';
 
         const badges = document.createElement('div');
         badges.className = 'absolute top-3 left-3 flex gap-2';
@@ -973,7 +839,7 @@
 
       function wireCardGallery(card) {
         function parseImages(str) {
-          return (str || '').split('|').map((s)=>s.trim()).filter(Boolean);
+          return (str || '').split('|').map((s)=>smartImageUrl(s.trim())).filter(Boolean);
         }
         const meta = {
           title: card.getAttribute('data-title') || '',
@@ -1028,7 +894,8 @@
           const normalized = normalizeSheetUrlToCsv(csvUrl);
           const text = await fetchCsv(normalized);
           const rows = parseCSV(text);
-          const normalizedRows = rows.map(normalizeRow).filter(r => (r.title||'').trim() && (r.images||'').trim());
+          const normalizedRows = rows.map(normalizeRow)
+            .filter(r => (r.title||'').trim()); // permite tarjetas aunque no tengan imagen
           ALL_PROPS = normalizedRows;
           cfg.classList.add('hidden');
           renderList(ALL_PROPS);
@@ -1039,7 +906,7 @@
         }
       }
 
-      // Eventos buscador
+      // Buscador
       searchForm?.addEventListener('submit', (e) => { e.preventDefault(); applyFilters(); });
       btnReset?.addEventListener('click', () => { selOp.value=''; selType.value=''; inLoc.value=''; renderList(ALL_PROPS); });
 
@@ -1047,22 +914,20 @@
       document.getElementById('year').textContent = new Date().getFullYear();
       bootstrap();
 
-      // Anti-badge overlays (por si el host inyecta algo)
+      // Anti-badge overlays
       (function hideHostBadges(){
         const selectors = [
-          'a[href*="vercel.com"]','a[href*="vercel.app"]','[aria-label*="Vercel" i]','[aria-label*="vercel" i]',
-          '[data-vercel-insights]','[data-vercel-analytics]','[data-ai-insights]','[data-nextjs-toast]','[data-vc]','[data-vercel-banner]',
-          'img[alt*="vercel" i]','iframe[src*="vercel" i]','.vercel-badge','#vercel','#__vercel'
+          'a[href*="vercel.com"]','a[href*="vercel.app"]','[aria-label*="Vercel" i]','[data-vercel-insights]',
+          '[data-vercel-analytics]','[data-vercel-banner]','img[alt*="vercel" i]','iframe[src*="vercel" i]',
+          '.vercel-badge','#vercel','#__vercel'
         ];
         const removeAll = ()=>{ try{ document.querySelectorAll(selectors.join(',')).forEach(el=>el.remove()); }catch{} };
         const obs = new MutationObserver(removeAll);
         obs.observe(document.documentElement,{subtree:true,childList:true});
         removeAll(); setTimeout(()=>obs.disconnect(),8000);
       })();
-    </script>
 
-    <!-- Forzar apertura admin si ?admin=1 (redundante para compatibilidad futura) -->
-    <script>
+      // Forzar apertura admin con ?admin=1
       (function forceOpenAdmin(){
         try {
           const u = new URL(location.href);
@@ -1077,13 +942,8 @@
           return true;
         };
         const tryShow = () => {
-          const a = document.getElementById('ngd-admin-panel') || document.getElementById('ng-admin-panel');
-          if (a) {
-            SHOW(a);
-            const i = document.getElementById('ngd-csv') || document.getElementById('ng-csv-url') || a.querySelector('input[type="url"]');
-            i?.focus();
-            return true;
-          }
+          const a = document.getElementById('ngd-admin-panel');
+          if (a) { SHOW(a); (document.getElementById('ngd-csv')||a.querySelector('input'))?.focus(); return true; }
           return false;
         };
         if (tryShow()) return;
