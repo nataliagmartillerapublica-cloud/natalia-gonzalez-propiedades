@@ -1059,38 +1059,45 @@
         removeAll(); setTimeout(()=>obs.disconnect(),8000);
       })();
    <script>
+<script>
 (function(){
   // ===== Config =====
-  var REQUIRED_TAPS = 5;              // cantidad de toques
-  var WINDOW_MS     = 4000;           // ventana de tiempo p/contar toques
-  var PASSWORD      = 'ng2412';       // clave
-  var LS_KEY        = 'ngespacios:csvUrl'; // donde se guarda el CSV
+  var REQUIRED_TAPS = 4;           // ahora 4 toques
+  var WINDOW_MS     = 3000;        // 3s para completar los 4 toques
+  var PASSWORD      = 'ng2412';    // clave
+  var LS_KEY        = 'ngespacios:csvUrl';
 
-  // ===== Tap detector (en toda la página) =====
+  var adminOpen = false;
   var taps = 0, timer = null;
-  function reset(){ taps=0; if(timer){clearTimeout(timer); timer=null;} }
-  function onTap(){
-    taps++; if(!timer) timer = setTimeout(reset, WINDOW_MS);
-    if(taps >= REQUIRED_TAPS){ reset(); askPassword(openAdmin); }
-  }
-  document.addEventListener('pointerdown', onTap, {passive:true});
 
-  // ===== Util: normalizar Google Sheets a CSV =====
+  function resetTaps(){ taps = 0; if (timer) { clearTimeout(timer); timer = null; } }
+  function countTap(){
+    if (adminOpen) return; // no contar mientras el panel esté abierto
+    taps++;
+    if (!timer) timer = setTimeout(resetTaps, WINDOW_MS);
+    if (taps >= REQUIRED_TAPS) { resetTaps(); askPassword(openAdmin); }
+  }
+
+  // Escucho clicks y toques
+  document.addEventListener('click', countTap, {passive:true});
+  document.addEventListener('touchend', countTap, {passive:true});
+
+  // Normaliza URL de Google Sheets a CSV
   function normalizeSheetUrlToCsv(url){
     try{
       var u = new URL(url);
-      if(u.hostname.includes('docs.google.com')){
-        if(u.pathname.includes('/export')){ u.searchParams.set('format','csv'); return u.toString(); }
-        if(u.pathname.includes('/pub'))   { u.searchParams.set('output','csv'); return u.toString(); }
+      if (u.hostname.includes('docs.google.com')) {
+        if (u.pathname.includes('/export')) { u.searchParams.set('format','csv'); return u.toString(); }
+        if (u.pathname.includes('/pub'))    { u.searchParams.set('output','csv'); return u.toString(); }
       }
       return url;
     }catch(e){ return url; }
   }
 
-  // ===== Modal de clave =====
+  // Modal de clave
   function askPassword(onOk){
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:rgba(0,0,0,.35);backdrop-filter:blur(1px)';
+    var bg = document.createElement('div');
+    bg.style.cssText = 'position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.35);display:grid;place-items:center;backdrop-filter:blur(1px)';
     var box = document.createElement('div');
     box.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:16px;min-width:260px;font:500 14px Montserrat,Arial;color:#333';
     box.innerHTML = '<div style="font-weight:700;margin-bottom:8px">Acceso</div>\
@@ -1100,36 +1107,34 @@
         <button id="adm-cancel" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cancelar</button>\
         <button id="adm-ok" style="padding:8px 12px;border:0;border-radius:8px;background:#572d30;color:#fff;cursor:pointer">Entrar</button>\
       </div>';
-    wrap.appendChild(box); document.body.appendChild(wrap);
+    bg.appendChild(box); document.body.appendChild(bg);
 
     var inp = box.querySelector('#adm-pass');
     var ok  = box.querySelector('#adm-ok');
     var ca  = box.querySelector('#adm-cancel');
 
-    function close(){ wrap.remove(); }
+    function close(){ bg.remove(); }
     function submit(){
-      if((inp.value||'').trim() === PASSWORD){ close(); onOk && onOk(); }
+      if ((inp.value||'').trim() === PASSWORD) { close(); onOk && onOk(); }
       else { inp.value=''; inp.focus(); }
     }
     ok.onclick = submit; ca.onclick = close;
-    wrap.addEventListener('click', e=>{ if(e.target===wrap) close(); });
+    bg.addEventListener('click', e=>{ if(e.target===bg) close(); });
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); if(e.key==='Escape') close(); });
     setTimeout(()=>inp.focus(), 50);
   }
 
-  // ===== Mini-panel Admin (CSV) =====
+  // Mini panel admin (CSV)
   function openAdmin(){
-    // overlay
+    adminOpen = true;
+
     var ov = document.createElement('div');
     ov.style.cssText = 'position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.35);backdrop-filter:blur(1px)';
-    document.body.appendChild(ov);
-
-    // caja
     var box = document.createElement('div');
     box.style.cssText = 'position:fixed;left:50%;top:40%;transform:translate(-50%,-40%);z-index:2147483647;background:#fff;border:1px solid #ead8c9;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:14px 14px 12px;min-width:320px;max-width:92vw;font:500 14px Montserrat,Arial;color:#333';
     box.innerHTML = '\
       <div style="font-weight:700;margin-bottom:8px">Fuente de datos (CSV)</div>\
-      <div style="font-size:12px;color:#6b7280;margin-bottom:6px">Pegá la URL pública de tu Google Sheet exportada a CSV</div>\
+      <div style="font-size:12px;color:#6b7280;margin-bottom:6px">Pegá la URL pública de Google Sheets exportada a CSV</div>\
       <input type="url" id="csv-url" placeholder="https://docs.google.com/.../export?format=csv&gid=XXXX" \
         style="width:100%;padding:10px;border:1px solid #572d30;border-radius:8px;margin-bottom:10px" />\
       <div style="display:flex;gap:8px;flex-wrap:wrap">\
@@ -1138,23 +1143,26 @@
         <button id="adm-clear" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Borrar</button>\
         <button id="adm-close" style="margin-left:auto;padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cerrar</button>\
       </div>';
+
+    document.body.appendChild(ov);
     document.body.appendChild(box);
 
-    // precargar
     var input = box.querySelector('#csv-url');
     var saved = localStorage.getItem(LS_KEY) || '';
-    if(saved) input.value = saved;
+    if (saved) input.value = saved;
 
     function toast(msg, ok){
       var t=document.createElement('div');
       t.textContent = msg;
       t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:'+(ok?'#16a34a':'#dc2626')+';color:#fff;padding:8px 12px;border-radius:10px;font:600 13px Montserrat,Arial;z-index:2147483647';
-      document.body.appendChild(t); setTimeout(()=>t.remove(), 1800);
+      document.body.appendChild(t); setTimeout(()=>t.remove(), 1600);
     }
 
-    function close(){ box.remove(); ov.remove(); }
+    function close(){
+      box.remove(); ov.remove();
+      adminOpen = false; // vuelve a quedar oculto hasta los 4 toques + clave
+    }
 
-    // actions
     box.querySelector('#adm-close').onclick = close;
     ov.addEventListener('click', e=>{ if(e.target===ov) close(); });
     document.addEventListener('keydown', function onEsc(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown', onEsc); }});
@@ -1167,7 +1175,6 @@
       toast('Guardado', true);
     };
 
-    box.querySelector('#adm_clear')?.remove(); // por si se reinyecta
     box.querySelector('#adm-clear').onclick = function(){
       localStorage.removeItem(LS_KEY);
       input.value = '';
@@ -1181,14 +1188,12 @@
         var res = await fetch(url, {cache:'no-store'});
         if(!res.ok) throw new Error('HTTP '+res.status);
         var txt = await res.text();
-        // chequeo mínimo: que tenga coma y salto de línea
-        if(txt.indexOf(',')>-1 && /\n/.test(txt)) toast('CSV OK', true);
+        if (txt.indexOf(',')>-1 && /\n/.test(txt)) toast('CSV OK', true);
         else toast('No parece CSV', false);
       }catch(e){ toast('Error al probar', false); }
     };
 
-    // foco
-    setTimeout(()=>input.focus(),50);
+    setTimeout(()=>input.focus(), 50);
   }
 })();
 </script>
