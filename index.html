@@ -1058,95 +1058,139 @@
         obs.observe(document.documentElement,{subtree:true,childList:true});
         removeAll(); setTimeout(()=>obs.disconnect(),8000);
       })();
-    </script>
-    <script>
-<script>
+   <script>
 (function(){
   // ===== Config =====
-  var PANEL_IDs=['ngd-admin-panel','ng-admin-panel']; // tu panel existente
-  var TAP_TARGET_SELECTOR='header';                   // zona de 4 toques
-  var REQUIRED_TAPS=4;
-  var WINDOW_MS=4000;
-  var PASSWORD='ng2412';
+  var REQUIRED_TAPS = 5;              // cantidad de toques
+  var WINDOW_MS     = 4000;           // ventana de tiempo p/contar toques
+  var PASSWORD      = 'ng2412';       // clave
+  var LS_KEY        = 'ngespacios:csvUrl'; // donde se guarda el CSV
 
-  // ===== Buscar panel =====
-  var panel=null;
-  for(var i=0;i<PANEL_IDs.length;i++){ panel=document.getElementById(PANEL_IDs[i]); if(panel) break; }
-  if(!panel) return;
-
-  // Siempre oculto al iniciar
-  function hidePanel(){
-    if(overlay){ overlay.remove(); overlay=null; }
-    var btn=document.getElementById('__adm_close_btn'); if(btn) btn.remove();
-    panel.style.zIndex=''; panel.style.position=''; panel.style.visibility='hidden'; panel.style.display='none';
-    panel.setAttribute('aria-hidden','true');
+  // ===== Tap detector (en toda la página) =====
+  var taps = 0, timer = null;
+  function reset(){ taps=0; if(timer){clearTimeout(timer); timer=null;} }
+  function onTap(){
+    taps++; if(!timer) timer = setTimeout(reset, WINDOW_MS);
+    if(taps >= REQUIRED_TAPS){ reset(); askPassword(openAdmin); }
   }
-  function showPanel(){
-    // Panel por encima del overlay
-    panel.style.position='relative';
-    panel.style.zIndex='10000';
-    panel.style.visibility='visible';
-    panel.style.display='block';
-    panel.setAttribute('aria-hidden','false');
-    makeOverlay();
-    // foco al campo CSV si existe
-    (document.getElementById('ngd-csv') ||
-     document.getElementById('ng-csv-url') ||
-     panel.querySelector('input,textarea,select'))?.focus();
-  }
-  hidePanel();
+  document.addEventListener('pointerdown', onTap, {passive:true});
 
-  // ===== Overlay + cerrar =====
-  var overlay=null;
-  function makeOverlay(){
-    overlay=document.createElement('div');
-    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:saturate(1) blur(1px);z-index:9998;';
-    overlay.addEventListener('click', hidePanel, {passive:true});
-    document.body.appendChild(overlay);
-
-    // Botón cerrar por encima de todo
-    var closeBtn=document.createElement('button');
-    closeBtn.id='__adm_close_btn';
-    closeBtn.textContent='×';
-    closeBtn.title='Cerrar';
-    closeBtn.style.cssText='position:fixed;top:10px;right:12px;z-index:10001;font:600 18px/1 Montserrat,Arial;background:#fff;border:1px solid #ddd;border-radius:10px;padding:6px 10px;cursor:pointer;';
-    closeBtn.addEventListener('click', hidePanel);
-    document.body.appendChild(closeBtn);
-
-    function onEsc(e){ if(e.key==='Escape'){ hidePanel(); document.removeEventListener('keydown',onEsc);} }
-    document.addEventListener('keydown', onEsc);
-
-    // Cerrar al enviar cualquier form dentro del panel
-    panel.querySelectorAll('form').forEach(function(f){
-      f.addEventListener('submit', function(){ setTimeout(hidePanel,200); }, {once:true});
-    });
+  // ===== Util: normalizar Google Sheets a CSV =====
+  function normalizeSheetUrlToCsv(url){
+    try{
+      var u = new URL(url);
+      if(u.hostname.includes('docs.google.com')){
+        if(u.pathname.includes('/export')){ u.searchParams.set('format','csv'); return u.toString(); }
+        if(u.pathname.includes('/pub'))   { u.searchParams.set('output','csv'); return u.toString(); }
+      }
+      return url;
+    }catch(e){ return url; }
   }
 
   // ===== Modal de clave =====
-  function askPassword(ok){
-    var wrap=document.createElement('div');
-    wrap.style.cssText='position:fixed;inset:0;z-index:10002;display:grid;place-items:center;';
-    var box=document.createElement('div');
-    box.style.cssText='background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12);padding:16px 14px;min-width:260px;font:500 14px Montserrat,Arial;color:#333;';
-    box.innerHTML='<div style="font-weight:600;margin-bottom:8px">Acceso</div><div style="font-size:12px;color:#6b7280;margin-bottom:8px">Ingresá la clave</div><input type="password" id="adm-pass" style="width:100%;padding:10px;border:1px solid #572d30;border-radius:8px;margin-bottom:10px" placeholder="Clave" /><div style="display:flex;gap:8px;justify-content:flex-end"><button id="adm-cancel" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cancelar</button><button id="adm-ok" style="padding:8px 12px;border:0;border-radius:8px;background:#572d30;color:#fff;cursor:pointer">Entrar</button></div>';
+  function askPassword(onOk){
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'position:fixed;inset:0;z-index:2147483646;display:grid;place-items:center;background:rgba(0,0,0,.35);backdrop-filter:blur(1px)';
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:16px;min-width:260px;font:500 14px Montserrat,Arial;color:#333';
+    box.innerHTML = '<div style="font-weight:700;margin-bottom:8px">Acceso</div>\
+      <div style="font-size:12px;color:#6b7280;margin-bottom:8px">Ingresá la clave</div>\
+      <input type="password" id="adm-pass" style="width:100%;padding:10px;border:1px solid #572d30;border-radius:8px;margin-bottom:10px" placeholder="Clave" />\
+      <div style="display:flex;gap:8px;justify-content:flex-end">\
+        <button id="adm-cancel" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cancelar</button>\
+        <button id="adm-ok" style="padding:8px 12px;border:0;border-radius:8px;background:#572d30;color:#fff;cursor:pointer">Entrar</button>\
+      </div>';
     wrap.appendChild(box); document.body.appendChild(wrap);
-    var inp=box.querySelector('#adm-pass'), okBtn=box.querySelector('#adm-ok'), cancelBtn=box.querySelector('#adm-cancel');
+
+    var inp = box.querySelector('#adm-pass');
+    var ok  = box.querySelector('#adm-ok');
+    var ca  = box.querySelector('#adm-cancel');
+
     function close(){ wrap.remove(); }
-    function submit(){ if((inp.value||'').trim()===PASSWORD){ close(); ok&&ok(); } else { inp.value=''; inp.focus(); } }
-    okBtn.onclick=submit; cancelBtn.onclick=close;
-    inp.onkeydown=function(e){ if(e.key==='Enter') submit(); if(e.key==='Escape') close(); };
-    setTimeout(function(){ inp.focus(); },50);
+    function submit(){
+      if((inp.value||'').trim() === PASSWORD){ close(); onOk && onOk(); }
+      else { inp.value=''; inp.focus(); }
+    }
+    ok.onclick = submit; ca.onclick = close;
+    wrap.addEventListener('click', e=>{ if(e.target===wrap) close(); });
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); if(e.key==='Escape') close(); });
+    setTimeout(()=>inp.focus(), 50);
   }
 
-  // ===== Gesto 4 toques =====
-  var target=document.querySelector(TAP_TARGET_SELECTOR); if(!target) return;
-  var taps=0, timer=null; function reset(){ taps=0; if(timer){clearTimeout(timer); timer=null;} }
-  target.addEventListener('click', function(){
-    taps++; if(!timer) timer=setTimeout(reset, WINDOW_MS);
-    if(taps>=REQUIRED_TAPS){ reset(); askPassword(showPanel); }
-  }, {passive:true});
+  // ===== Mini-panel Admin (CSV) =====
+  function openAdmin(){
+    // overlay
+    var ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.35);backdrop-filter:blur(1px)';
+    document.body.appendChild(ov);
+
+    // caja
+    var box = document.createElement('div');
+    box.style.cssText = 'position:fixed;left:50%;top:40%;transform:translate(-50%,-40%);z-index:2147483647;background:#fff;border:1px solid #ead8c9;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:14px 14px 12px;min-width:320px;max-width:92vw;font:500 14px Montserrat,Arial;color:#333';
+    box.innerHTML = '\
+      <div style="font-weight:700;margin-bottom:8px">Fuente de datos (CSV)</div>\
+      <div style="font-size:12px;color:#6b7280;margin-bottom:6px">Pegá la URL pública de tu Google Sheet exportada a CSV</div>\
+      <input type="url" id="csv-url" placeholder="https://docs.google.com/.../export?format=csv&gid=XXXX" \
+        style="width:100%;padding:10px;border:1px solid #572d30;border-radius:8px;margin-bottom:10px" />\
+      <div style="display:flex;gap:8px;flex-wrap:wrap">\
+        <button id="adm-save"  style="padding:8px 12px;border:0;border-radius:8px;background:#572d30;color:#fff;cursor:pointer">Guardar</button>\
+        <button id="adm-test"  style="padding:8px 12px;border:1px solid #572d30;border-radius:8px;background:#fff;color:#572d30;cursor:pointer">Probar</button>\
+        <button id="adm-clear" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Borrar</button>\
+        <button id="adm-close" style="margin-left:auto;padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cerrar</button>\
+      </div>';
+    document.body.appendChild(box);
+
+    // precargar
+    var input = box.querySelector('#csv-url');
+    var saved = localStorage.getItem(LS_KEY) || '';
+    if(saved) input.value = saved;
+
+    function toast(msg, ok){
+      var t=document.createElement('div');
+      t.textContent = msg;
+      t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:'+(ok?'#16a34a':'#dc2626')+';color:#fff;padding:8px 12px;border-radius:10px;font:600 13px Montserrat,Arial;z-index:2147483647';
+      document.body.appendChild(t); setTimeout(()=>t.remove(), 1800);
+    }
+
+    function close(){ box.remove(); ov.remove(); }
+
+    // actions
+    box.querySelector('#adm-close').onclick = close;
+    ov.addEventListener('click', e=>{ if(e.target===ov) close(); });
+    document.addEventListener('keydown', function onEsc(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown', onEsc); }});
+
+    box.querySelector('#adm-save').onclick = function(){
+      var url = normalizeSheetUrlToCsv((input.value||'').trim());
+      if(!url){ toast('URL vacía', false); return; }
+      localStorage.setItem(LS_KEY, url);
+      input.value = url;
+      toast('Guardado', true);
+    };
+
+    box.querySelector('#adm_clear')?.remove(); // por si se reinyecta
+    box.querySelector('#adm-clear').onclick = function(){
+      localStorage.removeItem(LS_KEY);
+      input.value = '';
+      toast('Borrado', true);
+    };
+
+    box.querySelector('#adm-test').onclick = async function(){
+      var url = normalizeSheetUrlToCsv((input.value||'').trim());
+      if(!url){ toast('URL vacía', false); return; }
+      try{
+        var res = await fetch(url, {cache:'no-store'});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        var txt = await res.text();
+        // chequeo mínimo: que tenga coma y salto de línea
+        if(txt.indexOf(',')>-1 && /\n/.test(txt)) toast('CSV OK', true);
+        else toast('No parece CSV', false);
+      }catch(e){ toast('Error al probar', false); }
+    };
+
+    // foco
+    setTimeout(()=>input.focus(),50);
+  }
 })();
 </script>
-
-  </body>
+ </body>
 </html>
