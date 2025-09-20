@@ -1,6 +1,6 @@
 <!--
   @file index.html
-  @description NGespacios — Sitio público. Carga propiedades desde Google Sheets (CSV),
+  @description NG Desarrollos Inmobilarios — Sitio público. Carga propiedades desde Google Sheets (CSV),
                acceso Admin oculto (tap 5 veces sobre el logo) con PIN "Valda2412".
                Al guardar la planilla, la sesión Admin se cierra automáticamente y el panel se oculta.
 -->
@@ -11,12 +11,12 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
 
-    <title>NGespacios — Inmobiliaria en Bariloche</title>
+    <title>NG Desarrollos Inmobiliarios — Inmobiliaria en Bariloche</title>
     <meta name="description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta name="theme-color" content="#572d30" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="NGespacios — Inmobiliaria en Bariloche" />
+    <meta property="og:title" content=" — Inmobiliaria en Bariloche" />
     <meta property="og:description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=1200&auto=format&fit=crop" />
@@ -74,7 +74,7 @@
     <!-- Header -->
     <header class="sticky top-0 z-30 w-full border-b border-neutral-200 bg-[color:var(--brand-bg)]/90 backdrop-blur-md">
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between">
-        <a href="#" class="flex items-center gap-2" aria-label="NGespacios - Inicio">
+        <a href="#" class="flex items-center gap-2" aria-label=" - Inicio">
           <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
             <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
           </div>
@@ -273,8 +273,8 @@
           <div class="mt-4 space-y-2 text-sm md:text-base">
             <p class="text-neutral-700">
               Email
-              <a href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base">
-                nataliagonzalezmartillerapublica@ngespacios.com.ar
+              <a href="mailto:nataliagonzalezmartillerapublica@.com.ar" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base">
+                nataliagonzalezmartillerapublica@.com.ar
               </a>
             </p>
             <p class="text-neutral-700">
@@ -292,7 +292,7 @@
     <!-- Footer -->
     <footer class="border-t border-neutral-200 mt-8">
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between text-sm">
-        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium">NGespacios — Natalia González</span></p>
+        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium"> — Natalia González</span></p>
         <p class="text-neutral-700">Hecho con ♥ en Bariloche</p>
       </div>
     </footer>
@@ -411,7 +411,7 @@
       form?.addEventListener('submit', (e) => { e.preventDefault(); ok?.classList.remove('hidden'); setTimeout(() => { form.reset(); }, 200); });
 
       // ---------- CSV / Admin ----------
-      const LS_KEY_CSV = 'ngespacios:csvUrl';
+      const LS_KEY_CSV = ':csvUrl';
 
       // NUEVO: Control de sesión Admin (PIN por tap 5x al logo)
       const ADMIN_PIN = 'Valda2412';
@@ -1021,7 +1021,7 @@
 
       // Tap secreto 5x sobre el logo para abrir el Admin con PIN
       (function secretLogoTap(){
-        const logo = document.querySelector('header a[aria-label*="ngespacios" i]');
+        const logo = document.querySelector('header a[aria-label*="" i]');
         if (!logo) return;
         let taps = 0;
         let timer = null;
