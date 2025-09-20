@@ -1,7 +1,8 @@
 <!--
   @file index.html
-  @description NGespacios — Sitio público. Carga propiedades desde Google Sheets (CSV),
-               incluye buscador funcional y galería.
+  @description NG Desarrollos Inmobilarios — Sitio público. Carga propiedades desde Google Sheets (CSV),
+               acceso Admin oculto (tap 4 veces sobre el logo) con PIN "ng2412".
+               Al guardar la planilla, la sesión Admin se cierra automáticamente y el panel se oculta.
 -->
 
 <!doctype html>
@@ -10,30 +11,18 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
 
-    <title>NGespacios — Inmobiliaria en Bariloche</title>
-    <meta
-      name="description"
-      content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche."
-    />
+    <title>NG Desarrollos Inmobiliarios — Inmobiliaria en Bariloche</title>
+    <meta name="description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta name="theme-color" content="#572d30" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="NGespacios — Inmobiliaria en Bariloche" />
-    <meta
-      property="og:description"
-      content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche."
-    />
+    <meta property="og:title" content=" — Inmobiliaria en Bariloche" />
+    <meta property="og:description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta property="og:type" content="website" />
-    <meta
-      property="og:image"
-      content="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/ea65a1b8-690c-4544-909e-d44a40ea8675.jpg"
-    />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=1200&auto=format&fit=crop" />
 
     <!-- Fuente -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -41,29 +30,43 @@
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Estilos -->
     <style>
-      :root {
-        --brand-bg: #f4f2f2;
-        --brand-primary: #572d30;
-        --brand-text: #363332;
+      :root{
+        --brand-bg:#f4f2f2;
+        --brand-primary:#572d30;
+        --brand-text:#363332;
       }
-      html, body { height: 100%; }
-      body {
-        font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-        color: var(--brand-text);
-        background: var(--brand-bg);
-        font-weight: 300;
-        letter-spacing: 0.01em;
+      html,body{height:100%}
+      body{
+        font-family:'Montserrat',ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif;
+        color:var(--brand-text); background:var(--brand-bg); font-weight:300; letter-spacing:.01em;
       }
-      a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible {
-        outline: 2px solid var(--brand-primary);
-        outline-offset: 2px;
-        border-radius: 6px;
+      a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{
+        outline:2px solid var(--brand-primary); outline-offset:2px; border-radius:6px;
       }
-      .container-max { max-width: 72rem; }
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      .container-max{max-width:72rem}
+      .no-scrollbar::-webkit-scrollbar{display:none}
+      .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+
+      /* Oculta badges/overlays de hosting si los hubiera */
+      a[href*="vercel.com"],a[href*="vercel.app"],[aria-label*="Vercel" i],[data-vercel-insights],
+      [data-vercel-analytics],[data-vercel-banner],img[alt*="vercel" i],iframe[src*="vercel" i],
+      .vercel-badge,#vercel,#__vercel{display:none!important;visibility:hidden!important;pointer-events:none!important;width:0!important;height:0!important;opacity:0!important}
+
+      /* Admin (panel interno) */
+      .admin-card{border:1px dashed #d4a373;background:#fff7ed;color:#7c3e00;border-radius:12px;padding:12px}
+      .admin-input{width:100%;height:42px;border:1px solid #e5e5e5;border-radius:10px;padding:8px;background:#fff}
+      .admin-micro{font-size:12px;color:#7c3e00}
+      .hidden-admin{display:none}
+      .btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid #ddd;border-radius:999px;padding:8px 12px;background:#fff}
+      /* Gate PIN (se inyecta en runtime) */
+      .pin-card{border:1px solid #e5e7eb;background:#fff;border-radius:12px;padding:12px}
+      .pin-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+      .pin-input{flex:1 1 220px;height:40px;border-radius:10px;border:1px solid #d1d5db;padding:8px}
+
+      /* Modal Ficha PDF */
+      .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:16px;z-index:60}
+      .modal{max-width:520px;width:100%;background:#fff;border:1px solid #e5e5e5;border-radius:14px;padding:16px}
     </style>
   </head>
 
@@ -71,35 +74,22 @@
     <!-- Header -->
     <header class="sticky top-0 z-30 w-full border-b border-neutral-200 bg-[color:var(--brand-bg)]/90 backdrop-blur-md">
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between">
-        <a href="#" class="flex items-center gap-2" aria-label="NGespacios - Inicio">
+        <a href="#" class="flex items-center gap-2" aria-label=" - Inicio">
           <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
             <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
           </div>
-          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">
-            ESPACIOS
-          </span>
+          <!-- CAMBIO: texto del logo -->
+          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">Desarrollos Inmobiliarios</span>
         </a>
 
         <nav class="hidden md:flex items-center gap-6 text-sm">
           <a href="#propiedades" class="hover:text-[color:var(--brand-primary)]">Propiedades</a>
           <a href="#tasacion" class="hover:text-[color:var(--brand-primary)]">Tasación</a>
           <a href="#contacto" class="hover:text-[color:var(--brand-primary)]">Contacto</a>
-          <a
-            href="#propiedades"
-            class="rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors"
-          >
-            Ver propiedades
-          </a>
+          <a href="#propiedades" class="rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors">Ver propiedades</a>
         </nav>
 
-        <button
-          id="btn-mobile"
-          class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300"
-          aria-label="Abrir menú"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-          type="button"
-        >
+        <button id="btn-mobile" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-md border border-neutral-300" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu" type="button">
           <i data-lucide="menu" class="h-4 w-4"></i>
         </button>
       </div>
@@ -111,12 +101,7 @@
             <a href="#propiedades" class="py-2 hover:text-[color:var(--brand-primary)]">Propiedades</a>
             <a href="#tasacion" class="py-2 hover:text-[color:var(--brand-primary)]">Tasación</a>
             <a href="#contacto" class="py-2 hover:text-[color:var(--brand-primary)]">Contacto</a>
-            <a
-              href="#propiedades"
-              class="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors"
-            >
-              Ver propiedades
-            </a>
+            <a href="#propiedades" class="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-[color:var(--brand-primary)] px-4 py-2 text-white hover:opacity-90 transition-colors">Ver propiedades</a>
           </div>
         </div>
       </div>
@@ -126,39 +111,22 @@
       <!-- Hero -->
       <section class="relative isolate">
         <div class="absolute inset-0 -z-10">
-          <img
-            src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c0105bbf-bf3c-42e0-bc2b-88d39c05c4aa.jpg"
-            alt="Lago en Bariloche"
-            class="object-cover w-full h-full"
-          />
+          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop" alt="Lago en Bariloche" class="object-cover w-full h-full" />
           <div class="absolute inset-0 bg-[color:var(--brand-bg)] mix-blend-multiply opacity-30"></div>
           <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/30"></div>
         </div>
 
         <div class="mx-auto container-max px-4 py-16 md:py-24">
-          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">
-            Natalia González • Martillera y Corredora Pública • MAT. Nº377- RP-21 Fº456 TºII
-          </p>
-
-          <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">
-            Tu próximo hogar en Bariloche
-          </h1>
-          <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">
-            Acompañamiento de punta a punta.
-          </p>
-
+          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">Natalia González • Martillera y Corredora Pública • MAT. TºII Fº456 Nº377-RP-21  </p>
+          <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">Tu próximo hogar en Bariloche</h1>
+          <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">Acompañamiento de punta a punta.</p>
           <div class="mt-6 flex flex-wrap gap-3">
-            <a
-              href="#propiedades"
-              class="rounded-lg bg-[color:var(--brand-primary)] text-white px-5 py-2.5 text-sm md:text-base hover:opacity-90 transition"
-            >
-              Ver propiedades
-            </a>
+            <a href="#propiedades" class="rounded-lg bg-[color:var(--brand-primary)] text-white px-5 py-2.5 text-sm md:text-base hover:opacity-90 transition">Ver propiedades</a>
           </div>
         </div>
       </section>
 
-      <!-- Search Panel -->
+      <!-- Panel de búsqueda -->
       <div class="mx-auto container-max px-4 -mt-14 relative z-10">
         <form id="search-form" class="rounded-xl border border-neutral-200 bg-white p-4 md:p-5 shadow-sm">
           <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
@@ -185,20 +153,8 @@
               <input id="filter-location" class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Ej. Centro" />
             </div>
             <div class="flex items-end gap-2">
-              <button
-                id="btn-search"
-                type="submit"
-                class="w-full md:w-auto h-10 rounded-lg bg-[color:var(--brand-primary)] text-white px-4 hover:opacity-90 transition"
-              >
-                Buscar
-              </button>
-              <button
-                id="btn-reset"
-                type="button"
-                class="w-full md:w-auto h-10 rounded-lg border border-neutral-300 text-neutral-700 px-4 hover:bg-neutral-50 transition"
-              >
-                Limpiar
-              </button>
+              <button id="btn-search" type="submit" class="w-full md:w-auto h-10 rounded-lg bg-[color:var(--brand-primary)] text-white px-4 hover:opacity-90 transition">Buscar</button>
+              <button id="btn-reset" type="button" class="w-full md:w-auto h-10 rounded-lg border border-neutral-300 text-neutral-700 px-4 hover:bg-neutral-50 transition">Limpiar</button>
             </div>
           </div>
         </form>
@@ -221,11 +177,26 @@
         </div>
 
         <div id="prop-config" class="mt-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 hidden">
-          <p>
-            Aún no se configuró la fuente de datos. Ingresá a
-            <a class="underline font-medium" href="/static/admin.html">Admin</a>
-            para guardar la URL de tu Google Sheets (CSV). Luego volvé a esta página.
-          </p>
+          <p>Aún no se configuró la fuente de datos.</p>
+        </div>
+      </section>
+
+      <!-- Admin oculto: se muestra sólo tras taps + PIN -->
+      <section id="ngd-admin-panel" class="mx-auto container-max px-4 pt-10 pb-2 hidden-admin" aria-hidden="true">
+        <div class="admin-card">
+          <strong>Admin (privado): Fuente de datos</strong>
+          <p class="admin-micro mt-1">Pegá la URL <b>CSV</b> publicada de tu Google Sheets. Se guarda en este navegador.</p>
+          <div class="grid gap-2 max-w-2xl">
+            <label class="admin-micro" for="ngd-csv">URL CSV (Archivo → Compartir → Publicar en la web → CSV)</label>
+            <input id="ngd-csv" class="admin-input" placeholder="https://docs.google.com/.../export?format=csv&gid=XXXXX" />
+            <div class="flex gap-2">
+              <button id="ngd-save" class="btn border-neutral-300">Guardar</button>
+              <button id="ngd-test" class="btn border-neutral-300">Probar</button>
+              <button id="ngd-clear" class="btn border-neutral-300">Borrar</button>
+              <button id="ngd-close" class="btn border-neutral-300">Cerrar</button>
+            </div>
+            <div id="ngd-status" class="admin-micro"></div>
+          </div>
         </div>
       </section>
 
@@ -235,9 +206,7 @@
           <p class="text-xs uppercase tracking-[0.22em] text-[color:var(--brand-primary)]">Tu propiedad</p>
           <h2 class="text-2xl md:text-3xl font-medium tracking-tight">Escribime</h2>
         </div>
-        <p class="mt-2 text-neutral-700">
-          Completá tus datos y el motivo de tu consulta; me contactaré muy pronto.
-        </p>
+        <p class="mt-2 text-neutral-700">Completá tus datos y el motivo de tu consulta; me contactaré muy pronto.</p>
 
         <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <form id="contact-form" class="rounded-xl border border-neutral-200 p-4 md:p-6 bg-white">
@@ -246,17 +215,14 @@
                 <label for="nombre" class="text-xs text-neutral-600 mb-1">Nombre</label>
                 <input id="nombre" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Tu nombre" />
               </div>
-
               <div class="flex flex-col">
                 <label for="email" class="text-xs text-neutral-600 mb-1">Email</label>
                 <input id="email" type="email" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="tucorreo@mail.com" />
               </div>
-
               <div class="flex flex-col">
                 <label for="telefono" class="text-xs text-neutral-600 mb-1">Teléfono</label>
                 <input id="telefono" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="+54 9 ..." />
               </div>
-
               <div class="flex flex-col">
                 <label for="tipo" class="text-xs text-neutral-600 mb-1">Tipo de propiedad</label>
                 <select id="tipo" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
@@ -267,7 +233,6 @@
                   <option value="Local">Local</option>
                 </select>
               </div>
-
               <div class="flex flex-col">
                 <label for="operacion" class="text-xs text-neutral-600 mb-1">Operación</label>
                 <select id="operacion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white">
@@ -276,32 +241,23 @@
                   <option value="Alquiler">Alquiler</option>
                 </select>
               </div>
-
               <div class="flex flex-col md:col-span-2">
                 <label for="direccion" class="text-xs text-neutral-600 mb-1">Dirección</label>
                 <input id="direccion" required class="h-10 rounded-lg border border-neutral-300 px-3 bg-white" placeholder="Calle, número, barrio" />
               </div>
-
               <div class="flex flex-col md:col-span-2">
                 <label for="mensaje" class="text-xs text-neutral-600 mb-1">Mensaje</label>
                 <textarea id="mensaje" rows="4" class="rounded-lg border border-neutral-300 px-3 py-2 bg-white" placeholder="Detalles relevantes o el tema por el que querés consultar"></textarea>
               </div>
             </div>
-
             <div class="mt-4 flex items-center justify-between gap-3">
-              <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[color:var(--brand-primary)] text-white h-10 px-4 hover:opacity-90 transition">
-                Enviar
-              </button>
+              <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-[color:var(--brand-primary)] text-white h-10 px-4 hover:opacity-90 transition">Enviar</button>
               <span id="form-ok" class="text-sm text-green-700 hidden">¡Gracias! Me contactaré a la brevedad.</span>
             </div>
           </form>
 
           <div class="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50">
-            <img
-              src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c4bf838c-8b53-4947-a908-295e7052c60c.jpg"
-              alt="Bariloche"
-              class="object-cover h-full w-full"
-            />
+            <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c4bf838c-8b53-4947-a908-295e7052c60c.jpg" alt="Bariloche" class="object-cover h-full w-full" />
           </div>
         </div>
       </section>
@@ -317,21 +273,13 @@
           <div class="mt-4 space-y-2 text-sm md:text-base">
             <p class="text-neutral-700">
               Email
-              <a
-                href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base"
-              >
-                nataliagonzalezmartillerapublica@ngespacios.com.ar
+              <a href="mailto:nataliagonzalezmartillerapublica@gmail.com" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base">
+                nataliagonzalezmartillerapublica@gmail.com
               </a>
             </p>
             <p class="text-neutral-700">
               WhatsApp
-              <a
-                href="https://wa.me/5492944635083"
-                target="_blank"
-                rel="noreferrer"
-                class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline"
-              >
+              <a href="https://wa.me/5492944635083" target="_blank" rel="noreferrer" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline">
                 +54 9 294 463 5083
               </a>
             </p>
@@ -344,21 +292,14 @@
     <!-- Footer -->
     <footer class="border-t border-neutral-200 mt-8">
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between text-sm">
-        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium">NGespacios — Natalia González</span></p>
+        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium"> — Natalia González</span></p>
         <p class="text-neutral-700">Hecho con ♥ en Bariloche</p>
       </div>
     </footer>
 
     <!-- WhatsApp Floating -->
-    <a
-      href="https://wa.me/5492944635083"
-      target="_blank"
-      rel="noreferrer"
-      class="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-green-600 text-white px-4 py-2 shadow-lg hover:bg-green-700 transition"
-      aria-label="Contactar por WhatsApp"
-    >
-      <i data-lucide="message-circle" class="h-5 w-5"></i>
-      WhatsApp
+    <a href="https://wa.me/5492944635083" target="_blank" rel="noreferrer" class="fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-green-600 text-white px-4 py-2 shadow-lg hover:bg-green-700 transition" aria-label="Contactar por WhatsApp">
+      <i data-lucide="message-circle" class="h-5 w-5"></i> WhatsApp
     </a>
 
     <!-- Modal Galería -->
@@ -366,18 +307,20 @@
       <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
 
       <div class="relative h-full w-full flex items-center justify-center px-4">
+        <!-- Controles superiores -->
         <div class="absolute top-3 right-3 flex items-center gap-2 z-50">
-          <a id="gallery-wa" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-green-600 text-white hover:bg-green-700 transition" title="WhatsApp" aria-label="Abrir WhatsApp">
-            <i data-lucide="message-circle" class="h-4 w-4"></i>
+          <a id="gallery-wa" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center h-9 rounded-full bg-green-600 text-white px-3 hover:bg-green-700 transition" title="WhatsApp" aria-label="Abrir WhatsApp">
+            <i data-lucide="message-circle" class="h-4 w-4 mr-1"></i> WhatsApp
           </a>
-          <button id="gallery-ficha-btn" type="button" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition" title="Ficha" aria-label="Ver ficha">
-            <i data-lucide="file-text" class="h-4 w-4"></i>
+          <button id="gallery-ficha-open" type="button" class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3" title="Ver ficha" aria-label="Ver ficha">
+            <i data-lucide="file-text" class="h-4 w-4 mr-1"></i> VER FICHA
           </button>
           <button id="gallery-close" type="button" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition" aria-label="Cerrar" title="Cerrar">
             <i data-lucide="x" class="h-4 w-4"></i>
           </button>
         </div>
 
+        <!-- Flechas -->
         <button id="gallery-prev" type="button" class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition z-40" aria-label="Anterior" title="Anterior">
           <i data-lucide="chevron-left" class="h-4 w-4"></i>
         </button>
@@ -385,12 +328,14 @@
           <i data-lucide="chevron-right" class="h-4 w-4"></i>
         </button>
 
+        <!-- Imagen -->
         <figure class="relative w-full max-w-5xl aspect-[16/10] md:aspect-[16/9] lg:aspect-[21/9]">
           <img id="gallery-img" src="" alt="" class="object-contain w-full h-full select-none" />
           <figcaption id="gallery-counter" class="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-white/90 bg-black/40 px-2 py-1 rounded-md"></figcaption>
         </figure>
 
-        <div id="gallery-info" class="hidden absolute left-1/2 -translate-x-1/2 bottom-4 w-[95%] max-w-2xl rounded-lg border border-neutral-200 bg-white/95 backdrop-blur p-3 md:p-4 shadow-lg z-40">
+        <!-- Info visible por defecto -->
+        <div id="gallery-info" class="absolute left-1/2 -translate-x-1/2 bottom-4 w-[95%] max-w-2xl rounded-lg border border-neutral-200 bg-white/95 backdrop-blur p-3 md:p-4 shadow-lg z-40">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h3 id="gallery-title" class="text-sm md:text-base font-medium tracking-tight"></h3>
@@ -400,8 +345,25 @@
                 <span id="gallery-badge-type" class="text-[10px] rounded-md bg-[color:var(--brand-primary)] text-white px-2 py-1"></span>
               </div>
             </div>
-            <div class="text-[color:var(--brand-primary)] text-sm md:text-base font-semibold shrink-0" id="gallery-price"></div>
+            <div id="gallery-price" class="text-[color:var(--brand-primary)] text-sm md:text-base font-semibold shrink-0"></div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal FICHA PDF -->
+    <div id="ficha-backdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal">
+        <h3 class="font-medium">Ficha de la propiedad</h3>
+        <p class="text-sm text-neutral-600 mt-1 mb-3">Abrila para ver online o descargala en PDF.</p>
+        <div class="flex flex-wrap gap-2">
+          <a id="ficha-open" class="inline-flex items-center rounded-full bg-[color:var(--brand-primary)] text-white px-4 py-2" target="_blank" rel="noopener">
+            <i data-lucide="external-link" class="h-4 w-4 mr-2"></i> Abrir
+          </a>
+          <a id="ficha-download" class="inline-flex items-center rounded-full border border-neutral-300 px-4 py-2" download>
+            <i data-lucide="download" class="h-4 w-4 mr-2"></i> Descargar
+          </a>
+          <button id="ficha-close" class="inline-flex items-center rounded-full border border-neutral-300 px-4 py-2" type="button">Cerrar</button>
         </div>
       </div>
     </div>
@@ -443,136 +405,144 @@
       mobileMenu?.querySelectorAll('a').forEach((link) => { link.addEventListener('click', () => toggleMenu(false)); });
       window.addEventListener('resize', () => { if (window.innerWidth >= 768) toggleMenu(false); });
 
-      // Form contacto (dummy)
+      // Form contacto (demo)
       const form = document.getElementById('contact-form');
       const ok = document.getElementById('form-ok');
-      form?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        ok?.classList.remove('hidden');
-        setTimeout(() => { form.reset(); }, 200);
-      });
+      form?.addEventListener('submit', (e) => { e.preventDefault(); ok?.classList.remove('hidden'); setTimeout(() => { form.reset(); }, 200); });
 
-      // --------------------------
-      // Utilidades CSV + Render
-      // --------------------------
-      const LS_KEY_CSV = 'ngespacios:csvUrl';
+      // ---------- CSV / Admin ----------
+      const LS_KEY_CSV = ':csvUrl';
 
-      /** Normaliza URLs de Google Sheets a CSV */
+      // CAMBIO: PIN y sesión Admin (tap 4x al logo)
+      const ADMIN_PIN = 'ng2412';
+      const ADMIN_KEY = 'ngd:admin:session';
+
+      function setAdminSession(active) {
+        try { active ? sessionStorage.setItem(ADMIN_KEY, 'ok') : sessionStorage.removeItem(ADMIN_KEY); } catch {}
+      }
+      function isAdminSession() {
+        try { return sessionStorage.getItem(ADMIN_KEY) === 'ok'; } catch { return false; }
+      }
+      function showAdminPanel(show) {
+        const panel = document.getElementById('ngd-admin-panel');
+        if (!panel) return;
+        panel.classList.toggle('hidden-admin', !show);
+        panel.setAttribute('aria-hidden', show ? 'false' : 'true');
+        if (show) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      function ensurePinGate() {
+        const panel = document.getElementById('ngd-admin-panel');
+        if (!panel) return null;
+        let gate = document.getElementById('ngd-pin-gate');
+        if (gate) return gate;
+
+        gate = document.createElement('div');
+        gate.id = 'ngd-pin-gate';
+        gate.className = 'pin-card mb-3';
+        gate.innerHTML = `
+          <div class="pin-row">
+            <strong>Acceso privado</strong>
+            <input id="ngd-pin-input" type="password" class="pin-input" placeholder="Ingresá el PIN" aria-label="PIN" />
+            <button id="ngd-pin-ok" class="btn border-neutral-300">Desbloquear</button>
+            <span id="ngd-pin-msg" class="admin-micro"></span>
+          </div>
+        `;
+        panel.querySelector('.admin-card')?.insertAdjacentElement('beforebegin', gate);
+
+        const input = gate.querySelector('#ngd-pin-input');
+        const btn = gate.querySelector('#ngd-pin-ok');
+        const msg = gate.querySelector('#ngd-pin-msg');
+
+        function unlock() {
+          const val = (input.value || '').trim();
+          if (val === ADMIN_PIN) {
+            setAdminSession(true);
+            msg.textContent = 'Desbloqueado.';
+            gate.style.display = 'none';
+          } else {
+            msg.textContent = 'PIN incorrecto.';
+          }
+        }
+        btn.addEventListener('click', unlock);
+        input.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
+        return gate;
+      }
+      function openAdminSecure() {
+        showAdminPanel(true);
+        if (isAdminSession()) return;
+        const gate = ensurePinGate();
+        if (gate) { gate.style.display = ''; gate.querySelector('#ngd-pin-input')?.focus(); }
+      }
+      function closeAdminAndLogout() {
+        setAdminSession(false);
+        showAdminPanel(false);
+      }
+
+      // Capturar ?csv y ?clear (útil para soporte)
+      (function captureCsvFromQuery(){
+        try {
+          const u = new URL(location.href);
+          if (u.searchParams.get('clear') === '1') {
+            localStorage.removeItem(LS_KEY_CSV);
+            u.searchParams.delete('clear'); history.replaceState({}, '', u.toString());
+            location.reload(); return;
+          }
+          const csvParam = u.searchParams.get('csv');
+          if (csvParam) {
+            const url = normalizeSheetUrlToCsv(csvParam);
+            localStorage.setItem(LS_KEY_CSV, url);
+            u.searchParams.delete('csv'); history.replaceState({}, '', u.toString());
+            location.reload();
+          }
+        } catch {}
+      })();
+
+      // Normaliza URL de Sheet a CSV
       function normalizeSheetUrlToCsv(url) {
         try {
           const u = new URL(url);
           if (u.hostname.includes('docs.google.com')) {
-            if (u.pathname.endsWith('/pub')) {
-              u.searchParams.set('output', 'csv');
-              return u.toString();
-            }
-            if (u.pathname.includes('/export')) {
-              u.searchParams.set('format', 'csv');
-              return u.toString();
-            }
+            if (u.pathname.endsWith('/pub')) { u.searchParams.set('output','csv'); return u.toString(); }
+            if (u.pathname.includes('/export')) { u.searchParams.set('format','csv'); return u.toString(); }
           }
           return url;
-        } catch {
-          return url;
-        }
+        } catch { return url; }
       }
 
-      /** Permitir pasar el CSV por query ?csv=... (se guarda para futuras visitas) */
-      function getCsvFromQuery(){
-        try {
-          const u = new URL(location.href);
-          const q = u.searchParams.get('csv');
-          return q ? normalizeSheetUrlToCsv(q) : '';
-        } catch { return ''; }
-      }
-
-      /**
-       * Parser CSV simple
-       */
-      function parseCSV(text) {
-        const rows = [];
-        let i = 0, field = '', row = [], inQuotes = false;
-
-        function pushField() { row.push(field.replace(/\\"\\"/g, '\\"')); field = ''; }
-        function pushRow() { rows.push(row); row = []; }
-
-        while (i < text.length) {
-          const c = text[i];
-          if (inQuotes) {
-            if (c === '"') {
-              if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
-              else { inQuotes = false; i++; continue; }
-            } else { field += c; i++; continue; }
-          } else {
-            if (c === '"') { inQuotes = true; i++; continue; }
-            if (c === ',') { pushField(); i++; continue; }
-            if (c === '\n') { pushField(); pushRow(); i++; continue; }
-            if (c === '\r') { i++; continue; }
-            field += c; i++;
-          }
-        }
-        pushField();
-        if (row.length > 1 || (row.length === 1 && row[0] !== '')) pushRow();
-
-        if (rows.length === 0) return [];
-        const headers = rows[0].map((h) => (h || '').trim());
-        const data = [];
-        for (let r = 1; r < rows.length; r++) {
-          const values = rows[r];
-          const obj = {};
-          headers.forEach((h, idx) => { obj[h] = (values[idx] || '').trim(); });
-          data.push(obj);
-        }
-        return data;
-      }
-
-      async function fetchCsv(url) {
-        const res = await fetch(url, { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.text();
-      }
-
-      /** ---- NUEVO: normalizador de imágenes (Drive/Dropbox → directo) ---- */
-      function normalizeImgUrl(u) {
+      // --- URL helpers e imágenes ---
+      function ensureHttp(u) {
         if (!u) return '';
-        u = u.trim();
         try {
-          const url = new URL(u);
-
-          // Google Drive
-          if (url.hostname.includes('drive.google.com')) {
-            const m = url.pathname.match(/\/d\/([^/]+)/);
-            const id = m ? m[1] : url.searchParams.get('id');
-            if (id) return `https://drive.google.com/uc?export=view&id=${id}`;
-          }
-
-          // Dropbox
-          if (url.hostname.includes('dropbox.com')) {
-            return u
-              .replace('www.dropbox.com', 'dl.dropboxusercontent.com')
-              .replace('dl=0', 'raw=1');
-          }
-
-          // Directas
-          if (/\.(png|jpg|jpeg|webp)(\?.*)?$/i.test(u)) return u;
-
+          const hasScheme = /^[a-z]+:\/\//i.test(u);
+          if (!hasScheme) return 'https://' + u.replace(/^\/\//,'');
           return u;
         } catch { return u; }
       }
-
-      function splitImages(raw) {
-        return (raw || '')
-          .split('|')
-          .map(s => normalizeImgUrl(s))
-          .filter(Boolean);
+      function smartImageUrl(u) {
+        if (!u) return '';
+        u = u.trim();
+        // Google Drive file/d/ID
+        let m = u.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+        if (m && m[1]) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+        // open?id=ID
+        m = u.match(/drive\.google\.com\/open\?id=([^&]+)/);
+        if (m && m[1]) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+        // uc?id=ID
+        m = u.match(/drive\.google\.com\/uc\?id=([^&]+)/);
+        if (m && m[1]) return `https://drive.google.com/uc?export=view&id=${m[1]}`;
+        // Dropbox
+        if (/dropbox\.com/.test(u)) {
+          if (u.includes('?dl=0')) return u.replace('?dl=0', '?raw=1');
+          if (!u.includes('?')) return u + '?raw=1';
+          return u + '&raw=1';
+        }
+        return u;
       }
-
       function firstImage(p) {
-        const raw = p.images || p.img || p.foto || p.imagen || '';
-        const arr = splitImages(raw);
+        const raw = (p.images || '').trim();
+        const arr = raw.split('|').map(s => smartImageUrl(s)).filter(Boolean);
         return arr[0] || '';
       }
-
       function formatPrice(p) {
         const label = p.price_label || '';
         if (label) return label;
@@ -586,12 +556,183 @@
         return text;
       }
 
+      // Parser CSV
+      function parseCSV(text) {
+        const rows = [];
+        let i = 0, field = '', row = [], inQuotes = false;
+        function pushField(){ row.push(field); field=''; }
+        function pushRow(){ rows.push(row); row=[]; }
+        while(i<text.length){
+          const c = text[i];
+          if(inQuotes){
+            if(c === '"'){
+              if(text[i+1] === '"'){ field+='"'; i+=2; continue; }
+              else { inQuotes=false; i++; continue; }
+            } else { field += c; i++; continue; }
+          } else {
+            if(c === '"'){ inQuotes=true; i++; continue; }
+            if(c === ','){ pushField(); i++; continue; }
+            if(c === '\n'){ pushField(); pushRow(); i++; continue; }
+            if(c === '\r'){ i++; continue; }
+            field += c; i++;
+          }
+        }
+        pushField(); if(row.length) pushRow();
+        if(!rows.length) return [];
+        const headers = rows[0].map(h => (h||'').trim().toLowerCase());
+        const data = [];
+        for(let r=1;r<rows.length;r++){
+          const vals = rows[r]; if(!vals || vals.every(v => (v||'').trim()==='')) continue;
+          const obj = {}; headers.forEach((h,idx)=> obj[h] = (vals[idx]||'').trim());
+          data.push(obj);
+        }
+        return data;
+      }
+      async function fetchCsv(url){ const res = await fetch(url,{cache:'no-store'}); if(!res.ok) throw new Error('HTTP '+res.status); return res.text(); }
+
+      // Normalización de filas
+      function pickImages(row){
+        if (row.images) return row.images;
+        const single = row.img || row.foto || row.imagen || '';
+        if (!single) return '';
+        return String(single).split('|').map(s=>s.trim()).filter(Boolean).join('|');
+      }
+      function normalizeRow(row){
+        const out = {...row};
+        out.title     = row.title || row.titulo || row.nombre || row.subject || '';
+        out.operation = row.operation || row.operacion || row.op || '';
+        out.type      = row.type || row.tipo || '';
+        out.location  = row.location || row.barrio || row.zona || row.ubicacion || row.localidad || '';
+        out.images    = pickImages(row);
+
+        out.price_label    = row.price_label || row.valor || row.precio || '';
+        out.price_amount   = row.price_amount || '';
+        out.price_currency = row.price_currency || '';
+        out.price_period   = row.price_period || '';
+
+        out.bedrooms  = row.bedrooms || row.habitaciones || row.dormitorios || '';
+        out.bathrooms = row.bathrooms || row.banos || row['baños'] || '';
+        out.garages   = row.garages || row.cochera || row.cocheras || '';
+        out.area_m2   = row.area_m2 || row.cubiertos || row.superficie || '';
+        out.lot_m2    = row.lot_m2  || row.lote_m2 || row.terreno || '';
+
+        out.link = row.link || row.url || row.publicacion || row.enlace || '';
+        out.pdf  = row.pdf  || row.ficha || row.brochure || '';
+
+        out.link = out.link ? ensureHttp(out.link) : '';
+        out.pdf  = out.pdf  ? ensureHttp(out.pdf)  : '';
+
+        return out;
+      }
+
+      // Estado y UI propiedades
+      let ALL_PROPS = [];
+      const grid  = document.getElementById('prop-grid');
+      const empty = document.getElementById('prop-empty');
+      const cfg   = document.getElementById('prop-config');
+      const count = document.getElementById('prop-count');
+
+      const selOp  = document.getElementById('filter-operation');
+      const selType= document.getElementById('filter-type');
+      const inLoc  = document.getElementById('filter-location');
+      const searchForm = document.getElementById('search-form');
+      const btnReset   = document.getElementById('btn-reset');
+
       const WA_PHONE = '5492944635083';
       function buildWaLink({ title, operation, type, location, price }) {
         const msg = `Hola Natalia, me interesa la propiedad "${title}" (${operation} - ${type}) en ${location}. Precio: ${price}. ¿Podemos coordinar una visita? Gracias.`;
         return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(msg)}`;
       }
 
+      // Galería elementos/estado
+      const modal    = document.getElementById('gallery-modal');
+      const imgEl    = document.getElementById('gallery-img');
+      const counterEl= document.getElementById('gallery-counter');
+      const closeBtn = document.getElementById('gallery-close');
+      const prevBtn  = document.getElementById('gallery-prev');
+      const nextBtn  = document.getElementById('gallery-next');
+      const infoPanel= document.getElementById('gallery-info');
+      const waBtn    = document.getElementById('gallery-wa');
+      const titleEl  = document.getElementById('gallery-title');
+      const subEl    = document.getElementById('gallery-sub');
+      const priceEl  = document.getElementById('gallery-price');
+      const badgeOp  = document.getElementById('gallery-badge-op');
+      const badgeType= document.getElementById('gallery-badge-type');
+      const galleryFichaOpen = document.getElementById('gallery-ficha-open');
+
+      const fichaBackdrop  = document.getElementById('ficha-backdrop');
+      const fichaOpenLink  = document.getElementById('ficha-open');
+      const fichaDownload  = document.getElementById('ficha-download');
+      const fichaCloseBtn  = document.getElementById('ficha-close');
+
+      const galleryState = {
+        images: [],
+        index: 0,
+        meta: { title:'', operation:'', type:'', location:'', price:'', pdf:'' }
+      };
+
+      function updateGalleryUI() {
+        if (!galleryState.images.length) return;
+        imgEl.src = galleryState.images[galleryState.index];
+        imgEl.alt = galleryState.meta.title || 'Imagen de propiedad';
+        counterEl.textContent = (galleryState.index + 1) + ' / ' + galleryState.images.length;
+
+        titleEl.textContent = galleryState.meta.title;
+        subEl.textContent   = galleryState.meta.location;
+        priceEl.textContent = galleryState.meta.price;
+        badgeOp.textContent = galleryState.meta.operation;
+        badgeType.textContent = galleryState.meta.type;
+
+        waBtn.href = buildWaLink(galleryState.meta);
+        renderIcons();
+      }
+      function openGallery({ images, meta, startIndex=0 }) {
+        galleryState.images = images;
+        galleryState.index  = Math.max(0, Math.min(startIndex, images.length-1));
+        galleryState.meta   = meta;
+        infoPanel.classList.remove('hidden');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        updateGalleryUI();
+      }
+      function closeGallery(){ modal.classList.add('hidden'); document.body.style.overflow=''; }
+      function prevImage(){ if(!galleryState.images.length) return; galleryState.index = (galleryState.index - 1 + galleryState.images.length) % galleryState.images.length; updateGalleryUI(); }
+      function nextImage(){ if(!galleryState.images.length) return; galleryState.index = (galleryState.index + 1) % galleryState.images.length; updateGalleryUI(); }
+
+      // Ficha PDF modal
+      function openFichaModal(pdfUrl){
+        if(!pdfUrl){ alert('Esta propiedad aún no tiene ficha PDF.'); return; }
+        fichaOpenLink.href = pdfUrl;
+        fichaDownload.href = pdfUrl;
+        fichaDownload.setAttribute('download','ficha.pdf');
+        fichaBackdrop.style.display = 'flex';
+        fichaBackdrop.setAttribute('aria-hidden','false');
+        renderIcons();
+      }
+      function closeFichaModal(){
+        fichaBackdrop.style.display = 'none';
+        fichaBackdrop.setAttribute('aria-hidden','true');
+      }
+      fichaCloseBtn.addEventListener('click', closeFichaModal);
+      fichaBackdrop.addEventListener('click', (e)=>{ if(e.target.id==='ficha-backdrop') closeFichaModal(); });
+      document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') closeFichaModal(); });
+      galleryFichaOpen.addEventListener('click', ()=> { openFichaModal(galleryState.meta.pdf); });
+
+      closeBtn.addEventListener('click', closeGallery);
+      prevBtn.addEventListener('click', prevImage);
+      nextBtn.addEventListener('click', nextImage);
+      modal.addEventListener('click', (e) => {
+        const isBackdrop = e.target === modal || e.target === modal.firstElementChild;
+        if (isBackdrop) closeGallery();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (modal.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeGallery();
+        if (e.key === 'ArrowLeft') prevImage();
+        if (e.key === 'ArrowRight') nextImage();
+      });
+
+      // Tarjetas
       function createPropertyCard(p) {
         const card = document.createElement('article');
         card.className = 'group rounded-xl border border-neutral-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition';
@@ -600,11 +741,8 @@
         card.setAttribute('data-type', p.type || '');
         card.setAttribute('data-location', p.location || '');
         card.setAttribute('data-price', formatPrice(p));
-        // ---- NUEVO: normalizar y guardar todas las imágenes ----
-        card.setAttribute(
-          'data-images',
-          splitImages(p.images || p.img || p.foto || p.imagen || '').join('|')
-        );
+        card.setAttribute('data-images', (p.images || '').split('|').map(s => s.trim()).filter(Boolean).join('|'));
+        card.setAttribute('data-pdf', p.pdf || '');
 
         // Imagen
         const imgWrap = document.createElement('div');
@@ -618,9 +756,11 @@
         btnOpen.setAttribute('aria-label', 'Abrir galería');
 
         const img = document.createElement('img');
-        img.src = firstImage(p) || 'https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/436c51ea-42dc-495c-a5ed-840f07947a61.jpg';
+        const first = firstImage(p);
+        img.src = first || 'https://images.unsplash.com/photo-1505691723518-36a5ac3b2d52?q=80&w=1200&auto=format&fit=crop';
         img.alt = p.title || 'Foto de propiedad';
         img.className = 'object-cover h-full w-full';
+        img.loading = 'lazy';
 
         const badges = document.createElement('div');
         badges.className = 'absolute top-3 left-3 flex gap-2';
@@ -675,11 +815,31 @@
         price.textContent = formatPrice(p);
 
         const ctas = document.createElement('div');
-        ctas.className = 'flex gap-2';
+        ctas.className = 'flex flex-wrap gap-2';
 
+        // VER (link público)
+        if (p.link) {
+          const aVer = document.createElement('a');
+          aVer.target = '_blank'; aVer.rel = 'noreferrer';
+          aVer.className = 'text-sm rounded-md border border-neutral-300 px-3 py-1.5 hover:bg-neutral-50 transition';
+          aVer.textContent = 'VER';
+          aVer.href = p.link;
+          ctas.appendChild(aVer);
+        }
+
+        // FICHA (PDF modal)
+        if (p.pdf) {
+          const btnFicha = document.createElement('button');
+          btnFicha.type = 'button';
+          btnFicha.className = 'text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition';
+          btnFicha.textContent = 'FICHA';
+          btnFicha.addEventListener('click', ()=> openFichaModal(p.pdf));
+          ctas.appendChild(btnFicha);
+        }
+
+        // WhatsApp
         const aWa = document.createElement('a');
-        aWa.target = '_blank';
-        aWa.rel = 'noreferrer';
+        aWa.target = '_blank'; aWa.rel = 'noreferrer';
         aWa.className = 'text-sm rounded-md bg-[color:var(--brand-primary)] text-white px-3 py-1.5 hover:opacity-90 transition';
         aWa.textContent = 'WhatsApp';
         aWa.href = buildWaLink({
@@ -689,15 +849,7 @@
           location: p.location || '',
           price: formatPrice(p)
         });
-
-        const btnFicha = document.createElement('button');
-        btnFicha.type = 'button';
-        btnFicha.className = 'text-sm rounded-md border border-[color:var(--brand-primary)] text-[color:var(--brand-primary)] px-3 py-1.5 hover:bg-[color:var(--brand-primary)] hover:text-white transition';
-        btnFicha.textContent = 'Ficha';
-        btnFicha.setAttribute('data-action', 'open-gallery-ficha');
-
         ctas.appendChild(aWa);
-        ctas.appendChild(btnFicha);
 
         footer.appendChild(price);
         footer.appendChild(ctas);
@@ -708,103 +860,31 @@
         content.appendChild(footer);
 
         card.appendChild(content);
-
         return card;
       }
 
-      // Galería (igual que antes)
-      const galleryState = { images: [], index: 0, meta: { title: '', operation: '', type: '', location: '', price: '' }, infoOpen: false };
-      const modal = document.getElementById('gallery-modal');
-      const imgEl = document.getElementById('gallery-img');
-      const counterEl = document.getElementById('gallery-counter');
-      const closeBtn = document.getElementById('gallery-close');
-      const prevBtn = document.getElementById('gallery-prev');
-      const nextBtn = document.getElementById('gallery-next');
-      const fichaBtn = document.getElementById('gallery-ficha-btn');
-      const infoPanel = document.getElementById('gallery-info');
-      const waBtn = document.getElementById('gallery-wa');
-      const titleEl = document.getElementById('gallery-title');
-      const subEl = document.getElementById('gallery-sub');
-      const priceEl = document.getElementById('gallery-price');
-      const badgeOp = document.getElementById('gallery-badge-op');
-      const badgeType = document.getElementById('gallery-badge-type');
-
-      function updateGalleryUI() {
-        if (!galleryState.images.length) return;
-        imgEl.src = galleryState.images[galleryState.index];
-        imgEl.alt = galleryState.meta.title || 'Imagen de propiedad';
-        counterEl.textContent = (galleryState.index + 1) + ' / ' + galleryState.images.length;
-
-        titleEl.textContent = galleryState.meta.title;
-        subEl.textContent = galleryState.meta.location;
-        priceEl.textContent = galleryState.meta.price;
-        badgeOp.textContent = galleryState.meta.operation;
-        badgeType.textContent = galleryState.meta.type;
-
-        waBtn.href = buildWaLink(galleryState.meta);
-        renderIcons();
-      }
-
-      function openGallery({ images, meta, startIndex = 0, openFicha = false }) {
-        galleryState.images = images;
-        galleryState.index = Math.max(0, Math.min(startIndex, images.length - 1));
-        galleryState.meta = meta;
-        galleryState.infoOpen = !!openFicha;
-
-        infoPanel.classList.toggle('hidden', !galleryState.infoOpen);
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        updateGalleryUI();
-      }
-      function closeGallery() { modal.classList.add('hidden'); document.body.style.overflow = ''; }
-      function prevImage() { if (!galleryState.images.length) return; galleryState.index = (galleryState.index - 1 + galleryState.images.length) % galleryState.images.length; updateGalleryUI(); }
-      function nextImage() { if (!galleryState.images.length) return; galleryState.index = (galleryState.index + 1) % galleryState.images.length; updateGalleryUI(); }
-      function toggleFicha() { galleryState.infoOpen = !galleryState.infoOpen; infoPanel.classList.toggle('hidden', !galleryState.infoOpen); }
-
-      closeBtn.addEventListener('click', closeGallery);
-      prevBtn.addEventListener('click', prevImage);
-      nextBtn.addEventListener('click', nextImage);
-      fichaBtn.addEventListener('click', toggleFicha);
-      modal.addEventListener('click', (e) => { const isBackdrop = e.target === modal || e.target === modal.firstElementChild; if (isBackdrop) closeGallery(); });
-      document.addEventListener('keydown', (e) => { if (modal.classList.contains('hidden')) return; if (e.key === 'Escape') closeGallery(); if (e.key === 'ArrowLeft') prevImage(); if (e.key === 'ArrowRight') nextImage(); });
-
-      // Estado y filtros
-      let ALL_PROPS = [];
-      const grid = document.getElementById('prop-grid');
-      const empty = document.getElementById('prop-empty');
-      const cfg = document.getElementById('prop-config');
-      const count = document.getElementById('prop-count');
-
-      const selOp = document.getElementById('filter-operation');
-      const selType = document.getElementById('filter-type');
-      const inLoc = document.getElementById('filter-location');
-      const searchForm = document.getElementById('search-form');
-      const btnReset = document.getElementById('btn-reset');
-
       function wireCardGallery(card) {
-        function parseImages(str) { return (str || '').split('|').map((s) => s.trim()).filter(Boolean); }
+        function parseImages(str) {
+          return (str || '').split('|').map((s)=>smartImageUrl(s.trim())).filter(Boolean);
+        }
         const meta = {
           title: card.getAttribute('data-title') || '',
           operation: card.getAttribute('data-operation') || '',
           type: card.getAttribute('data-type') || '',
           location: card.getAttribute('data-location') || '',
           price: card.getAttribute('data-price') || '',
+          pdf: card.getAttribute('data-pdf') || '',
         };
         const imgs = parseImages(card.getAttribute('data-images') || '');
-
         const openButtons = card.querySelectorAll('[data-action="open-gallery"]');
-        openButtons.forEach((btn) => btn.addEventListener('click', () => openGallery({ images: imgs, meta, startIndex: 0, openFicha: false })));
-        const openFichaBtn = card.querySelector('[data-action="open-gallery-ficha"]');
-        openFichaBtn?.addEventListener('click', () => openGallery({ images: imgs, meta, startIndex: 0, openFicha: true }));
+        openButtons.forEach((btn) => btn.addEventListener('click', () => openGallery({ images: imgs, meta, startIndex: 0 })));
       }
 
       function renderList(list) {
         grid.innerHTML = '';
         if (!list || list.length === 0) {
-          empty.classList.remove('hidden');
-          count.textContent = '';
-          renderIcons();
-          return;
+          empty.classList.remove('hidden'); count.textContent = '';
+          renderIcons(); return;
         }
         empty.classList.add('hidden');
         list.forEach((p) => {
@@ -820,45 +900,29 @@
         const op = (selOp.value || '').trim().toLowerCase();
         const type = (selType.value || '').trim().toLowerCase();
         const loc = (inLoc.value || '').trim().toLowerCase();
-
         const filtered = ALL_PROPS.filter((p) => {
           const pOp = (p.operation || '').toLowerCase();
           const pType = (p.type || '').toLowerCase();
           const pLoc = (p.location || '').toLowerCase();
-
           const okOp = !op || pOp === op;
           const okType = !type || pType === type;
           const okLoc = !loc || pLoc.includes(loc);
-
           return okOp && okType && okLoc;
         });
-
         renderList(filtered);
       }
 
-      // ---------- bootstrap con fallback global + ?csv ----------
       async function bootstrap() {
         try {
-          const fromQuery = getCsvFromQuery();
-          if (fromQuery) {
-            localStorage.setItem(LS_KEY_CSV, fromQuery);
-          }
-
           const saved = localStorage.getItem(LS_KEY_CSV) || '';
-          // Fallback global (tu sheet publicado con gid)
-          const csvUrl = fromQuery || saved || 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRE45mae2W4RPiAVFq7Jl8E0WeD7XXoPxXDT6oGKXFPxAACcGVC30Bq-FUcbM90iIn5H-5ddOr9hl1K/pub?gid=1288404124&single=true&output=csv';
-
-          if (!csvUrl) {
-            cfg.classList.remove('hidden');
-            renderList([]);
-            return;
-          }
-
+          const csvUrl = saved || '';
+          if (!csvUrl) { cfg.classList.remove('hidden'); renderList([]); return; }
           const normalized = normalizeSheetUrlToCsv(csvUrl);
           const text = await fetchCsv(normalized);
           const rows = parseCSV(text);
-          ALL_PROPS = rows.filter((r) => (r.id || '').trim() && (r.title || '').trim());
-
+          const normalizedRows = rows.map(normalizeRow)
+            .filter(r => (r.title||'').trim());
+          ALL_PROPS = normalizedRows;
           cfg.classList.add('hidden');
           renderList(ALL_PROPS);
         } catch (e) {
@@ -868,15 +932,105 @@
         }
       }
 
+      // Buscador
       searchForm?.addEventListener('submit', (e) => { e.preventDefault(); applyFilters(); });
-      btnReset?.addEventListener('click', () => {
-        selOp.value = '';
-        selType.value = '';
-        inLoc.value = '';
-        renderList(ALL_PROPS);
-      });
+      btnReset?.addEventListener('click', () => { selOp.value=''; selType.value=''; inLoc.value=''; renderList(ALL_PROPS); });
 
+      // Admin handlers con cierre de sesión al cargar planilla
+      (function wireAdmin(){
+        const i = document.getElementById('ngd-csv');
+        const s = document.getElementById('ngd-status');
+        const btnSave = document.getElementById('ngd-save');
+        const btnTest = document.getElementById('ngd-test');
+        const btnClear= document.getElementById('ngd-clear');
+        const btnClose= document.getElementById('ngd-close');
+
+        try { i.value = localStorage.getItem(LS_KEY_CSV) || ''; } catch {}
+
+        async function tryLoad(url) {
+          const normalized = normalizeSheetUrlToCsv(url);
+          const text = await fetchCsv(normalized);
+          const rows = parseCSV(text);
+          return rows.length;
+        }
+
+        btnSave?.addEventListener('click', async ()=>{
+          const raw = (i.value||'').trim();
+          if (!raw) { s.textContent='Pegá una URL CSV primero.'; return; }
+          try {
+            s.textContent='Guardando y cargando...';
+            localStorage.setItem(LS_KEY_CSV, normalizeSheetUrlToCsv(raw));
+            const count = await tryLoad(raw);
+            s.textContent = `OK: ${count} filas. Se cerró la sesión admin.`;
+            closeAdminAndLogout();
+            bootstrap();
+          } catch {
+            s.textContent='No pude cargar el CSV. Revisá permisos/publicación.';
+          }
+        });
+
+        btnTest?.addEventListener('click', async ()=>{
+          const raw = (i.value||'').trim();
+          if (!raw) { s.textContent='Pegá una URL CSV publicada.'; return; }
+          s.textContent='Probando...';
+          try {
+            const txt = await fetchCsv(normalizeSheetUrlToCsv(raw));
+            const rows = parseCSV(txt);
+            s.textContent = `OK: ${rows.length} filas detectadas.`;
+          } catch(e){ s.textContent='No pude leer el CSV (¿está publicado?).'; }
+        });
+
+        btnClear?.addEventListener('click', ()=>{
+          try { localStorage.removeItem(LS_KEY_CSV); } catch {}
+          i.value=''; s.textContent='URL borrada.';
+          ALL_PROPS = [];
+          renderList([]);
+          cfg.classList.remove('hidden');
+        });
+
+        btnClose?.addEventListener('click', ()=> {
+          closeAdminAndLogout();
+        });
+      })();
+
+      // Tap secreto 4x sobre el logo para abrir el Admin con PIN
+      (function secretLogoTap(){
+        const logo = document.querySelector('header a[aria-label]');
+        if (!logo) return;
+        let taps = 0;
+        let timer = null;
+        const TAP_WINDOW_MS = 1200; // tiempo para completar los 4 taps
+
+        function reset() { taps = 0; if (timer) { clearTimeout(timer); timer = null; } }
+
+        logo.addEventListener('click', (e)=>{
+          if (logo.getAttribute('href') === '#') e.preventDefault();
+          taps++;
+          if (taps === 1) {
+            timer = setTimeout(reset, TAP_WINDOW_MS);
+          }
+          if (taps >= 4) { // CAMBIO: 4 toques
+            reset();
+            openAdminSecure();
+          }
+        });
+      })();
+
+      // Init
       bootstrap();
+
+      // Anti-badge overlays
+      (function hideHostBadges(){
+        const selectors = [
+          'a[href*="vercel.com"]','a[href*="vercel.app"]','[aria-label*="Vercel" i]','[data-vercel-insights]',
+          '[data-vercel-analytics]','[data-vercel-banner]','img[alt*="vercel" i]','iframe[src*="vercel" i]',
+          '.vercel-badge','#vercel','#__vercel'
+        ];
+        const removeAll = ()=>{ try{ document.querySelectorAll(selectors.join(',')).forEach(el=>el.remove()); }catch{} };
+        const obs = new MutationObserver(removeAll);
+        obs.observe(document.documentElement,{subtree:true,childList:true});
+        removeAll(); setTimeout(()=>obs.disconnect(),8000);
+      })();
     </script>
   </body>
 </html>
