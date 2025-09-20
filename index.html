@@ -1060,129 +1060,93 @@
       })();
     </script>
     <script>
-(function () {
-  // ====== CONFIGURACIÓN ======
-  var PANEL_IDs = ['ngd-admin-panel', 'ng-admin-panel'];  // usa el id que ya tengas
-  var TAP_TARGET_SELECTOR = 'header';                     // dónde hacer los 4 toques (podés cambiarlo)
-  var REQUIRED_TAPS = 4;                                  // cantidad de toques
-  var WINDOW_MS = 4000;                                   // ventana de tiempo para los toques (4s)
-  var PASSWORD = 'ng2412';                                // clave requerida
+<script>
+(function(){
+  // ===== Config =====
+  var PANEL_IDs=['ngd-admin-panel','ng-admin-panel']; // tu panel existente
+  var TAP_TARGET_SELECTOR='header';                   // zona de 4 toques
+  var REQUIRED_TAPS=4;
+  var WINDOW_MS=4000;
+  var PASSWORD='ng2412';
 
-  // ====== BUSCAR PANEL ======
-  var panel = null;
-  for (var i = 0; i < PANEL_IDs.length; i++) {
-    panel = document.getElementById(PANEL_IDs[i]);
-    if (panel) break;
-  }
-  if (!panel) return; // no hay panel en la página
+  // ===== Buscar panel =====
+  var panel=null;
+  for(var i=0;i<PANEL_IDs.length;i++){ panel=document.getElementById(PANEL_IDs[i]); if(panel) break; }
+  if(!panel) return;
 
-  // Asegurar que arranque oculto
-  function hidePanel() {
-    panel.classList && panel.classList.add('hidden');
-    if (panel.style) { panel.style.display = 'none'; panel.style.visibility = 'hidden'; }
-    panel.setAttribute && panel.setAttribute('aria-hidden', 'true');
-    if (overlay) overlay.remove();
+  // Siempre oculto al iniciar
+  function hidePanel(){
+    if(overlay){ overlay.remove(); overlay=null; }
+    var btn=document.getElementById('__adm_close_btn'); if(btn) btn.remove();
+    panel.style.zIndex=''; panel.style.position=''; panel.style.visibility='hidden'; panel.style.display='none';
+    panel.setAttribute('aria-hidden','true');
   }
-  function showPanel() {
-    panel.classList && panel.classList.remove('hidden','ng-hidden');
-    if (panel.style) { panel.style.display = 'block'; panel.style.visibility = 'visible'; }
-    panel.setAttribute && panel.setAttribute('aria-hidden','false');
-    makeOverlay(); // agrega overlay y close
-    panel.scrollIntoView && panel.scrollIntoView({behavior:'smooth', block:'start'});
+  function showPanel(){
+    // Panel por encima del overlay
+    panel.style.position='relative';
+    panel.style.zIndex='10000';
+    panel.style.visibility='visible';
+    panel.style.display='block';
+    panel.setAttribute('aria-hidden','false');
+    makeOverlay();
+    // foco al campo CSV si existe
+    (document.getElementById('ngd-csv') ||
+     document.getElementById('ng-csv-url') ||
+     panel.querySelector('input,textarea,select'))?.focus();
   }
   hidePanel();
 
-  // ====== OVERLAY + CLOSE ======
-  var overlay = null;
+  // ===== Overlay + cerrar =====
+  var overlay=null;
   function makeOverlay(){
-    if (overlay) overlay.remove();
-    overlay = document.createElement('div');
-    overlay.style.cssText =
-      'position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:saturate(1) blur(1px);'+
-      'z-index:9998;';
+    overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:saturate(1) blur(1px);z-index:9998;';
     overlay.addEventListener('click', hidePanel, {passive:true});
     document.body.appendChild(overlay);
 
-    // Botón cerrar discreto
-    var closeBtn = document.createElement('button');
-    closeBtn.textContent = '×';
-    closeBtn.title = 'Cerrar';
-    closeBtn.style.cssText =
-      'position:fixed;top:10px;right:12px;z-index:9999;font:600 18px/1 Montserrat,Arial;'+
-      'background:#fff;border:1px solid #ddd;border-radius:10px;padding:6px 10px;cursor:pointer;';
+    // Botón cerrar por encima de todo
+    var closeBtn=document.createElement('button');
+    closeBtn.id='__adm_close_btn';
+    closeBtn.textContent='×';
+    closeBtn.title='Cerrar';
+    closeBtn.style.cssText='position:fixed;top:10px;right:12px;z-index:10001;font:600 18px/1 Montserrat,Arial;background:#fff;border:1px solid #ddd;border-radius:10px;padding:6px 10px;cursor:pointer;';
     closeBtn.addEventListener('click', hidePanel);
-    overlay.appendChild(closeBtn);
+    document.body.appendChild(closeBtn);
 
-    // ESC cierra
-    document.addEventListener('keydown', escCloseOnce, {once:true});
-    // Cerrar cuando se envíe cualquier form dentro del panel
+    function onEsc(e){ if(e.key==='Escape'){ hidePanel(); document.removeEventListener('keydown',onEsc);} }
+    document.addEventListener('keydown', onEsc);
+
+    // Cerrar al enviar cualquier form dentro del panel
     panel.querySelectorAll('form').forEach(function(f){
-      f.addEventListener('submit', function(){ setTimeout(hidePanel, 200); }, {once:true});
+      f.addEventListener('submit', function(){ setTimeout(hidePanel,200); }, {once:true});
     });
   }
-  function escCloseOnce(e){ if (e.key === 'Escape') hidePanel(); }
 
-  // ====== MODAL DE CLAVE (simple y discreto) ======
-  function askPassword(ok, fail){
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'position:fixed;inset:0;z-index:10000;display:grid;place-items:center;';
-    var box = document.createElement('div');
-    box.style.cssText =
-      'background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12);'+
-      'padding:16px 14px;min-width:260px;font:500 14px Montserrat,Arial;color:#333;';
-    box.innerHTML =
-      '<div style="font-weight:600;margin-bottom:8px">Acceso</div>'+
-      '<div style="font-size:12px;color:#6b7280;margin-bottom:8px">Ingresá la clave para continuar</div>'+
-      '<input type="password" id="adm-pass" autocomplete="off" style="width:100%;padding:10px;border:1px solid #572d30;border-radius:8px;margin-bottom:10px" placeholder="Clave" />'+
-      '<div style="display:flex;gap:8px;justify-content:flex-end">'+
-        '<button id="adm-cancel" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cancelar</button>'+
-        '<button id="adm-ok" style="padding:8px 12px;border:0;border-radius:8px;background:#572d30;color:#fff;cursor:pointer">Entrar</button>'+
-      '</div>';
-    wrap.appendChild(box);
-    document.body.appendChild(wrap);
-
-    var inp = box.querySelector('#adm-pass');
-    var btnOk = box.querySelector('#adm-ok');
-    var btnCancel = box.querySelector('#adm-cancel');
+  // ===== Modal de clave =====
+  function askPassword(ok){
+    var wrap=document.createElement('div');
+    wrap.style.cssText='position:fixed;inset:0;z-index:10002;display:grid;place-items:center;';
+    var box=document.createElement('div');
+    box.style.cssText='background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12);padding:16px 14px;min-width:260px;font:500 14px Montserrat,Arial;color:#333;';
+    box.innerHTML='<div style="font-weight:600;margin-bottom:8px">Acceso</div><div style="font-size:12px;color:#6b7280;margin-bottom:8px">Ingresá la clave</div><input type="password" id="adm-pass" style="width:100%;padding:10px;border:1px solid #572d30;border-radius:8px;margin-bottom:10px" placeholder="Clave" /><div style="display:flex;gap:8px;justify-content:flex-end"><button id="adm-cancel" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cancelar</button><button id="adm-ok" style="padding:8px 12px;border:0;border-radius:8px;background:#572d30;color:#fff;cursor:pointer">Entrar</button></div>';
+    wrap.appendChild(box); document.body.appendChild(wrap);
+    var inp=box.querySelector('#adm-pass'), okBtn=box.querySelector('#adm-ok'), cancelBtn=box.querySelector('#adm-cancel');
     function close(){ wrap.remove(); }
-    function submit(){
-      var v = (inp.value || '').trim();
-      if (v === PASSWORD) { close(); ok && ok(); }
-      else {
-        box.style.animation = 'shake .25s';
-        box.addEventListener('animationend', function(){ box.style.animation=''; }, {once:true});
-        fail && fail();
-        inp.value = ''; inp.focus();
-      }
-    }
-    btnOk.addEventListener('click', submit);
-    btnCancel.addEventListener('click', close);
-    inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') submit(); if (e.key==='Escape') close(); });
-    setTimeout(function(){ inp.focus(); }, 60);
-
-    // pequeño keyframes para shake
-    var style = document.createElement('style');
-    style.textContent = '@keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}100%{transform:translateX(0)}}';
-    document.head.appendChild(style);
+    function submit(){ if((inp.value||'').trim()===PASSWORD){ close(); ok&&ok(); } else { inp.value=''; inp.focus(); } }
+    okBtn.onclick=submit; cancelBtn.onclick=close;
+    inp.onkeydown=function(e){ if(e.key==='Enter') submit(); if(e.key==='Escape') close(); };
+    setTimeout(function(){ inp.focus(); },50);
   }
 
-  // ====== GESTO: 4 TOQUES EN HEADER ======
-  var target = document.querySelector(TAP_TARGET_SELECTOR);
-  if (!target) return;
-
-  var taps = 0, timer = null;
-  function reset(){ taps = 0; if (timer) { clearTimeout(timer); timer = null; } }
-
-  target.addEventListener('click', function () {
-    taps++;
-    if (!timer) timer = setTimeout(reset, WINDOW_MS);
-    if (taps >= REQUIRED_TAPS) {
-      reset();
-      // pedir clave y abrir
-      askPassword(function ok(){ showPanel(); }, function fail(){ /* nada */ });
-    }
+  // ===== Gesto 4 toques =====
+  var target=document.querySelector(TAP_TARGET_SELECTOR); if(!target) return;
+  var taps=0, timer=null; function reset(){ taps=0; if(timer){clearTimeout(timer); timer=null;} }
+  target.addEventListener('click', function(){
+    taps++; if(!timer) timer=setTimeout(reset, WINDOW_MS);
+    if(taps>=REQUIRED_TAPS){ reset(); askPassword(showPanel); }
   }, {passive:true});
 })();
 </script>
+
   </body>
 </html>
