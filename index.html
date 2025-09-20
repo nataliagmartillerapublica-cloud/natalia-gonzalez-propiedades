@@ -1,7 +1,7 @@
 <!--
   @file index.html
   @description NG Desarrollos Inmobilarios — Sitio público. Carga propiedades desde Google Sheets (CSV),
-               acceso Admin oculto (tap 5 veces sobre el logo) con PIN "Valda2412".
+               acceso Admin oculto (tap 4 veces sobre el logo) con PIN "ng2412".
                Al guardar la planilla, la sesión Admin se cierra automáticamente y el panel se oculta.
 -->
 
@@ -78,7 +78,8 @@
           <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
             <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
           </div>
-          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">Desarrollos inmobiliarios</span>
+          <!-- CAMBIO: texto del logo -->
+          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">Desarrollos Inmobiliarios</span>
         </a>
 
         <nav class="hidden md:flex items-center gap-6 text-sm">
@@ -180,7 +181,7 @@
         </div>
       </section>
 
-      <!-- Admin oculto: se muestra sólo tras 5 taps al logo -->
+      <!-- Admin oculto: se muestra sólo tras taps + PIN -->
       <section id="ngd-admin-panel" class="mx-auto container-max px-4 pt-10 pb-2 hidden-admin" aria-hidden="true">
         <div class="admin-card">
           <strong>Admin (privado): Fuente de datos</strong>
@@ -256,7 +257,6 @@
           </form>
 
           <div class="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50">
-            <!-- Reemplazo por la foto de montañas (más luminosa) que usabas antes -->
             <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c4bf838c-8b53-4947-a908-295e7052c60c.jpg" alt="Bariloche" class="object-cover h-full w-full" />
           </div>
         </div>
@@ -413,23 +413,16 @@
       // ---------- CSV / Admin ----------
       const LS_KEY_CSV = ':csvUrl';
 
-      // NUEVO: Control de sesión Admin (PIN por tap 5x al logo)
-      const ADMIN_PIN = 'Valda2412';
+      // CAMBIO: PIN y sesión Admin (tap 4x al logo)
+      const ADMIN_PIN = 'ng2412';
       const ADMIN_KEY = 'ngd:admin:session';
 
-      /** Guarda estado de sesión admin en sessionStorage */
       function setAdminSession(active) {
-        try {
-          if (active) sessionStorage.setItem(ADMIN_KEY, 'ok');
-          else sessionStorage.removeItem(ADMIN_KEY);
-        } catch {}
+        try { active ? sessionStorage.setItem(ADMIN_KEY, 'ok') : sessionStorage.removeItem(ADMIN_KEY); } catch {}
       }
-      /** Retorna si la sesión admin está activa */
       function isAdminSession() {
         try { return sessionStorage.getItem(ADMIN_KEY) === 'ok'; } catch { return false; }
       }
-
-      /** Muestra/oculta el panel Admin */
       function showAdminPanel(show) {
         const panel = document.getElementById('ngd-admin-panel');
         if (!panel) return;
@@ -437,8 +430,6 @@
         panel.setAttribute('aria-hidden', show ? 'false' : 'true');
         if (show) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-
-      /** Inyecta un gate de PIN simple dentro del panel (sólo si aún no existe) */
       function ensurePinGate() {
         const panel = document.getElementById('ngd-admin-panel');
         if (!panel) return null;
@@ -467,7 +458,6 @@
           if (val === ADMIN_PIN) {
             setAdminSession(true);
             msg.textContent = 'Desbloqueado.';
-            // Oculta el gate y deja visible el panel de CSV
             gate.style.display = 'none';
           } else {
             msg.textContent = 'PIN incorrecto.';
@@ -475,29 +465,20 @@
         }
         btn.addEventListener('click', unlock);
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
-
         return gate;
       }
-
-      /** Abre el panel admin: si no hay sesión, muestra gate; si la hay, muestra controles */
       function openAdminSecure() {
         showAdminPanel(true);
         if (isAdminSession()) return;
         const gate = ensurePinGate();
-        if (gate) {
-          // Asegura que el gate esté visible
-          gate.style.display = '';
-          gate.querySelector('#ngd-pin-input')?.focus();
-        }
+        if (gate) { gate.style.display = ''; gate.querySelector('#ngd-pin-input')?.focus(); }
       }
-
-      /** Cierra panel y sesión (usado tras guardar/cargar planilla) */
       function closeAdminAndLogout() {
         setAdminSession(false);
         showAdminPanel(false);
       }
 
-      // Capturar ?csv=... y ?clear=1 (mantenemos estas utilidades)
+      // Capturar ?csv y ?clear (útil para soporte)
       (function captureCsvFromQuery(){
         try {
           const u = new URL(location.href);
@@ -515,8 +496,6 @@
           }
         } catch {}
       })();
-
-      // IMPORTANTE: Eliminamos cualquier auto-apertura por ?admin=1 para que sólo funcione con tap 5x al logo.
 
       // Normaliza URL de Sheet a CSV
       function normalizeSheetUrlToCsv(url) {
@@ -577,7 +556,7 @@
         return text;
       }
 
-      // Parser CSV correcto
+      // Parser CSV
       function parseCSV(text) {
         const rows = [];
         let i = 0, field = '', row = [], inQuotes = false;
@@ -942,7 +921,7 @@
           const text = await fetchCsv(normalized);
           const rows = parseCSV(text);
           const normalizedRows = rows.map(normalizeRow)
-            .filter(r => (r.title||'').trim()); // permite tarjetas aunque no tengan imagen
+            .filter(r => (r.title||'').trim());
           ALL_PROPS = normalizedRows;
           cfg.classList.add('hidden');
           renderList(ALL_PROPS);
@@ -972,7 +951,6 @@
           const normalized = normalizeSheetUrlToCsv(url);
           const text = await fetchCsv(normalized);
           const rows = parseCSV(text);
-          // no render acá; bootstrap se ocupa en recarga o podés llamar render directo si querés
           return rows.length;
         }
 
@@ -982,12 +960,9 @@
           try {
             s.textContent='Guardando y cargando...';
             localStorage.setItem(LS_KEY_CSV, normalizeSheetUrlToCsv(raw));
-            // Carga de verificación
             const count = await tryLoad(raw);
             s.textContent = `OK: ${count} filas. Se cerró la sesión admin.`;
-            // Cierra sesión y panel
             closeAdminAndLogout();
-            // Refresca listado en pantalla
             bootstrap();
           } catch {
             s.textContent='No pude cargar el CSV. Revisá permisos/publicación.';
@@ -1008,7 +983,6 @@
         btnClear?.addEventListener('click', ()=>{
           try { localStorage.removeItem(LS_KEY_CSV); } catch {}
           i.value=''; s.textContent='URL borrada.';
-          // Limpia pantalla
           ALL_PROPS = [];
           renderList([]);
           cfg.classList.remove('hidden');
@@ -1019,24 +993,23 @@
         });
       })();
 
-      // Tap secreto 5x sobre el logo para abrir el Admin con PIN
+      // Tap secreto 4x sobre el logo para abrir el Admin con PIN
       (function secretLogoTap(){
-        const logo = document.querySelector('header a[aria-label*="" i]');
+        const logo = document.querySelector('header a[aria-label]');
         if (!logo) return;
         let taps = 0;
         let timer = null;
-        const TAP_WINDOW_MS = 1200; // 1.2s para completar 5 taps
+        const TAP_WINDOW_MS = 1200; // tiempo para completar los 4 taps
 
         function reset() { taps = 0; if (timer) { clearTimeout(timer); timer = null; } }
 
         logo.addEventListener('click', (e)=>{
-          // No navegamos (ancla "#")
           if (logo.getAttribute('href') === '#') e.preventDefault();
           taps++;
           if (taps === 1) {
             timer = setTimeout(reset, TAP_WINDOW_MS);
           }
-          if (taps >= 5) {
+          if (taps >= 4) { // CAMBIO: 4 toques
             reset();
             openAdminSecure();
           }
@@ -1058,144 +1031,6 @@
         obs.observe(document.documentElement,{subtree:true,childList:true});
         removeAll(); setTimeout(()=>obs.disconnect(),8000);
       })();
-   <script>
-<script>
-(function(){
-  // ===== Config =====
-  var REQUIRED_TAPS = 4;           // ahora 4 toques
-  var WINDOW_MS     = 3000;        // 3s para completar los 4 toques
-  var PASSWORD      = 'ng2412';    // clave
-  var LS_KEY        = 'ngespacios:csvUrl';
-
-  var adminOpen = false;
-  var taps = 0, timer = null;
-
-  function resetTaps(){ taps = 0; if (timer) { clearTimeout(timer); timer = null; } }
-  function countTap(){
-    if (adminOpen) return; // no contar mientras el panel esté abierto
-    taps++;
-    if (!timer) timer = setTimeout(resetTaps, WINDOW_MS);
-    if (taps >= REQUIRED_TAPS) { resetTaps(); askPassword(openAdmin); }
-  }
-
-  // Escucho clicks y toques
-  document.addEventListener('click', countTap, {passive:true});
-  document.addEventListener('touchend', countTap, {passive:true});
-
-  // Normaliza URL de Google Sheets a CSV
-  function normalizeSheetUrlToCsv(url){
-    try{
-      var u = new URL(url);
-      if (u.hostname.includes('docs.google.com')) {
-        if (u.pathname.includes('/export')) { u.searchParams.set('format','csv'); return u.toString(); }
-        if (u.pathname.includes('/pub'))    { u.searchParams.set('output','csv'); return u.toString(); }
-      }
-      return url;
-    }catch(e){ return url; }
-  }
-
-  // Modal de clave
-  function askPassword(onOk){
-    var bg = document.createElement('div');
-    bg.style.cssText = 'position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.35);display:grid;place-items:center;backdrop-filter:blur(1px)';
-    var box = document.createElement('div');
-    box.style.cssText = 'background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:16px;min-width:260px;font:500 14px Montserrat,Arial;color:#333';
-    box.innerHTML = '<div style="font-weight:700;margin-bottom:8px">Acceso</div>\
-      <div style="font-size:12px;color:#6b7280;margin-bottom:8px">Ingresá la clave</div>\
-      <input type="password" id="adm-pass" style="width:100%;padding:10px;border:1px solid #572d30;border-radius:8px;margin-bottom:10px" placeholder="Clave" />\
-      <div style="display:flex;gap:8px;justify-content:flex-end">\
-        <button id="adm-cancel" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cancelar</button>\
-        <button id="adm-ok" style="padding:8px 12px;border:0;border-radius:8px;background:#572d30;color:#fff;cursor:pointer">Entrar</button>\
-      </div>';
-    bg.appendChild(box); document.body.appendChild(bg);
-
-    var inp = box.querySelector('#adm-pass');
-    var ok  = box.querySelector('#adm-ok');
-    var ca  = box.querySelector('#adm-cancel');
-
-    function close(){ bg.remove(); }
-    function submit(){
-      if ((inp.value||'').trim() === PASSWORD) { close(); onOk && onOk(); }
-      else { inp.value=''; inp.focus(); }
-    }
-    ok.onclick = submit; ca.onclick = close;
-    bg.addEventListener('click', e=>{ if(e.target===bg) close(); });
-    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') submit(); if(e.key==='Escape') close(); });
-    setTimeout(()=>inp.focus(), 50);
-  }
-
-  // Mini panel admin (CSV)
-  function openAdmin(){
-    adminOpen = true;
-
-    var ov = document.createElement('div');
-    ov.style.cssText = 'position:fixed;inset:0;z-index:2147483646;background:rgba(0,0,0,.35);backdrop-filter:blur(1px)';
-    var box = document.createElement('div');
-    box.style.cssText = 'position:fixed;left:50%;top:40%;transform:translate(-50%,-40%);z-index:2147483647;background:#fff;border:1px solid #ead8c9;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.15);padding:14px 14px 12px;min-width:320px;max-width:92vw;font:500 14px Montserrat,Arial;color:#333';
-    box.innerHTML = '\
-      <div style="font-weight:700;margin-bottom:8px">Fuente de datos (CSV)</div>\
-      <div style="font-size:12px;color:#6b7280;margin-bottom:6px">Pegá la URL pública de Google Sheets exportada a CSV</div>\
-      <input type="url" id="csv-url" placeholder="https://docs.google.com/.../export?format=csv&gid=XXXX" \
-        style="width:100%;padding:10px;border:1px solid #572d30;border-radius:8px;margin-bottom:10px" />\
-      <div style="display:flex;gap:8px;flex-wrap:wrap">\
-        <button id="adm-save"  style="padding:8px 12px;border:0;border-radius:8px;background:#572d30;color:#fff;cursor:pointer">Guardar</button>\
-        <button id="adm-test"  style="padding:8px 12px;border:1px solid #572d30;border-radius:8px;background:#fff;color:#572d30;cursor:pointer">Probar</button>\
-        <button id="adm-clear" style="padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Borrar</button>\
-        <button id="adm-close" style="margin-left:auto;padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">Cerrar</button>\
-      </div>';
-
-    document.body.appendChild(ov);
-    document.body.appendChild(box);
-
-    var input = box.querySelector('#csv-url');
-    var saved = localStorage.getItem(LS_KEY) || '';
-    if (saved) input.value = saved;
-
-    function toast(msg, ok){
-      var t=document.createElement('div');
-      t.textContent = msg;
-      t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:'+(ok?'#16a34a':'#dc2626')+';color:#fff;padding:8px 12px;border-radius:10px;font:600 13px Montserrat,Arial;z-index:2147483647';
-      document.body.appendChild(t); setTimeout(()=>t.remove(), 1600);
-    }
-
-    function close(){
-      box.remove(); ov.remove();
-      adminOpen = false; // vuelve a quedar oculto hasta los 4 toques + clave
-    }
-
-    box.querySelector('#adm-close').onclick = close;
-    ov.addEventListener('click', e=>{ if(e.target===ov) close(); });
-    document.addEventListener('keydown', function onEsc(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown', onEsc); }});
-
-    box.querySelector('#adm-save').onclick = function(){
-      var url = normalizeSheetUrlToCsv((input.value||'').trim());
-      if(!url){ toast('URL vacía', false); return; }
-      localStorage.setItem(LS_KEY, url);
-      input.value = url;
-      toast('Guardado', true);
-    };
-
-    box.querySelector('#adm-clear').onclick = function(){
-      localStorage.removeItem(LS_KEY);
-      input.value = '';
-      toast('Borrado', true);
-    };
-
-    box.querySelector('#adm-test').onclick = async function(){
-      var url = normalizeSheetUrlToCsv((input.value||'').trim());
-      if(!url){ toast('URL vacía', false); return; }
-      try{
-        var res = await fetch(url, {cache:'no-store'});
-        if(!res.ok) throw new Error('HTTP '+res.status);
-        var txt = await res.text();
-        if (txt.indexOf(',')>-1 && /\n/.test(txt)) toast('CSV OK', true);
-        else toast('No parece CSV', false);
-      }catch(e){ toast('Error al probar', false); }
-    };
-
-    setTimeout(()=>input.focus(), 50);
-  }
-})();
-</script>
- </body>
+    </script>
+  </body>
 </html>
