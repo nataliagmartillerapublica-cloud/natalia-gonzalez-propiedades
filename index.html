@@ -1,10 +1,3 @@
-<!--
-  @file index.html
-  @description NG Desarrollos Inmobilarios — Sitio público. Carga propiedades desde Google Sheets (CSV),
-               acceso Admin oculto (tap 4 veces sobre el logo) con PIN "ng2412".
-               Al guardar la planilla, la sesión Admin se cierra automáticamente y el panel se oculta.
--->
-
 <!doctype html>
 <html lang="es">
   <head>
@@ -78,7 +71,7 @@
           <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
             <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
           </div>
-          <!-- CAMBIO: texto del logo -->
+          <!-- Texto del logo -->
           <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">Desarrollos Inmobiliarios</span>
         </a>
 
@@ -111,7 +104,7 @@
       <!-- Hero -->
       <section class="relative isolate">
         <div class="absolute inset-0 -z-10">
-          <!-- RESTAURADO: imagen anterior de Bariloche -->
+          <!-- Imagen hero restaurada -->
           <img
             src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c0105bbf-bf3c-42e0-bc2b-88d39c05c4aa.jpg"
             alt="Lago en Bariloche"
@@ -122,7 +115,7 @@
         </div>
 
         <div class="mx-auto container-max px-4 py-16 md:py-24">
-          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">Natalia González • Martillera y Corredora Pública • MAT. TºII Fº456 Nº377-RP-21  </p>
+          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">Natalia González • Martillera y Corredora Pública • MAT. TºII Fº456 Nº377-RP-21</p>
           <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">Tu próximo hogar en Bariloche</h1>
           <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">Acompañamiento de punta a punta.</p>
           <div class="mt-6 flex flex-wrap gap-3">
@@ -186,7 +179,7 @@
         </div>
       </section>
 
-      <!-- Admin oculto: se muestra sólo tras taps + PIN -->
+      <!-- Admin oculto (se muestra tras taps + PIN) -->
       <section id="ngd-admin-panel" class="mx-auto container-max px-4 pt-10 pb-2 hidden-admin" aria-hidden="true">
         <div class="admin-card">
           <strong>Admin (privado): Fuente de datos</strong>
@@ -375,7 +368,7 @@
 
     <!-- JS -->
     <script>
-      // Año
+      // Año en footer
       document.getElementById('year').textContent = new Date().getFullYear();
 
       // Lucide
@@ -418,7 +411,7 @@
       // ---------- CSV / Admin ----------
       const LS_KEY_CSV = ':csvUrl';
 
-      // CAMBIO: PIN y sesión Admin (tap 4x al logo)
+      // PIN + sesión Admin (tap 4x al logo)
       const ADMIN_PIN = 'ng2412';
       const ADMIN_KEY = 'ngd:admin:session';
 
@@ -483,7 +476,7 @@
         showAdminPanel(false);
       }
 
-      // Capturar ?csv y ?clear (útil para soporte)
+      // Capturar ?csv y ?clear
       (function captureCsvFromQuery(){
         try {
           const u = new URL(location.href);
@@ -941,7 +934,7 @@
       searchForm?.addEventListener('submit', (e) => { e.preventDefault(); applyFilters(); });
       btnReset?.addEventListener('click', () => { selOp.value=''; selType.value=''; inLoc.value=''; renderList(ALL_PROPS); });
 
-      // Admin handlers con cierre de sesión al cargar planilla
+      // Admin handlers (cierra sesión al guardar)
       (function wireAdmin(){
         const i = document.getElementById('ngd-csv');
         const s = document.getElementById('ngd-status');
@@ -998,7 +991,7 @@
         });
       })();
 
-      // Tap secreto 4x sobre el logo para abrir el Admin con PIN
+      // Tap secreto 4x sobre el logo → Admin con PIN
       (function secretLogoTap(){
         const logo = document.querySelector('header a[aria-label]');
         if (!logo) return;
@@ -1014,7 +1007,7 @@
           if (taps === 1) {
             timer = setTimeout(reset, TAP_WINDOW_MS);
           }
-          if (taps >= 4) { // CAMBIO: 4 toques
+          if (taps >= 4) { // 4 toques
             reset();
             openAdminSecure();
           }
