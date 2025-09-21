@@ -1,22 +1,15 @@
-<!--
-  @file index.html
-  @description NGespacios — Sitio público. Carga propiedades desde Google Sheets (CSV),
-               acceso Admin oculto (tap 5 veces sobre el logo) con PIN "Valda2412".
-               Al guardar la planilla, la sesión Admin se cierra automáticamente y el panel se oculta.
--->
-
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1" name="viewport" />
 
-    <title>NGespacios — Inmobiliaria en Bariloche</title>
+    <title>NG Desarrollos Inmobiliarios — Inmobiliaria en Bariloche</title>
     <meta name="description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta name="theme-color" content="#572d30" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="NGespacios — Inmobiliaria en Bariloche" />
+    <meta property="og:title" content=" — Inmobiliaria en Bariloche" />
     <meta property="og:description" content="Venta, alquiler, tasaciones y acompañamiento personalizado en Bariloche." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=1200&auto=format&fit=crop" />
@@ -74,11 +67,12 @@
     <!-- Header -->
     <header class="sticky top-0 z-30 w-full border-b border-neutral-200 bg-[color:var(--brand-bg)]/90 backdrop-blur-md">
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between">
-        <a href="#" class="flex items-center gap-2" aria-label="NGespacios - Inicio">
+        <a href="#" class="flex items-center gap-2" aria-label=" - Inicio">
           <div class="h-9 w-9 md:h-10 md:w-10 rounded-[8px] bg-[color:var(--brand-primary)] grid place-items-center shadow-sm">
             <span class="text-[color:var(--brand-bg)] font-light tracking-tight text-[15px] md:text-[16px]">NG</span>
           </div>
-          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">ESPACIOS</span>
+          <!-- Texto del logo -->
+          <span class="text-[12px] md:text-sm tracking-[0.22em] text-[color:var(--brand-text)] font-light uppercase">Desarrollos Inmobiliarios</span>
         </a>
 
         <nav class="hidden md:flex items-center gap-6 text-sm">
@@ -110,13 +104,18 @@
       <!-- Hero -->
       <section class="relative isolate">
         <div class="absolute inset-0 -z-10">
-          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop" alt="Lago en Bariloche" class="object-cover w-full h-full" />
+          <!-- Imagen hero restaurada -->
+          <img
+            src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c0105bbf-bf3c-42e0-bc2b-88d39c05c4aa.jpg"
+            alt="Lago en Bariloche"
+            class="object-cover w-full h-full"
+          />
           <div class="absolute inset-0 bg-[color:var(--brand-bg)] mix-blend-multiply opacity-30"></div>
           <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/45 to-black/30"></div>
         </div>
 
         <div class="mx-auto container-max px-4 py-16 md:py-24">
-          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">Natalia González • Martillera y Corredora Pública • MAT. Nº377- RP-21 Fº456 TºII</p>
+          <p class="text-[12px] sm:text-sm md:text-base text-white/90 font-light leading-snug">Natalia González • Martillera y Corredora Pública • MAT. TºII Fº456 Nº377-RP-21</p>
           <h1 class="mt-3 text-3xl md:text-5xl font-medium tracking-tight text-white">Tu próximo hogar en Bariloche</h1>
           <p class="mt-2 text-base md:text-lg text-white/90 max-w-2xl">Acompañamiento de punta a punta.</p>
           <div class="mt-6 flex flex-wrap gap-3">
@@ -180,7 +179,7 @@
         </div>
       </section>
 
-      <!-- Admin oculto: se muestra sólo tras 5 taps al logo -->
+      <!-- Admin oculto (se muestra tras taps + PIN) -->
       <section id="ngd-admin-panel" class="mx-auto container-max px-4 pt-10 pb-2 hidden-admin" aria-hidden="true">
         <div class="admin-card">
           <strong>Admin (privado): Fuente de datos</strong>
@@ -256,7 +255,6 @@
           </form>
 
           <div class="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50">
-            <!-- Reemplazo por la foto de montañas (más luminosa) que usabas antes -->
             <img src="https://pub-cdn.sider.ai/u/U0Z6H6GX0R3/web-coder/68bc90b5d4f5bb9dcd3b8249/resource/c4bf838c-8b53-4947-a908-295e7052c60c.jpg" alt="Bariloche" class="object-cover h-full w-full" />
           </div>
         </div>
@@ -273,8 +271,8 @@
           <div class="mt-4 space-y-2 text-sm md:text-base">
             <p class="text-neutral-700">
               Email
-              <a href="mailto:nataliagonzalezmartillerapublica@ngespacios.com.ar" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base">
-                nataliagonzalezmartillerapublica@ngespacios.com.ar
+              <a href="mailto:nataliagonzalezmartillerapublica@gmail.com" class="no-underline text-[color:var(--brand-primary)] hover:opacity-90 ml-1 break-all inline-block max-w-full align-baseline text-xs sm:text-sm md:text-base">
+                nataliagonzalezmartillerapublica@gmail.com
               </a>
             </p>
             <p class="text-neutral-700">
@@ -292,7 +290,7 @@
     <!-- Footer -->
     <footer class="border-t border-neutral-200 mt-8">
       <div class="mx-auto container-max px-4 h-16 flex items-center justify-between text-sm">
-        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium">NGespacios — Natalia González</span></p>
+        <p class="text-neutral-700">© <span id="year"></span> <span class="font-medium"> — Natalia González</span></p>
         <p class="text-neutral-700">Hecho con ♥ en Bariloche</p>
       </div>
     </footer>
@@ -312,9 +310,8 @@
           <a id="gallery-wa" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center h-9 rounded-full bg-green-600 text-white px-3 hover:bg-green-700 transition" title="WhatsApp" aria-label="Abrir WhatsApp">
             <i data-lucide="message-circle" class="h-4 w-4 mr-1"></i> WhatsApp
           </a>
-          <button id="gallery-ficha-open" type="button" class="inline-flex items-start rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3 py-2 text-left" title="Ver ficha" aria-label="Ver ficha">
-            <i data-lucide="file-text" class="h-4 w-4 mr-2 mt-0.5"></i>
-            <span id="gallery-ficha-label" class="block whitespace-pre-wrap break-words text-left max-w-[85vw] md:max-w-[560px] leading-snug">VER FICHA</span>
+          <button id="gallery-ficha-open" type="button" class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3" title="Ver ficha" aria-label="Ver ficha">
+            <i data-lucide="file-text" class="h-4 w-4 mr-1"></i> VER FICHA
           </button>
           <button id="gallery-close" type="button" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition" aria-label="Cerrar" title="Cerrar">
             <i data-lucide="x" class="h-4 w-4"></i>
@@ -371,7 +368,7 @@
 
     <!-- JS -->
     <script>
-      // Año
+      // Año en footer
       document.getElementById('year').textContent = new Date().getFullYear();
 
       // Lucide
@@ -412,25 +409,19 @@
       form?.addEventListener('submit', (e) => { e.preventDefault(); ok?.classList.remove('hidden'); setTimeout(() => { form.reset(); }, 200); });
 
       // ---------- CSV / Admin ----------
-      const LS_KEY_CSV = 'ngespacios:csvUrl';
+      const LS_KEY_CSV = ':csvUrl';
+      const DEFAULT_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRE45mae2W4RPiAVFq7Jl8E0WeD7XXoPxXDT6oGKXFPxAACcGVC30Bq-FUcbM90iIn5H-5ddOr9hl1K/pub?gid=1288404124&single=true&output=csv';
 
-      // NUEVO: Control de sesión Admin (PIN por tap 5x al logo)
-      const ADMIN_PIN = 'Valda2412';
+      // PIN + sesión Admin (tap 4x al logo)
+      const ADMIN_PIN = 'ng2412';
       const ADMIN_KEY = 'ngd:admin:session';
 
-      /** Guarda estado de sesión admin en sessionStorage */
       function setAdminSession(active) {
-        try {
-          if (active) sessionStorage.setItem(ADMIN_KEY, 'ok');
-          else sessionStorage.removeItem(ADMIN_KEY);
-        } catch {}
+        try { active ? sessionStorage.setItem(ADMIN_KEY, 'ok') : sessionStorage.removeItem(ADMIN_KEY); } catch {}
       }
-      /** Retorna si la sesión admin está activa */
       function isAdminSession() {
         try { return sessionStorage.getItem(ADMIN_KEY) === 'ok'; } catch { return false; }
       }
-
-      /** Muestra/oculta el panel Admin */
       function showAdminPanel(show) {
         const panel = document.getElementById('ngd-admin-panel');
         if (!panel) return;
@@ -438,8 +429,6 @@
         panel.setAttribute('aria-hidden', show ? 'false' : 'true');
         if (show) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-
-      /** Inyecta un gate de PIN simple dentro del panel (sólo si aún no existe) */
       function ensurePinGate() {
         const panel = document.getElementById('ngd-admin-panel');
         if (!panel) return null;
@@ -468,7 +457,6 @@
           if (val === ADMIN_PIN) {
             setAdminSession(true);
             msg.textContent = 'Desbloqueado.';
-            // Oculta el gate y deja visible el panel de CSV
             gate.style.display = 'none';
           } else {
             msg.textContent = 'PIN incorrecto.';
@@ -476,29 +464,20 @@
         }
         btn.addEventListener('click', unlock);
         input.addEventListener('keydown', (e) => { if (e.key === 'Enter') unlock(); });
-
         return gate;
       }
-
-      /** Abre el panel admin: si no hay sesión, muestra gate; si la hay, muestra controles */
       function openAdminSecure() {
         showAdminPanel(true);
         if (isAdminSession()) return;
         const gate = ensurePinGate();
-        if (gate) {
-          // Asegura que el gate esté visible
-          gate.style.display = '';
-          gate.querySelector('#ngd-pin-input')?.focus();
-        }
+        if (gate) { gate.style.display = ''; gate.querySelector('#ngd-pin-input')?.focus(); }
       }
-
-      /** Cierra panel y sesión (usado tras guardar/cargar planilla) */
       function closeAdminAndLogout() {
         setAdminSession(false);
         showAdminPanel(false);
       }
 
-      // Capturar ?csv=... y ?clear=1 (mantenemos estas utilidades)
+      // Capturar ?csv y ?clear
       (function captureCsvFromQuery(){
         try {
           const u = new URL(location.href);
@@ -516,8 +495,6 @@
           }
         } catch {}
       })();
-
-      // IMPORTANTE: Eliminamos cualquier auto-apertura por ?admin=1 para que sólo funcione con tap 5x al logo.
 
       // Normaliza URL de Sheet a CSV
       function normalizeSheetUrlToCsv(url) {
@@ -578,7 +555,7 @@
         return text;
       }
 
-      // Parser CSV correcto
+      // Parser CSV
       function parseCSV(text) {
         const rows = [];
         let i = 0, field = '', row = [], inQuotes = false;
@@ -681,7 +658,6 @@
       const badgeOp  = document.getElementById('gallery-badge-op');
       const badgeType= document.getElementById('gallery-badge-type');
       const galleryFichaOpen = document.getElementById('gallery-ficha-open');
-      const galleryFichaLabel = document.getElementById('gallery-ficha-label');
 
       const fichaBackdrop  = document.getElementById('ficha-backdrop');
       const fichaOpenLink  = document.getElementById('ficha-open');
@@ -691,7 +667,7 @@
       const galleryState = {
         images: [],
         index: 0,
-        meta: { title:'', operation:'', type:'', location:'', price:'', pdf:'', description:'' }
+        meta: { title:'', operation:'', type:'', location:'', price:'', pdf:'' }
       };
 
       function updateGalleryUI() {
@@ -707,15 +683,6 @@
         badgeType.textContent = galleryState.meta.type;
 
         waBtn.href = buildWaLink(galleryState.meta);
-        if (galleryFichaLabel) {
-          const label = (galleryState.meta.description || '').trim();
-          galleryFichaLabel.textContent = label || 'VER FICHA';
-        }
-        if (galleryFichaOpen) {
-          const t = (galleryState.meta.description || 'Ver ficha').trim();
-          galleryFichaOpen.title = t;
-          galleryFichaOpen.setAttribute('aria-label', t);
-        }
         renderIcons();
       }
       function openGallery({ images, meta, startIndex=0 }) {
@@ -775,7 +742,6 @@
         card.setAttribute('data-price', formatPrice(p));
         card.setAttribute('data-images', (p.images || '').split('|').map(s => s.trim()).filter(Boolean).join('|'));
         card.setAttribute('data-pdf', p.pdf || '');
-        card.setAttribute('data-description', p.description || '');
 
         // Imagen
         const imgWrap = document.createElement('div');
@@ -907,7 +873,6 @@
           location: card.getAttribute('data-location') || '',
           price: card.getAttribute('data-price') || '',
           pdf: card.getAttribute('data-pdf') || '',
-          description: card.getAttribute('data-description') || '',
         };
         const imgs = parseImages(card.getAttribute('data-images') || '');
         const openButtons = card.querySelectorAll('[data-action="open-gallery"]');
@@ -948,14 +913,15 @@
 
       async function bootstrap() {
         try {
-          const saved = localStorage.getItem(LS_KEY_CSV) || '';
-          const csvUrl = saved || '';
+        const saved = localStorage.getItem(LS_KEY_CSV) || '';
+        const csvUrl = saved || DEFAULT_CSV;
+
           if (!csvUrl) { cfg.classList.remove('hidden'); renderList([]); return; }
           const normalized = normalizeSheetUrlToCsv(csvUrl);
           const text = await fetchCsv(normalized);
           const rows = parseCSV(text);
           const normalizedRows = rows.map(normalizeRow)
-            .filter(r => (r.title||'').trim()); // permite tarjetas aunque no tengan imagen
+            .filter(r => (r.title||'').trim());
           ALL_PROPS = normalizedRows;
           cfg.classList.add('hidden');
           renderList(ALL_PROPS);
@@ -970,7 +936,7 @@
       searchForm?.addEventListener('submit', (e) => { e.preventDefault(); applyFilters(); });
       btnReset?.addEventListener('click', () => { selOp.value=''; selType.value=''; inLoc.value=''; renderList(ALL_PROPS); });
 
-      // Admin handlers con cierre de sesión al cargar planilla
+      // Admin handlers (cierra sesión al guardar)
       (function wireAdmin(){
         const i = document.getElementById('ngd-csv');
         const s = document.getElementById('ngd-status');
@@ -985,7 +951,6 @@
           const normalized = normalizeSheetUrlToCsv(url);
           const text = await fetchCsv(normalized);
           const rows = parseCSV(text);
-          // no render acá; bootstrap se ocupa en recarga o podés llamar render directo si querés
           return rows.length;
         }
 
@@ -995,12 +960,9 @@
           try {
             s.textContent='Guardando y cargando...';
             localStorage.setItem(LS_KEY_CSV, normalizeSheetUrlToCsv(raw));
-            // Carga de verificación
             const count = await tryLoad(raw);
             s.textContent = `OK: ${count} filas. Se cerró la sesión admin.`;
-            // Cierra sesión y panel
             closeAdminAndLogout();
-            // Refresca listado en pantalla
             bootstrap();
           } catch {
             s.textContent='No pude cargar el CSV. Revisá permisos/publicación.';
@@ -1021,7 +983,6 @@
         btnClear?.addEventListener('click', ()=>{
           try { localStorage.removeItem(LS_KEY_CSV); } catch {}
           i.value=''; s.textContent='URL borrada.';
-          // Limpia pantalla
           ALL_PROPS = [];
           renderList([]);
           cfg.classList.remove('hidden');
@@ -1032,24 +993,23 @@
         });
       })();
 
-      // Tap secreto 5x sobre el logo para abrir el Admin con PIN
+      // Tap secreto 4x sobre el logo → Admin con PIN
       (function secretLogoTap(){
-        const logo = document.querySelector('header a[aria-label*="ngespacios" i]');
+        const logo = document.querySelector('header a[aria-label]');
         if (!logo) return;
         let taps = 0;
         let timer = null;
-        const TAP_WINDOW_MS = 1200; // 1.2s para completar 5 taps
+        const TAP_WINDOW_MS = 1200; // tiempo para completar los 4 taps
 
         function reset() { taps = 0; if (timer) { clearTimeout(timer); timer = null; } }
 
         logo.addEventListener('click', (e)=>{
-          // No navegamos (ancla "#")
           if (logo.getAttribute('href') === '#') e.preventDefault();
           taps++;
           if (taps === 1) {
             timer = setTimeout(reset, TAP_WINDOW_MS);
           }
-          if (taps >= 5) {
+          if (taps >= 4) { // 4 toques
             reset();
             openAdminSecure();
           }
