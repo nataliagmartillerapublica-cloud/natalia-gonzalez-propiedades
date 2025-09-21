@@ -410,6 +410,7 @@
 
       // ---------- CSV / Admin ----------
       const LS_KEY_CSV = ':csvUrl';
+      const DEFAULT_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRE45mae2W4RPiAVFq7Jl8E0WeD7XXoPxXDT6oGKXFPxAACcGVC30Bq-FUcbM90iIn5H-5ddOr9hl1K/pub?gid=1288404124&single=true&output=csv';
 
       // PIN + sesión Admin (tap 4x al logo)
       const ADMIN_PIN = 'ng2412';
@@ -912,8 +913,9 @@
 
       async function bootstrap() {
         try {
-          const saved = localStorage.getItem(LS_KEY_CSV) || '';
-          const csvUrl = saved || '';
+        const saved = localStorage.getItem(LS_KEY_CSV) || '';
+        const csvUrl = saved || DEFAULT_CSV;
+
           if (!csvUrl) { cfg.classList.remove('hidden'); renderList([]); return; }
           const normalized = normalizeSheetUrlToCsv(csvUrl);
           const text = await fetchCsv(normalized);
