@@ -310,9 +310,18 @@
           <a id="gallery-wa" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center h-9 rounded-full bg-green-600 text-white px-3 hover:bg-green-700 transition" title="WhatsApp" aria-label="Abrir WhatsApp">
             <i data-lucide="message-circle" class="h-4 w-4 mr-1"></i> WhatsApp
           </a>
-          <button id="gallery-ficha-open" type="button" class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3" title="Ver ficha" aria-label="Ver ficha">
-            <i data-lucide="file-text" class="h-4 w-4 mr-1"></i> VER FICHA
+
+          <!-- NUEVO: botón Ubicación (opción B) -->
+          <a id="gallery-map-open" href="#" target="_blank" rel="noreferrer" class="inline-flex items-center justify-center h-9 rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3" title="Ver ubicación" aria-label="Ver ubicación">
+            <i data-lucide="map-pin" class="h-4 w-4 mr-1"></i> Ubicación
+          </a>
+
+          <!-- REEMPLAZADO: tu botón VER FICHA con etiqueta -->
+          <button id="gallery-ficha-open" type="button" class="inline-flex items-start rounded-full bg-white/90 text-[color:var(--brand-primary)] border border-white hover:bg-white transition px-3 py-2 text-left" title="Ver ficha" aria-label="Ver ficha">
+            <i data-lucide="file-text" class="h-4 w-4 mr-2 mt-0.5"></i>
+            <span id="gallery-ficha-label" class="block whitespace-pre-wrap break-words text-left max-w-[85vw] md:max-w-[560px] leading-snug">VER FICHA</span>
           </button>
+
           <button id="gallery-close" type="button" class="inline-flex items-center justify-center h-9 w-9 rounded-full bg-white/90 text-black border border-white hover:bg-white transition" aria-label="Cerrar" title="Cerrar">
             <i data-lucide="x" class="h-4 w-4"></i>
           </button>
@@ -589,7 +598,7 @@
       }
       async function fetchCsv(url){ const res = await fetch(url,{cache:'no-store'}); if(!res.ok) throw new Error('HTTP '+res.status); return res.text(); }
 
-      // Normalización de filas
+      // Normalización de filas (agrego opción B: maps/address)
       function pickImages(row){
         if (row.images) return row.images;
         const single = row.img || row.foto || row.imagen || '';
@@ -618,10 +627,22 @@
         out.link = row.link || row.url || row.publicacion || row.enlace || '';
         out.pdf  = row.pdf  || row.ficha || row.brochure || '';
 
+        // Opción B: URL directa de Maps o dirección para buscar
+        out.maps    = row.maps || row.map || row.maps_url || row.mapa || '';
+        out.address = row.address || row.direccion || '';
+
         out.link = out.link ? ensureHttp(out.link) : '';
         out.pdf  = out.pdf  ? ensureHttp(out.pdf)  : '';
+        out.maps = out.maps ? ensureHttp(out.maps) : out.maps;
 
         return out;
+      }
+
+      // Opción B: construir href de Google Maps desde maps/address
+      function buildMapHref(p){
+        if (p.maps) return ensureHttp(p.maps);
+        if (p.address) return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.address);
+        return '';
       }
 
       // Estado y UI propiedades
@@ -664,10 +685,13 @@
       const fichaDownload  = document.getElementById('ficha-download');
       const fichaCloseBtn  = document.getElementById('ficha-close');
 
+      // NUEVO: botón Ubicación
+      const galleryMapOpen = document.getElementById('gallery-map-open');
+
       const galleryState = {
         images: [],
         index: 0,
-        meta: { title:'', operation:'', type:'', location:'', price:'', pdf:'' }
+        meta: { title:'', operation:'', type:'', location:'', price:'', pdf:'', map:'', address:'' }
       };
 
       function updateGalleryUI() {
@@ -683,6 +707,17 @@
         badgeType.textContent = galleryState.meta.type;
 
         waBtn.href = buildWaLink(galleryState.meta);
+
+        // Setear botón Ubicación
+        const href = galleryState.meta.map || (galleryState.meta.address ? ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(galleryState.meta.address)) : '');
+        if (href) {
+          galleryMapOpen.href = href;
+          galleryMapOpen.classList.remove('hidden');
+        } else {
+          galleryMapOpen.href = '#';
+          galleryMapOpen.classList.add('hidden');
+        }
+
         renderIcons();
       }
       function openGallery({ images, meta, startIndex=0 }) {
@@ -742,6 +777,9 @@
         card.setAttribute('data-price', formatPrice(p));
         card.setAttribute('data-images', (p.images || '').split('|').map(s => s.trim()).filter(Boolean).join('|'));
         card.setAttribute('data-pdf', p.pdf || '');
+        // NUEVO: pasar address/map a data-*
+        card.setAttribute('data-address', p.address || '');
+        card.setAttribute('data-map', buildMapHref(p) || '');
 
         // Imagen
         const imgWrap = document.createElement('div');
@@ -873,6 +911,9 @@
           location: card.getAttribute('data-location') || '',
           price: card.getAttribute('data-price') || '',
           pdf: card.getAttribute('data-pdf') || '',
+          // NUEVO: pasar mapa/dirección a la galería
+          map: card.getAttribute('data-map') || '',
+          address: card.getAttribute('data-address') || ''
         };
         const imgs = parseImages(card.getAttribute('data-images') || '');
         const openButtons = card.querySelectorAll('[data-action="open-gallery"]');
@@ -913,8 +954,8 @@
 
       async function bootstrap() {
         try {
-        const saved = localStorage.getItem(LS_KEY_CSV) || '';
-        const csvUrl = saved || DEFAULT_CSV;
+          const saved = localStorage.getItem(LS_KEY_CSV) || '';
+          const csvUrl = saved || DEFAULT_CSV;
 
           if (!csvUrl) { cfg.classList.remove('hidden'); renderList([]); return; }
           const normalized = normalizeSheetUrlToCsv(csvUrl);
