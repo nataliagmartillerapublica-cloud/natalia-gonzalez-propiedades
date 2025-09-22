@@ -687,6 +687,16 @@
 
       // NUEVO: botón Ubicación
       const galleryMapOpen = document.getElementById('gallery-map-open');
+      // Fuerza apertura del mapa en una pestaña nueva (fiable en móvil y desktop)
+galleryMapOpen.addEventListener('click', (e) => {
+  const url = galleryMapOpen.getAttribute('href') || '';
+  if (!url || url === '#') {
+    e.preventDefault();
+    return; // no hay URL, no hacemos nada
+  }
+  e.preventDefault();
+  window.open(url, '_blank', 'noopener'); // abre Maps siempre
+});
 
       const galleryState = {
         images: [],
